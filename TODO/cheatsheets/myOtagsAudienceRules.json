@@ -1,0 +1,1158 @@
+{
+   "took": 64,
+   "timed_out": false,
+   "_shards": {
+      "total": 5,
+      "successful": 5,
+      "failed": 0
+   },
+   "hits": {
+      "total": 41,
+      "max_score": 1,
+      "hits": [
+         {
+            "_index": "rules",
+            "_type": "where",
+            "_id": "cartPage",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "_CartPage",
+               "conds": [
+                  {
+                     "id": 424738,
+                     "selectParameter": "123",
+                     "includeUrlParams": true,
+                     "selectMethod": "contains"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "where",
+            "_id": "pageType",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "_PageType",
+               "conds": [
+                  {
+                     "id": 424740,
+                     "selectParameter": "homepage",
+                     "includeUrlParams": true,
+                     "selectMethod": "equals"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "where",
+            "_id": "productPopularityViews",
+            "_score": 1,
+            "_source": {
+               "ttw": 3000,
+               "condType": "_ProductViewed",
+               "conds": [
+                  {
+                     "id": 424742,
+                     "hitCountMethod": ">=",
+                     "hitCount": 10,
+                     "selectParameter": "day",
+                     "selectParameter2": "anywhere",
+                     "includeUrlParams": true,
+                     "selectMethod": "InThePast"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "urlVisit",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "N",
+               "conds": [
+                  {
+                     "id": 424879,
+                     "hitCountMethod": ">=",
+                     "hitCount": 1,
+                     "selectParameter": false,
+                     "includeUrlParams": false
+                  }
+               ],
+               "audience rules": {
+                  "audience": 270729,
+                  "updatedAt": "2017-04-09 12:12:05",
+                  "session": 1,
+                  "sticky": 0,
+                  "hidden": 1,
+                  "rule": [
+                     {
+                        "condType": "PageVisited",
+                        "conds": [
+                           {
+                              "id": 424879,
+                              "parameter": null,
+                              "selectMethod": "contains",
+                              "selectParameter": "awierdword",
+                              "selectParameter2": null,
+                              "hitCountMethod": ">=",
+                              "hitCount": 1,
+                              "includeUrlParams": 0
+                           }
+                        ]
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "goalconversion",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "N",
+               "conds": [
+                  {
+                     "id": 424889,
+                     "hitCountMethod": ">=",
+                     "hitCount": 1,
+                     "selectParameter": false,
+                     "includeUrlParams": true
+                  }
+               ],
+               "audience rules": {
+                  "audience": 270729,
+                  "updatedAt": "2017-04-09 12:12:05",
+                  "session": 1,
+                  "sticky": 0,
+                  "hidden": 1,
+                  "rule": [
+                     {
+                        "condType": "Goal",
+                        "conds": [
+                           {
+                              "id": 424889,
+                              "parameter": 3824,
+                              "selectMethod": "equals",
+                              "selectParameter": null,
+                              "selectParameter2": null,
+                              "hitCountMethod": ">=",
+                              "hitCount": 1,
+                              "includeUrlParams": 1
+                           }
+                        ]
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "urlparameterinsession",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "N",
+               "conds": [
+                  {
+                     "id": 424903,
+                     "hitCountMethod": ">=",
+                     "hitCount": 1,
+                     "selectParameter": false,
+                     "includeUrlParams": true
+                  }
+               ],
+               "audience rules": {
+                  "audience": 270734,
+                  "updatedAt": "2017-04-09 12:12:05",
+                  "session": 1,
+                  "sticky": 0,
+                  "hidden": 1,
+                  "rule": [
+                     {
+                        "condType": "UrlParam",
+                        "conds": [
+                           {
+                              "id": 424903,
+                              "parameter": null,
+                              "selectMethod": "pair_equals",
+                              "selectParameter": "ref",
+                              "selectParameter2": "roip",
+                              "hitCountMethod": ">=",
+                              "hitCount": 1,
+                              "includeUrlParams": 1
+                           }
+                        ]
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "screenresolution",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "_ScreenSize",
+               "conds": [
+                  {
+                     "id": 424909,
+                     "includeUrlParams": true,
+                     "selectMethod": "equals",
+                     "parameter": 26
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "cookie",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "_CookieParam",
+               "conds": [
+                  {
+                     "id": 424883,
+                     "selectParameter": "cookiename",
+                     "selectParameter2": "cookievalue",
+                     "includeUrlParams": true,
+                     "selectMethod": "equals"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "eventtriggerbyproperty",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "N",
+               "conds": [
+                  {
+                     "id": 424890,
+                     "hitCountMethod": ">=",
+                     "hitCount": 1,
+                     "selectParameter": false,
+                     "includeUrlParams": true
+                  }
+               ],
+               "audience rules": {
+                  "audience": 270730,
+                  "updatedAt": "2017-04-09 12:12:05",
+                  "session": 1,
+                  "sticky": 0,
+                  "hidden": 1,
+                  "rule": [
+                     {
+                        "condType": "EventProp",
+                        "conds": [
+                           {
+                              "id": 424890,
+                              "parameter": 139789,
+                              "selectMethod": "pair_equals",
+                              "selectParameter": "aproperty",
+                              "selectParameter2": "avalue",
+                              "hitCountMethod": ">=",
+                              "hitCount": 1,
+                              "includeUrlParams": 1,
+                              "eventName": "mememe2"
+                           }
+                        ]
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "devicebrand",
+            "_score": 1,
+            "_source": {
+               "ttw": 3000,
+               "condType": "_DeviceBrand",
+               "conds": [
+                  {
+                     "id": 424911,
+                     "selectParameter": "alcatel",
+                     "includeUrlParams": true,
+                     "selectMethod": "equals"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "productspurchased",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "N",
+               "conds": [
+                  {
+                     "id": 424892,
+                     "hitCountMethod": ">=",
+                     "hitCount": 2,
+                     "selectParameter": false,
+                     "includeUrlParams": true
+                  }
+               ],
+               "audience rules": {
+                  "audience": 270732,
+                  "updatedAt": "2017-04-09 12:12:05",
+                  "session": 1,
+                  "sticky": 0,
+                  "hidden": 1,
+                  "rule": [
+                     {
+                        "condType": "ProductFeaturesPurchases",
+                        "conds": [
+                           {
+                              "id": 424892,
+                              "parameter": null,
+                              "selectMethod": "equals",
+                              "selectParameter": "{\"conditions\":[{\"field\":\"categories\",\"method\":\"equals\",\"type\":\"string\",\"relation\":\"OR\",\"values\":[\"Traditional\"],\"multi\":true}],\"relation\":\"AND\",\"negation\":false}",
+                              "selectParameter2": "made",
+                              "hitCountMethod": ">=",
+                              "hitCount": 2,
+                              "includeUrlParams": 1
+                           }
+                        ]
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "eventtrigger",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "N",
+               "conds": [
+                  {
+                     "id": 424891,
+                     "hitCountMethod": ">=",
+                     "hitCount": 1,
+                     "selectParameter": false,
+                     "includeUrlParams": true
+                  }
+               ],
+               "audience rules": {
+                  "audience": 270731,
+                  "updatedAt": "2017-04-09 12:12:05",
+                  "session": 1,
+                  "sticky": 0,
+                  "hidden": 1,
+                  "rule": [
+                     {
+                        "condType": "SiteEvent",
+                        "conds": [
+                           {
+                              "id": 424891,
+                              "parameter": 139787,
+                              "selectMethod": "equals",
+                              "selectParameter": "mememe",
+                              "selectParameter2": null,
+                              "hitCountMethod": ">=",
+                              "hitCount": 1,
+                              "includeUrlParams": 1
+                           }
+                        ]
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "referringdomain",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "Referrer",
+               "conds": [
+                  {
+                     "id": 424901,
+                     "hitCountMethod": "<=",
+                     "hitCount": 0,
+                     "selectParameter": "roi",
+                     "includeUrlParams": true,
+                     "selectMethod": "contains"
+                  }
+               ],
+               "audience rules": {
+                  "audience": 270732,
+                  "updatedAt": "2017-04-09 12:12:05",
+                  "session": 1,
+                  "sticky": 0,
+                  "hidden": 1,
+                  "rule": [
+                     {
+                        "condType": "Referrer",
+                        "conds": [
+                           {
+                              "id": 424901,
+                              "parameter": null,
+                              "selectMethod": "contains",
+                              "selectParameter": "roi",
+                              "selectParameter2": null,
+                              "hitCountMethod": "<=",
+                              "hitCount": 0,
+                              "includeUrlParams": 1
+                           }
+                        ]
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "useragent",
+            "_score": 1,
+            "_source": {
+               "ttw": 3000,
+               "condType": "N",
+               "conds": [
+                  {
+                     "id": 424908,
+                     "hitCountMethod": ">=",
+                     "hitCount": 1,
+                     "selectParameter": false,
+                     "includeUrlParams": true
+                  }
+               ],
+               "audience rules": {
+                  "audience": 270732,
+                  "updatedAt": "2017-04-09 12:12:05",
+                  "session": 1,
+                  "sticky": 0,
+                  "hidden": 1,
+                  "rule": [
+                     {
+                        "condType": "UserAgent",
+                        "conds": [
+                           {
+                              "id": 424908,
+                              "parameter": null,
+                              "selectMethod": "regexp",
+                              "selectParameter": "avalue",
+                              "selectParameter2": null,
+                              "hitCountMethod": ">=",
+                              "hitCount": 1,
+                              "includeUrlParams": 1
+                           }
+                        ]
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "numberofpageviews",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "N",
+               "conds": [
+                  {
+                     "id": 424880,
+                     "hitCountMethod": ">=",
+                     "hitCount": 5,
+                     "selectParameter": false,
+                     "includeUrlParams": true
+                  }
+               ],
+               "audience rules": {
+                  "audience": 270730,
+                  "updatedAt": "2017-04-09 12:12:05",
+                  "session": 1,
+                  "sticky": 0,
+                  "hidden": 1,
+                  "rule": [
+                     {
+                        "condType": "PageViews",
+                        "conds": [
+                           {
+                              "id": 424880,
+                              "parameter": null,
+                              "selectMethod": "count",
+                              "selectParameter": null,
+                              "selectParameter2": null,
+                              "hitCountMethod": ">=",
+                              "hitCount": 5,
+                              "includeUrlParams": 1
+                           }
+                        ]
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "when",
+            "_id": "dayOfWeek",
+            "_score": 1,
+            "_source": {
+               "ttw": 3000,
+               "condType": "_WeekDay",
+               "conds": [
+                  {
+                     "id": 424731,
+                     "selectParameter": "0",
+                     "includeUrlParams": true,
+                     "selectMethod": "equals",
+                     "parameter": 0,
+                     "timeZoneOffset": 2
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "when",
+            "_id": "date",
+            "_score": 1,
+            "_source": {
+               "ttw": 3000,
+               "condType": "_Date",
+               "conds": [
+                  {
+                     "id": 424732,
+                     "selectParameter": "1491731280",
+                     "includeUrlParams": true,
+                     "selectMethod": "after",
+                     "parameter": 0
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "where",
+            "_id": "pageURL",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "_CurrentPage",
+               "conds": [
+                  {
+                     "id": 424737,
+                     "selectParameter": "localhost:8080/roi_dy_site2.html",
+                     "includeUrlParams": false,
+                     "selectMethod": "equals"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "trafficsource",
+            "_score": 1,
+            "_source": {
+               "ttw": 3000,
+               "condType": "_TrafficSource",
+               "conds": [
+                  {
+                     "id": 424902,
+                     "selectParameter": "Direct",
+                     "includeUrlParams": true,
+                     "selectMethod": "equals"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "region",
+            "_score": 1,
+            "_source": {
+               "ttw": 3000,
+               "condType": "_Region",
+               "conds": [
+                  {
+                     "id": 424906,
+                     "selectParameter": "AD_02",
+                     "includeUrlParams": true,
+                     "selectMethod": "equals"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "city",
+            "_score": 1,
+            "_source": {
+               "ttw": 3000,
+               "condType": "_City",
+               "conds": [
+                  {
+                     "id": 424905,
+                     "selectParameter": "US_AL_Auburn",
+                     "includeUrlParams": true,
+                     "selectMethod": "equals"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "_search&size=15",
+            "_score": 1,
+            "_source": {
+               "query": {
+                  "term": {
+                     "condType": "n"
+                  }
+               }
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "where",
+            "_id": "categoryPage",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "_CategoryPage",
+               "conds": [
+                  {
+                     "id": 424748,
+                     "selectParameter": "Gloves",
+                     "includeUrlParams": true,
+                     "selectMethod": "equals"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "urlvisit",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "N",
+               "conds": [
+                  {
+                     "id": 424879,
+                     "hitCountMethod": ">=",
+                     "hitCount": 1,
+                     "selectParameter": false,
+                     "includeUrlParams": false
+                  }
+               ],
+               "audience rules": {
+                  "audience": 270729,
+                  "updatedAt": "2017-04-09 12:12:05",
+                  "session": 1,
+                  "sticky": 0,
+                  "hidden": 1,
+                  "rule": [
+                     {
+                        "condType": "PageVisited",
+                        "conds": [
+                           {
+                              "id": 424879,
+                              "parameter": null,
+                              "selectMethod": "contains",
+                              "selectParameter": "awierdword",
+                              "selectParameter2": null,
+                              "hitCountMethod": ">=",
+                              "hitCount": 1,
+                              "includeUrlParams": 0
+                           }
+                        ]
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "newvisitor",
+            "_score": 1,
+            "_source": {
+               "ttw": 3000,
+               "condType": "_VisitorType",
+               "conds": [
+                  {
+                     "id": 424884,
+                     "includeUrlParams": true,
+                     "parameter": 1
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "landingurl",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "_FirstPageInSession",
+               "conds": [
+                  {
+                     "id": 424896,
+                     "selectParameter": "localhost:8080/roi_dy_site2.html",
+                     "includeUrlParams": false,
+                     "selectMethod": "equals"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "productviewed",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "N",
+               "conds": [
+                  {
+                     "id": 424894,
+                     "hitCountMethod": ">=",
+                     "hitCount": 1,
+                     "selectParameter": false,
+                     "includeUrlParams": true
+                  },
+                  {
+                     "id": 424895,
+                     "hitCountMethod": ">=",
+                     "hitCount": 1,
+                     "selectParameter": false,
+                     "includeUrlParams": true
+                  }
+               ],
+               "audience rules": {
+                  "audience": 270734,
+                  "updatedAt": "2017-04-09 12:12:05",
+                  "session": 1,
+                  "sticky": 0,
+                  "hidden": 1,
+                  "rule": [
+                     {
+                        "condType": "ProductFeaturesViews",
+                        "conds": [
+                           {
+                              "id": 424894,
+                              "parameter": null,
+                              "selectMethod": "contains",
+                              "selectParameter": "{\"conditions\":[{\"field\":\"categories\",\"method\":\"equals\",\"type\":\"string\",\"relation\":\"OR\",\"values\":[\"Gloves\"],\"multi\":true},{\"field\":\"categories\",\"method\":\"equals\",\"type\":\"string\",\"relation\":\"OR\",\"values\":[\"Shirts & Tops\"],\"multi\":true}],\"relation\":\"AND\",\"negation\":false}",
+                              "selectParameter2": "any",
+                              "hitCountMethod": ">=",
+                              "hitCount": 1,
+                              "includeUrlParams": 1
+                           },
+                           {
+                              "id": 424895,
+                              "parameter": null,
+                              "selectMethod": "contains",
+                              "selectParameter": "{\"conditions\":[{\"field\":\"categories\",\"method\":\"equals\",\"type\":\"string\",\"relation\":\"OR\",\"values\":[\"Low-Top\"],\"multi\":true}],\"relation\":\"AND\",\"negation\":true}",
+                              "selectParameter2": "any",
+                              "hitCountMethod": ">=",
+                              "hitCount": 1,
+                              "includeUrlParams": 1
+                           }
+                        ]
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "devicecategory",
+            "_score": 1,
+            "_source": {
+               "ttw": 3000,
+               "condType": "_DeviceType",
+               "conds": [
+                  {
+                     "id": 424899,
+                     "selectParameter": "desktop",
+                     "includeUrlParams": true,
+                     "selectMethod": "equals"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "audience",
+            "_score": 1,
+            "_source": {
+               "ttw": 3000,
+               "condType": "_Audience",
+               "conds": [
+                  {
+                     "id": 424878,
+                     "hitCountMethod": ">=",
+                     "hitCount": 1,
+                     "includeUrlParams": true,
+                     "parameter": 268627
+                  }
+               ],
+               "audience rules": {
+                  "audience": 268627,
+                  "updatedAt": "2017-04-06 07:56:05",
+                  "session": 0,
+                  "sticky": 0,
+                  "hidden": 0,
+                  "rule": [
+                     {
+                        "condType": "SiteEvent",
+                        "conds": [
+                           {
+                              "id": 420992,
+                              "parameter": 137609,
+                              "selectMethod": "equals",
+                              "selectParameter": "roi",
+                              "selectParameter2": null,
+                              "hitCountMethod": ">=",
+                              "hitCount": 10,
+                              "includeUrlParams": 0
+                           }
+                        ]
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "sitevariable",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "N",
+               "conds": [
+                  {
+                     "id": 424882,
+                     "hitCountMethod": ">=",
+                     "hitCount": 1,
+                     "selectParameter": false,
+                     "includeUrlParams": true
+                  }
+               ],
+               "audience rules": {
+                  "audience": 270732,
+                  "updatedAt": "2017-04-09 12:12:05",
+                  "session": 1,
+                  "sticky": 0,
+                  "hidden": 1,
+                  "rule": [
+                     {
+                        "condType": "SiteVariable",
+                        "conds": [
+                           {
+                              "id": 424882,
+                              "parameter": 1274,
+                              "selectMethod": "equals",
+                              "selectParameter": "avalue",
+                              "selectParameter2": null,
+                              "hitCountMethod": ">=",
+                              "hitCount": 1,
+                              "includeUrlParams": 1
+                           }
+                        ]
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "productsaddedtocart",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "N",
+               "conds": [
+                  {
+                     "id": 424893,
+                     "hitCountMethod": ">=",
+                     "hitCount": 5,
+                     "selectParameter": false,
+                     "includeUrlParams": true
+                  }
+               ],
+               "audience rules": {
+                  "audience": 270733,
+                  "updatedAt": "2017-04-09 12:12:05",
+                  "session": 1,
+                  "sticky": 0,
+                  "hidden": 1,
+                  "rule": [
+                     {
+                        "condType": "ProductFeaturesAddToCarts",
+                        "conds": [
+                           {
+                              "id": 424893,
+                              "parameter": null,
+                              "selectMethod": "equals",
+                              "selectParameter": "{\"conditions\":[],\"relation\":\"AND\",\"negation\":false}",
+                              "selectParameter2": null,
+                              "hitCountMethod": ">=",
+                              "hitCount": 5,
+                              "includeUrlParams": 1
+                           }
+                        ]
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "operatingsystem",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "N",
+               "conds": [
+                  {
+                     "id": 424898,
+                     "hitCountMethod": ">=",
+                     "hitCount": 1,
+                     "selectParameter": false,
+                     "includeUrlParams": true
+                  }
+               ],
+               "audience rules": {
+                  "audience": 270729,
+                  "updatedAt": "2017-04-09 12:12:05",
+                  "session": 1,
+                  "sticky": 0,
+                  "hidden": 1,
+                  "rule": [
+                     {
+                        "condType": "UserAgent",
+                        "conds": [
+                           {
+                              "id": 424898,
+                              "parameter": null,
+                              "selectMethod": "regexp",
+                              "selectParameter": "Windows Phone OS 7",
+                              "selectParameter2": null,
+                              "hitCountMethod": ">=",
+                              "hitCount": 1,
+                              "includeUrlParams": 1
+                           }
+                        ]
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "where",
+            "_id": "productPopularityPurchased",
+            "_score": 1,
+            "_source": {
+               "ttw": 3000,
+               "condType": "_ProductPurchased",
+               "conds": [
+                  {
+                     "id": 424741,
+                     "hitCountMethod": ">=",
+                     "hitCount": 10,
+                     "selectParameter": "day",
+                     "selectParameter2": "anywhere",
+                     "includeUrlParams": true,
+                     "selectMethod": "InThePast"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "elapsedtime",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "_TimeSince",
+               "conds": [
+                  {
+                     "id": 424900,
+                     "hitCountMethod": ">=",
+                     "hitCount": 86400,
+                     "selectParameter": "lastPV",
+                     "includeUrlParams": true,
+                     "selectMethod": "LastVisit",
+                     "parameter": 0
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "where",
+            "_id": "productPage",
+            "_score": 1,
+            "_source": {
+               "ttw": 3000,
+               "condType": "_ProductFeaturesViews",
+               "conds": [
+                  {
+                     "id": 424736,
+                     "selectParameter": "{\"conditions\":[],\"relation\":\"AND\",\"negation\":false}",
+                     "includeUrlParams": true,
+                     "selectMethod": "contains"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "where",
+            "_id": "pageUrl",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "_CurrentPage",
+               "conds": [
+                  {
+                     "id": 424749,
+                     "selectParameter": "localhost:8080/roi_dy_site2.html",
+                     "includeUrlParams": false,
+                     "selectMethod": "equals"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "previouspageurl",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "_Referrer",
+               "conds": [
+                  {
+                     "id": 424881,
+                     "selectParameter": "something",
+                     "includeUrlParams": false,
+                     "selectMethod": "contains"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "when",
+            "_id": "timeOfDay",
+            "_score": 1,
+            "_source": {
+               "ttw": 3000,
+               "condType": "_TimeOfDay",
+               "conds": [
+                  {
+                     "id": 424730,
+                     "selectParameter": "46800",
+                     "selectParameter2": "50400",
+                     "includeUrlParams": true,
+                     "selectMethod": "between",
+                     "parameter": 0
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "browser",
+            "_score": 1,
+            "_source": {
+               "ttw": 0,
+               "condType": "_Browser",
+               "conds": [
+                  {
+                     "id": 424910,
+                     "includeUrlParams": true,
+                     "parameter": 12
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "county",
+            "_score": 1,
+            "_source": {
+               "ttw": 3000,
+               "condType": "_Country",
+               "conds": [
+                  {
+                     "id": 424907,
+                     "selectParameter": "AF",
+                     "includeUrlParams": true,
+                     "selectMethod": "equals"
+                  }
+               ]
+            }
+         },
+         {
+            "_index": "rules",
+            "_type": "who",
+            "_id": "weather",
+            "_score": 1,
+            "_source": {
+               "ttw": 3000,
+               "condType": "_Weather",
+               "conds": [
+                  {
+                     "id": 424912,
+                     "selectParameter": "WeatherConditions",
+                     "includeUrlParams": true,
+                     "weatherMethod": "equals",
+                     "weatherParameter": "Clear",
+                     "weatherCondDaysMethod": "now",
+                     "selectMethod": "equals"
+                  }
+               ]
+            }
+         }
+      ]
+   }
+}

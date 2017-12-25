@@ -1,0 +1,95 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => MY NEOVIM CONF 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" " => Vim Essentials - turn on when using vim
+if !has("nvim")
+  set nocompatible
+  filetype on
+  filetype plugin on
+  filetype indent on
+  syntax on
+  set autoindent
+  set autoread " auto read when file is changed from outside
+  set backspace=eol,start,indent " backspace fix
+  set noerrorbells
+  set novisualbell
+  set t_vb=
+  set tm=500
+  set history=500
+  set hlsearch
+  set incsearch
+  set ruler " row,column bottom right window
+  set wildmenu " autocomplete commands
+  set showcmd " command bottom right window
+  set whichwrap+=<,>,h,l " backspace fix
+  set nobackup
+  set nowb
+  set noswapfile
+endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Vim-Plug 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+call plug#begin('~/.config/nvim/plugged')
+
+" " => Essentials
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' } " directory navigation
+Plug 'majutsushi/tagbar' " shows structure
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim' " fuzzy search for buffers, ag, files etc
+Plug 'tpope/vim-surround' " will add s as a motion example - csiw will change surrounding of inner word
+Plug 'tpope/vim-repeat' " will make . work on vim-surround
+Plug 'justinmk/vim-sneak' "s{char}{char} will go the the next instance of the text {char}{char}. Use ';' and ',' to got back and forth
+" Plug 'w0rp/ale' " completion engine
+
+" " => ColorSchemes
+Plug 'tomasr/molokai'
+" Plug 'dracula/vim'
+
+call plug#end()
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Gui 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set termguicolors
+set guifont=Menlo\ Regular:h14
+color molokai "dracula 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Basic configurations 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" set mouse=a " mouse added functions
+" set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
+set number relativenumber
+set scrolloff=1 "scroll before getting to last line
+set lazyredraw " no redraw while executing macros (good preformace config)
+set magic " better regex (keep it)
+set encoding=utf8
+set ffs=unix,dos,mac
+set expandtab " expend tab to spaces
+set smarttab " be smart about it?
+set shiftwidth=2 " size of indent
+set tabstop=2 " size of tab
+set smartindent " make smart indents
+set hidden
+set cursorline
+set ignorecase
+set smartcase
+
+" return to last edit position when opening files!
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Mappings 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" let mapleader = " "
+" let g:mapleader = " "
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Plugins configurations 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" ----- nerdtree -----"
+map <C-n> :NERDTreeToggle<CR>
