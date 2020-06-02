@@ -146,8 +146,8 @@ autocmd FileType json syntax match Comment +\/\/.\+$+
 " coc-snippets
 " coc-prettier
 " coc-highlight
-" coc-explorer
 " coc-eslint
+" coc-vimlsp
 " coc-tsserver
 " coc-python
 " coc-json
