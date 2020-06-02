@@ -1,0 +1,6 @@
+= My knowledge base =
+
+##     HEADing
+
+    * [[Installations]] -- How to get setup and apps running
+    * [[Ricing]] -- Make stuff prettier

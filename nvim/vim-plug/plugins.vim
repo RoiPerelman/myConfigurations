@@ -68,8 +68,6 @@ call plug#begin('~/.config/nvim/autoload/plugged')
       " space cs, css, cS confirm subsitution
       " TODO(ROIP) do i want this?
     Plug 'svermeulen/vim-subversive'
-    " View and search LSP symbols and tags. TODO(ROIP) learn about this
-    Plug 'liuchengxu/vista.vim'
     " Incremental Search imporved (automatically clear highlights)
     " TODO(ROIP) incrememntal search not working and n and N remove highlight
     Plug 'haya14busa/is.vim'
@@ -78,8 +76,10 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     " Snippets
     " to create a snippet from code, use Coc action <leader>la or <leader>lA
     Plug 'honza/vim-snippets'
+    " Vim Wiki
+    Plug 'vimwiki/vimwiki'
 
-    call plug#end()
+call plug#end()
 
 " Automatically install missing plugins on startup
 autocmd VimEnter *

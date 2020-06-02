@@ -1,0 +1,8 @@
+# Ricing
+
+- Fonts - install from http://nerdfonts.com
+    # Recommended fonts
+    # hack, FiraCode, Monokai, Ubuntu, RobotoMono, JetBrainsMono, SourceCodePro
+    # Best is to create a fonts folder inside myConfigurations and download to there
+    # go to /usr/local/share and link
+    ln -snf ~/myConfigurations/fonts fonts

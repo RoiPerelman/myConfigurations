@@ -19,5 +19,5 @@ source $HOME/.config/nvim/plug-config/rainbow-parentheses.vim
 source $HOME/.config/nvim/plug-config/auto-pairs.vim
 source $HOME/.config/nvim/plug-config/asterisk.vim
 source $HOME/.config/nvim/plug-config/is.vim
-source $HOME/.config/nvim/plug-config/vista.vim
 source $HOME/.config/nvim/plug-config/gitgutter.vim
+source $HOME/.config/nvim/plug-config/vimwiki.vim
