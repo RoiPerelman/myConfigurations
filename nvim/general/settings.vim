@@ -1,32 +1,29 @@
 " set leader key
 let g:mapleader = "\<Space>"
 
-" " => Vim Essentials - turned on when using vim
-if !has("nvim")
-  set nocompatible                        " not compatible with vi
-  filetype on
-  filetype plugin on
-  filetype indent on
-  syntax enable                           " Enables syntax highlighing
-  set autoindent                          " Good auto indent
-  set autoread                            " auto read when file is changed from outside
-  set backspace=indent,eol,start          " backspace fix
-  set noerrorbells
-  set novisualbell
-  set t_vb=
-  set tm=500
-  set history=500
-  set hlsearch
-  set incsearch
-  set ruler              			            " Show the cursor position all the time
-  set wildmenu                            " autocomplete commands
-  set showcmd                             " command bottom right window
-  set smarttab                            " Makes tabbing smarter will realize you have 2 vs 4
-  set whichwrap+=<,>,h,l                  " backspace fix
-  set nobackup
-  set nowb
-  set noswapfile
-endif
+" => Vim Essentials - turned on when using vim
+set nocompatible                        " not compatible with vi
+filetype on
+filetype plugin on
+filetype indent on
+syntax enable                           " Enables syntax highlighing
+set autoindent                          " Good auto indent
+set autoread                            " auto read when file is changed from outside
+set backspace=indent,eol,start          " backspace fix
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+set history=500
+set hlsearch
+set incsearch
+set ruler              			            " Show the cursor position all the time
+set wildmenu                            " autocomplete commands
+set showcmd                             " command bottom right window
+set smarttab                            " Makes tabbing smarter will realize you have 2 vs 4
+set whichwrap+=<,>,h,l                  " backspace fix
+set nowb
+set noswapfile
 
 set hidden                              " Required to keep multiple buffers open multiple buffers
 set nowrap                              " Display long lines as just one line

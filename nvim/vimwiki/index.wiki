@@ -3,5 +3,6 @@
 == Linux ==
     * [[Installations]] -- How to get setup and apps running
     * [[Ricing]] -- Make stuff prettier
+    * [[Applications]] - Say no more
 
 == Philosophy ==
