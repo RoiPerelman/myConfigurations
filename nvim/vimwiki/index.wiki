@@ -1,6 +1,7 @@
 = My knowledge base =
 
-##     HEADing
-
+== Linux ==
     * [[Installations]] -- How to get setup and apps running
     * [[Ricing]] -- Make stuff prettier
+
+== Philosophy ==
