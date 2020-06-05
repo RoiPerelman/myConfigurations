@@ -28,7 +28,7 @@ let g:which_key_use_floating_win = 0
 let g:which_key_map = {}
 
 " Windows
-let g:which_key_map['w'] = {'name' : '+windows'}
+let g:which_key_map['w'] = {'name' : '+windows/+wiki'}
 let g:which_key_map['w']['s'] = {'name': '+split'}
 let g:which_key_map['w']['s']['v'] = ['<C-W>v', 'vertical']
 let g:which_key_map['w']['s']['h'] = ['<C-W>s', 'horizontal']
@@ -55,6 +55,7 @@ let g:which_key_map['t']['t'] = [':Vista!!', 'tags']
 let g:which_key_map['t']['a'] = ['<Plug>(asterisk-*)', 'asterisk']
 
 let g:which_key_map['g'] = {'name' : '+git'}
+let g:which_key_map['g']['b']= [':Gblame', 'git blame']
 let g:which_key_map['g']['h'] = {'name' : '+hunk'}
 let g:which_key_map['g']['h']['d'] = ['<plug>(GitGutterPreviewHunk)', 'diff hunk']
 let g:which_key_map['g']['h']['n'] = [':call GitGutterNextHunkCycle()<CR>', 'next hunk']

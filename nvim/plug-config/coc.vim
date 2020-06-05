@@ -151,3 +151,7 @@ autocmd FileType json syntax match Comment +\/\/.\+$+
 " coc-tsserver
 " coc-python
 " coc-json
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
