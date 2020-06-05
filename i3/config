@@ -5,24 +5,21 @@ set $mod Mod4
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
 # to look at nerd fonts - https://www.programmingfonts.org/
-# font pango:monospace 8
 # font xfg:Source Code Prop Medium 10
-
-# This font is widely installed, provides lots of unicode glyphs, right-to-left
-# text rendering and scalability on retina/hidpi displays (thanks to pango).
-font pango:DejaVu Sans Mono 8
+font pango:Jetbrains Mono 12
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec alacritty
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec dmenu_run
+# bindsym $mod+d exec dmenu_run
+bindsym $mod+d exec rofi -show run
 
 # change focus
 bindsym $mod+h focus left
@@ -58,9 +55,9 @@ bindsym $mod+v split h
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+# bindsym $mod+s layout stacking
+bindsym $mod+t layout tabbed
+bindsym $mod+s layout toggle split
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
@@ -136,18 +133,19 @@ bindsym $mod+Control+k move workspace to output up
 
 # bind workspaces to screens
 # use xrandr to know your screens
-workspace $ws1 output HDMI-0
-workspace $ws2 output HDMI-0
-workspace $ws3 output DP-2
-workspace $ws4 output DP-2
-workspace $ws9 output DP-0
-workspace $ws0 output DP-0
+# workspace $ws1 output HDMI-0
+# workspace $ws2 output HDMI-0
+# workspace $ws3 output DP-2
+# workspace $ws4 output DP-2
+# workspace $ws9 output DP-0
+# workspace $ws0 output DP-0
 
 # bind aplications to workspaces
 # to find the class of an app - in the terminal write xprop
 # and choose the app with the mouse the the value from W_CLASS
 # assing [class=""] $workspace0
 assign [class="Code"] $ws2
+assign [class="Firefox"] $ws3
 assign [class="Google-chrome"] $ws3
 assign [class="Electron"] $ws9
 assign [class="discord"] $ws0
@@ -196,6 +194,21 @@ bar {
         position top
 }
 
+# Window Colors
+
+set $bgcolor   #00897b
+set $ibgcolor  #363636
+set $textcolor #ffffff
+set $ubgcolor  #a00000
+
+# class                 border     backgr.    text       indicator    child_border
+client.focused          $bgcolor   $bgcolor   $textcolor $bgcolor
+client.focused_inactive $ibgcolor  $ibgcolor  $textcolor $ibgcolor
+client.unfocused        $ibgcolor  $ibgcolor  $textcolor $ibgcolor
+client.urgent           $ubgcolor  $ubgcolor  $textcolor $ubgcolor
+# client.placeholder   
+# client.background   
+
 # lock screen
 bindsym $mod+Shift+x exec i3lock
 
@@ -210,11 +223,18 @@ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle
 # bindsym XF86AudioPlay exec playerctl play-pause
 
 # startup programs
-exec_always feh --bg-scale /home/roiperelman/Pictures/Wallpapers/JoeyJazz_digital_art_space_stars_nebula-1592205.jpg\!d
-exec_always xrandr --output DP-2 --left-of HDMI-0
+# Display Wallpaper
+# exec_always feh --bg-scale /home/roiperelman/Pictures/avatar-wallpaper.jpg
+exec_always --no-startup-id nitrogen --restore
+exec_always --no-startup-id compton
+
+# Display Layout
+exec_always --no-startup-id xrandr --output DP-2 --left-of HDMI-0
 
 # client.focused #0d0d0d #171717 #ffffff #0d0d0d #0d0d0d
 # client.unfocused #0d0d0d #363636 #888888 #292d2e #0d0d0d
 
 # cursor speed
 # exec --no-startup-id xinput set-prop 11 295 1.9
+
+

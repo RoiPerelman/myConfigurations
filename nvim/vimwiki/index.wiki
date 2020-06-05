@@ -6,3 +6,7 @@
     * [[Applications]] - Say no more
 
 == Philosophy ==
+    * [[material]] - the material I read/ want to read
+
+== Inspekto ==
+    * [[NewUi]] - The new UI
