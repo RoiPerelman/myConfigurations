@@ -185,29 +185,56 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+# Window Colors
+set $bgcolor	#00897bcc
+set $ibgcolor 	#363636
+set $fws	#00897bcc
+set $barcolor	#00897b0D
+set $textcolor	#ffffff
+set $itextcolor #969696
+set $ubgcolor	#ff0000
+
+# class                  border     background  text         indicator  child_border
+client.focused		       $bgcolor	  $bgcolor	  $textcolor	 $bgcolor
+client.unfocused	       $ibgcolor	$ibgcolor	  $itextcolor  $ibgcolor
+client.focused_inactive	 $ibgcolor	$ibgcolor	  $itextcolor	 $ibgcolor
+client.urgent		         $ubgcolor	$ubgcolor		$textcolor	 $ubgcolor
+# client.placeholder
+# client.background
+
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-        status_command i3status
-        # status_command i3blocks
-        tray_output primary
         position top
+        status_command i3blocks -c ~/.config/i3blocks/i3blocks.conf
+        # status_command i3blocks 
+        # i3bar_command i3bar --transparency
+        tray_output none
+        font pango:monospace 11
+        colors {
+          background $barcolor
+          separator #282828
+          #			border		background		text
+          focused_workspace	$fws		$fws			$textcolor
+          inactive_workspace	$ibgcolor	$ibgcolor		$itextcolor
+          urgent_workspace	$ubgcolor	$ubgcolor		$textcolor
+        }
 }
-
-# Window Colors
-
-set $bgcolor   #00897b
-set $ibgcolor  #363636
-set $textcolor #ffffff
-set $ubgcolor  #a00000
-
-# class                 border     backgr.    text       indicator    child_border
-client.focused          $bgcolor   $bgcolor   $textcolor $bgcolor
-client.focused_inactive $ibgcolor  $ibgcolor  $textcolor $ibgcolor
-client.unfocused        $ibgcolor  $ibgcolor  $textcolor $ibgcolor
-client.urgent           $ubgcolor  $ubgcolor  $textcolor $ubgcolor
-# client.placeholder   
-# client.background   
+#bar {
+#        status_command i3status
+#        # status_command i3blocks
+#        # i3bar_command i3bar --transparency
+#        # tray_output primary
+#        #font pango:monospace 11
+#        colors {
+#          background $barcolor
+#          separator #282828
+#          # class			border		background		text
+#          focused_workspace	$fws		$fws			$textcolor
+#          inactive_workspace	$ibgcolor	$ibgcolor		$itextcolor
+#          urgent_workspace	$ubgcolor	$ubgcolor		$textcolor
+#        }
+#}
 
 # lock screen
 bindsym $mod+Shift+x exec i3lock
