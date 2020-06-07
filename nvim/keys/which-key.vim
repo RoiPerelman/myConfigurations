@@ -56,6 +56,14 @@ let g:which_key_map['t']['a'] = ['<Plug>(asterisk-*)', 'asterisk']
 
 let g:which_key_map['g'] = {'name' : '+git'}
 let g:which_key_map['g']['b']= [':Gblame', 'git blame']
+let g:which_key_map['g']['s']= [':Gstatus', 'git status']
+let g:which_key_map['g']['d']= [':Gdiff', 'git diff']
+let g:which_key_map['g']['l']= [':Git log', 'git log']
+let g:which_key_map['g']['c']= [':Gcommit', 'git commit']
+let g:which_key_map['g']['p']= [':Gpush', 'git push']
+let g:which_key_map['g']['r']= {'name' : '+resolve'}
+let g:which_key_map['g']['r']['l']= [':diffget //2', 'resolve left side']
+let g:which_key_map['g']['r']['r']= [':diffget //3', 'resolve right side']
 let g:which_key_map['g']['h'] = {'name' : '+hunk'}
 let g:which_key_map['g']['h']['d'] = ['<plug>(GitGutterPreviewHunk)', 'diff hunk']
 let g:which_key_map['g']['h']['n'] = [':call GitGutterNextHunkCycle()<CR>', 'next hunk']

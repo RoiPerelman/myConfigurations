@@ -26,6 +26,11 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     " Add repeat with '.' to other plugins
     Plug 'tpope/vim-repeat'
     " Git
+    " :Gstatus
+    " s - stage
+    " u - unstage
+    " dv - start resolve conflicts
+    " :diffget //2 to choose left and :diffget //3 to choose right
     Plug 'tpope/vim-fugitive'
     " Plug 'mhinz/vim-signify'
     " [c, ]c to move between hunks
