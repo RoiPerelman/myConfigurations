@@ -79,3 +79,17 @@ rofi comes with rofi-theme-selector
 {{{bash
 sudo apt-get install rofi
 }}}
+
+== File Managers ==
+
+{{{bash
+sudo apt install thundar
+}}}
+
+=== bloated ===
+  * Nautilus 
+  * Dolphine
+  * Nemo 
+=== minimalist ===
+  * Thunar 
+  * Pcmanfm 
