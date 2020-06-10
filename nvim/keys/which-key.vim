@@ -44,9 +44,11 @@ let g:which_key_map['.'] = [':e $MYVIMRC', 'open init']
 let g:which_key_map['i'] = [':Hover', 'hover info']
 
 " Subversive search and replace
-let g:which_key_map['s'] = ['<plug>(SubversiveSubstituteRange)', 'replace']
-let g:which_key_map['ss'] = ['<plug>(SubversiveSubstituteWordRange)', 'replace word']
-let g:which_key_map['css'] = ['<plug>(SubversiveSubstituteWordRangeConfirm)', 'replace confirm word']
+" let g:which_key_map['s'] = ['<plug>(SubversiveSubstituteRange)', 'replace']
+" let g:which_key_map['ss'] = ['<plug>(SubversiveSubstituteWordRange)', 'replace word']
+" let g:which_key_map['css'] = ['<plug>(SubversiveSubstituteWordRangeConfirm)', 'replace confirm word']
+
+let g:which_key_map['S'] = [':Startify', 'startify']
 
 let g:which_key_map['t'] = {'name' : '+toggle'}
 let g:which_key_map['t']['e'] = [':NERDTreeToggle', 'explorer']

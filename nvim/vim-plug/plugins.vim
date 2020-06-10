@@ -83,6 +83,8 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'honza/vim-snippets'
     " Vim Wiki
     Plug 'vimwiki/vimwiki'
+    " Startify
+    Plug 'mhinz/vim-startify'
 
 call plug#end()
 

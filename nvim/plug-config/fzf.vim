@@ -1,7 +1,7 @@
 " Default options
 let $FZF_DEFAULT_OPTS = '--layout=reverse --info=inline'
-let $FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git/**'"
-" let $FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+" let $FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git/**'"
+let $FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 
 " Enable per-command history.
 " CTRL-N and CTRL-P will be automatically bound to next-history and

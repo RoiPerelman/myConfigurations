@@ -21,3 +21,4 @@ source $HOME/.config/nvim/plug-config/asterisk.vim
 source $HOME/.config/nvim/plug-config/is.vim
 source $HOME/.config/nvim/plug-config/gitgutter.vim
 source $HOME/.config/nvim/plug-config/vimwiki.vim
+source $HOME/.config/nvim/plug-config/startify.vim
