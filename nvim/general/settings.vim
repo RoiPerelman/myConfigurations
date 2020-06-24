@@ -49,7 +49,7 @@ set showtabline=2                       " Always show tabs
 set noshowmode                          " We don't need to see things like -- INSERT -- anymore
 set updatetime=300                      " Faster completion
 set formatoptions-=cro                  " Stop newline continution of comments
-set clipboard=unnamedplus               " Copy paste between vim and everything else
+set clipboard=unnamedplus               " Copy paste between vim and everything else - unnamed if not linux
 set ignorecase                          " Ignore case in serach
 set smartcase                           " Ignore case in search only if not capital letter
 set scrolloff=1                         " scroll before getting to last line

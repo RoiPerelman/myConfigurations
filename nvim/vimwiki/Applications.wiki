@@ -95,3 +95,4 @@ sudo apt install pcmanfm
   * Pcmanfm - Me likey
 
 
+sudo apt install python3-neovim

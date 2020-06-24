@@ -1,17 +1,22 @@
 " Default options
 let $FZF_DEFAULT_OPTS = '--layout=reverse --info=inline'
-" let $FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git/**'"
-let $FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+" let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
+let $FZF_DEFAULT_COMMAND="rg --files --hidden --glob '!.git/**'"
+" let $FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 
 " Enable per-command history.
 " CTRL-N and CTRL-P will be automatically bound to next-history and
 " previous-history instead of down and up. If you don't like the change,
 " explicitly bind the keys to down and up in your $FZF_DEFAULT_OPTS.
 let g:fzf_history_dir = '~/.local/share/fzf-history'
-" Ctags
-let g:fzf_tags_command = 'ctags -R'
+
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
+
 " Border color
-let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.8, 'height': 0.8,'yoffset':0.5,'xoffset': 0.5, 'highlight': 'Todo', 'border': 'sharp' } }
+" let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.8, 'height': 0.8,'yoffset':0.5,'xoffset': 0.5, 'highlight': 'Todo', 'border': 'sharp' } }
+let g:fzf_layout = {'window': { 'width': 0.8, 'height': 0.8 } }
+
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
@@ -30,7 +35,7 @@ let g:fzf_colors =
 
 " Get Files
 command! -bang -nargs=? -complete=dir Files
-    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
+    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
 " Get text in files with Rg
 " command! -bang -nargs=* Rg
@@ -63,15 +68,23 @@ command! -bang -nargs=* GGrep
   \   'git grep --line-number '.shellescape(<q-args>), 0,
   \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
 
+" An action can be a reference to a function that processes selected lines
+function! s:build_quickfix_list(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+  copen
+  cc
+endfunction
+
 " This is the default extra key bindings
 let g:fzf_action = {
+  \ 'ctrl-q': function('s:build_quickfix_list'),
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
 
 " fzf search key maps
 map <C-p> :Files<CR>
-map <C-g> :Rg<CR>
+map <C-g> :RG<CR>
 map <C-f> :BLines<CR>
 map <C-b> :Buffers<CR>
 " map <leader>b :Commands<CR>

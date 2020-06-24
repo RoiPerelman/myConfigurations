@@ -147,6 +147,7 @@ workspace $ws1 output HDMI-0
 workspace $ws2 output DP-2
 workspace $ws3 output HDMI-0
 workspace $ws4 output DP-2
+workspace $ws7 output HDMI-0
 workspace $ws9 output DP-0
 workspace $ws0 output DP-0
 

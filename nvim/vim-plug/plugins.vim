@@ -10,6 +10,8 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     " Themes
     " Plug 'joshdick/onedark.vim'
     Plug 'tomasr/molokai'
+    Plug 'patstockwell/vim-monokai-tasty'
+    Plug 'dracula/vim', { 'as': 'dracula' }
     " Surround
     " cs"' - change surrounding "" to ''
     " ysiw<q> - you surround inside word with <q> <q/>
@@ -53,6 +55,7 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     " Intellisense - Language Server Protocal
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
     " FZF
+    " for file syntax highlights u need to install bat - https://github.com/sharkdp/bat
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
     " Which key

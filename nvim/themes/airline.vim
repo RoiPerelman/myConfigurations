@@ -28,7 +28,7 @@ let g:airline_right_alt_sep = ''
 
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 
-" Switch to your current theme
+" Switch to your current theme - used inside the theme files themselves
 " let g:airline_theme = 'onedark'
 
 " Always show tabs 
