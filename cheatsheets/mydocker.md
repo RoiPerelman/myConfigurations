@@ -6,7 +6,7 @@ Roi's Dockersheet
 * docker start `[instance name]`
 * docker stop `[instance name]`
 * docker rm `[instance name]`
-* docker run --name `[instance name]` `[image name]
+* docker run --name `[instance name]`. image name
   * -v `[local path]:[instance path]`. volumes
   * -p `[local port]:[instance port]`. ports
   * --rm [docker stop + docker rm on instance]
@@ -16,6 +16,10 @@ Roi's Dockersheet
   * -a [all]
   * -p [process id]
 * docker rmi [remove image]
+* docker system prune
+  * -a [all - include stopped containers and unused images]
+  * -f [bypasses confirmation dialog]
+  * --volumes [remove all unused volumes]
 
 *docker stop (docker ps -a -q)*
 
