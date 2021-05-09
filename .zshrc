@@ -74,6 +74,9 @@ plugins=(
     git
     autojump
     virtualenvwrapper
+    ripgrep
+    docker
+    tig
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -107,19 +110,44 @@ source $ZSH/oh-my-zsh.sh
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# import tinyrc
-. ~/.tinyrc
-
 # neovim
+
 # add to path, set as editor an alias vi and vim
 export PATH=/home/roiperelman/Applications/nvim-linux64/bin:$PATH
 export EDITOR='nvim'
 alias vi="nvim"
 alias vim="nvim"
+export MANPAGER='nvim +Man!'
 
 # if u have bat a.k.a batcat
-alias batcat="bat"
-alias cat="batcat"
+alias bat="batcat -p"
 export BAT_THEME="Monokai Extended"
-export MANPAGER="sh -c 'col -bx | batcat -l man -p'"
+# export MANPAGER="sh -c 'col -bx | batcat -l man -p'"
+
+# functions
+
+# extract stuff
+extract () {
+     if [ -f $1 ] ; then
+         case $1 in
+             *.tar.bz2)   tar xjf $1        ;;
+             *.tar.gz)    tar xzf $1     ;;
+             *.bz2)       bunzip2 $1       ;;
+             *.rar)       rar x $1     ;;
+             *.gz)        gunzip $1     ;;
+             *.tar)       tar xf $1        ;;
+             *.tbz2)      tar xjf $1      ;;
+             *.tgz)       tar xzf $1       ;;
+             *.zip)       unzip $1     ;;
+             *.Z)         uncompress $1  ;;
+             *.7z)        7z x $1    ;;
+             *)           echo "'$1' cannot be extracted via extract()" ;;
+         esac
+     else
+         echo "'$1' is not a valid file"
+     fi
+}
+
+# import tinyrc
+. ~/.tinyrc
 
