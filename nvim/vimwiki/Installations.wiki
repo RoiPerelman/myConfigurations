@@ -28,6 +28,8 @@ ln -snf ~/myConfigurations/.zshrc .zshrc
 sudo add-apt-repository ppa:neovim-ppa/unstable
 sudo apt-get update
 sudo apt-get install neovim
+
+# neovim 0.5 zip is in applications. Unzip in ~/Applications folder
 }}}
 
 * link neovim conf from myConfigurations
