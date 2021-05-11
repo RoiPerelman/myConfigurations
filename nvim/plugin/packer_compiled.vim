@@ -47,8 +47,8 @@ local function save_profiles(threshold)
 end
 
 time("Luarocks path setup", true)
-local package_path_str = "/home/roiperelman/snap/alacritty/common/.cache/nvim/packer_hererocks/2.1.0-beta3/share/lua/5.1/?.lua;/home/roiperelman/snap/alacritty/common/.cache/nvim/packer_hererocks/2.1.0-beta3/share/lua/5.1/?/init.lua;/home/roiperelman/snap/alacritty/common/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/luarocks/rocks-5.1/?.lua;/home/roiperelman/snap/alacritty/common/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/luarocks/rocks-5.1/?/init.lua"
-local install_cpath_pattern = "/home/roiperelman/snap/alacritty/common/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/lua/5.1/?.so"
+local package_path_str = "/home/roiperelman/.cache/nvim/packer_hererocks/2.1.0-beta3/share/lua/5.1/?.lua;/home/roiperelman/.cache/nvim/packer_hererocks/2.1.0-beta3/share/lua/5.1/?/init.lua;/home/roiperelman/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/luarocks/rocks-5.1/?.lua;/home/roiperelman/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/luarocks/rocks-5.1/?/init.lua"
+local install_cpath_pattern = "/home/roiperelman/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/lua/5.1/?.so"
 if not string.find(package.path, package_path_str, 1, true) then
   package.path = package.path .. ';' .. package_path_str
 end
@@ -71,10 +71,26 @@ end
 time("try_loadstring definition", false)
 time("Defining packer_plugins", true)
 _G.packer_plugins = {
-  ["packer.nvim"] = {
+  ["completion-nvim"] = {
+    loaded = true,
+    path = "/home/roiperelman/.local/share/nvim/site/pack/packer/start/completion-nvim"
+  },
+  ["nvim-lspconfig"] = {
+    loaded = true,
+    path = "/home/roiperelman/.local/share/nvim/site/pack/packer/start/nvim-lspconfig"
+  },
+  ["nvim-lspinstall"] = {
     loaded = false,
     needs_bufread = false,
-    path = "/home/roiperelman/.local/share/nvim/site/pack/packer/opt/packer.nvim"
+    path = "/home/roiperelman/.local/share/nvim/site/pack/packer/opt/nvim-lspinstall"
+  },
+  ["packer.nvim"] = {
+    loaded = true,
+    path = "/home/roiperelman/.local/share/nvim/site/pack/packer/start/packer.nvim"
+  },
+  ["vim-commentary"] = {
+    loaded = true,
+    path = "/home/roiperelman/.local/share/nvim/site/pack/packer/start/vim-commentary"
   }
 }
 

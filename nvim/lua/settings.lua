@@ -1,8 +1,7 @@
--- " set leader key
--- let g:mapleader = "\<Space>"
+-- " set leader key - must be first thing we load in the config!
+vim.g.mapleader = ' '
 -- 
 -- " => Vim Essentials - turned on when using vim
--- set nocompatible                        " not compatible with vi
 -- filetype on
 -- filetype plugin on
 -- filetype indent on
