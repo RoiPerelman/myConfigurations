@@ -151,3 +151,5 @@ extract () {
 # import tinyrc
 . ~/.tinyrc
 
+
+alias luamake=/home/roiperelman/Other/test/lua-language-server/3rd/luamake/luamake

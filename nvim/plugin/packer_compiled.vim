@@ -75,6 +75,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/roiperelman/.local/share/nvim/site/pack/packer/start/completion-nvim"
   },
+  ["kosmikoa.nvim"] = {
+    config = { "\27LJ\2\n6\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\rkosmikoa\frequire\0" },
+    loaded = true,
+    path = "/home/roiperelman/.local/share/nvim/site/pack/packer/start/kosmikoa.nvim"
+  },
   ["nvim-lspconfig"] = {
     loaded = true,
     path = "/home/roiperelman/.local/share/nvim/site/pack/packer/start/nvim-lspconfig"
@@ -88,13 +93,33 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/roiperelman/.local/share/nvim/site/pack/packer/start/packer.nvim"
   },
+  ["plenary.nvim"] = {
+    loaded = true,
+    path = "/home/roiperelman/.local/share/nvim/site/pack/packer/start/plenary.nvim"
+  },
+  ["popup.nvim"] = {
+    loaded = true,
+    path = "/home/roiperelman/.local/share/nvim/site/pack/packer/start/popup.nvim"
+  },
+  ["telescope.nvim"] = {
+    loaded = true,
+    path = "/home/roiperelman/.local/share/nvim/site/pack/packer/start/telescope.nvim"
+  },
   ["vim-commentary"] = {
     loaded = true,
     path = "/home/roiperelman/.local/share/nvim/site/pack/packer/start/vim-commentary"
+  },
+  ["which-key.nvim"] = {
+    loaded = true,
+    path = "/home/roiperelman/.local/share/nvim/site/pack/packer/start/which-key.nvim"
   }
 }
 
 time("Defining packer_plugins", false)
+-- Config for: kosmikoa.nvim
+time("Config for kosmikoa.nvim", true)
+try_loadstring("\27LJ\2\n6\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\rkosmikoa\frequire\0", "config", "kosmikoa.nvim")
+time("Config for kosmikoa.nvim", false)
 if should_profile then save_profiles() end
 
 END

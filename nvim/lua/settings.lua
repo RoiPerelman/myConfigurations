@@ -1,6 +1,15 @@
--- " set leader key - must be first thing we load in the config!
+-- set mapleader before all else
+vim.api.nvim_set_keymap('n', '<Space>', '<NOP>', {noremap = true, silent = true})
 vim.g.mapleader = ' '
--- 
+
+vim.o.completeopt = "menuone,noselect"
+
+-- vim.o.completeopt = "menu, preview" -- ? "noinsert"
+-- vim.cmd([[let g:comletion_matching_strategy_list = ['exact', 'substring', 'fuzzy']])
+
+
+-- vim.o.number = true
+-- vim.o.relativenumber = true
 -- " => Vim Essentials - turned on when using vim
 -- filetype on
 -- filetype plugin on
