@@ -1,5 +1,6 @@
-require('settings')
-require('mappings')
-require('plugins')
-require('lsp')
-
+require'vim-options'
+require'keymappings'
+require'plugins'
+require'lsp'
+require'plugins-settings'
+require'function-utils'

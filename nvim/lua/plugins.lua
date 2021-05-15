@@ -25,7 +25,8 @@ return require("packer").startup(function()
   use { "kabouzeid/nvim-lspinstall", opt = true }
 
   -- completion
-  use "nvim-lua/completion-nvim"
+  -- use "nvim-lua/completion-nvim"
+  use "hrsh7th/nvim-compe"
 
   -- Text manipulation
   -- comments

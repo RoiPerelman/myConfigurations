@@ -1,8 +1,9 @@
 USER = vim.fn.expand('$USER')
 
--- vim.fn.stdpath('data') expands to /home/roiperelman/.local/share/nvim
-local sumneko_root_path = vim.fn.stdpath('data') .. "/lspinstall/lua"
-local sumneko_binary = sumneko_root_path .. "/sumneko-lua-language-server"
+local lspinstall_path = vim.fn.stdpath('data') .. "/lspinstall"
+
+-- this is a bash script calling the binary with a path to main.lua
+local sumneko_binary = lspinstall_path .. "lua/sumneko-lua-language-server"
 
 local custom_lsp_attach = function(client)
     -- print('roiroi')
@@ -21,7 +22,7 @@ end
 -- lua language server
 require'lspconfig'.sumneko_lua.setup {
     on_attach = custom_lsp_attach,
-    cmd = { sumneko_binary },
+    cmd = {sumneko_binary};
     settings = {
         Lua = {
             runtime = {
@@ -44,3 +45,14 @@ require'lspconfig'.sumneko_lua.setup {
         }
     }
 }
+
+local typescript_language_server_binary = lspinstall_path .. "/typescript/node_modules/.bin/typescript-language-server"
+require'lspconfig'.tsserver.setup{
+    on_attach = custom_lsp_attach,
+    cmd = {typescript_language_server_binary, "--stdio"},
+    -- defaults
+    -- cmd = { "typescript-language-server", "--stdio" }
+    -- filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
+    -- root_dir = root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git")
+}
+
