@@ -38,6 +38,9 @@ keymap('n', '<Leader>fb', ':Telescope buffers<CR>', {noremap = true, silent = tr
 keymap('n', '<Leader>fh', ':Telescope help_tags<CR>', {noremap = true, silent = true})
 keymap('n', '<Leader>fm', ':Telescope man_pages<CR>', {noremap = true, silent = true})
 
+-- nvim-tree
+keymap('n', '<Leader>e', ':NvimTreeToggle<CR>', {noremap = true, silent = true})
+
 -- " Better window navigation
 -- "nnoremap <C-h> <C-w>h
 -- "nnoremap <C-j> <C-w>j

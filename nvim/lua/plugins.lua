@@ -16,6 +16,8 @@ return require("packer").startup(function()
   -- Packer can manage itself
   use "wbthomason/packer.nvim"
 
+
+
   -- lsp
   -- lsp client configuration for communicating with lsp server
   use "neovim/nvim-lspconfig"
@@ -29,8 +31,19 @@ return require("packer").startup(function()
   use "hrsh7th/nvim-compe"
 
   -- Text manipulation
-  -- comments
-  use "tpope/vim-commentary"
+  -- Surround
+  -- cs"' - change surrounding "" to ''
+  -- ysiw<q> - you surround inside word with <q> <q/>
+  -- dst - delete surrounding tag (for these kinds of tags <>)
+  -- t=<>, b=(, B={
+  -- :help ys cs or ds for more information
+  use 'tpope/vim-surround'
+  -- Better Comments
+  -- gcc - go comment current
+  -- gcap - go comment a paragraph
+  use 'tpope/vim-commentary'
+  -- Add repeat with '.' to other plugins
+  use 'tpope/vim-repeat'
 
   -- fzf telescope
   use {
@@ -38,14 +51,20 @@ return require("packer").startup(function()
     requires = {{"nvim-lua/popup.nvim"}, {"nvim-lua/plenary.nvim"}}
   }
 
+  -- file explorer
+  use "kyazdani42/nvim-tree.lua"
+
+  -- TODO: do I want it?
   -- which key
-  use "folke/which-key.nvim"
+  -- use "folke/which-key.nvim"
 
   -- treesitter - code parser (used in colorschemes)
   use {"nvim-treesitter/nvim-treesitter", run = ":TSUpdate"}
   -- TODO check this out
   -- use 'nvim-treesitter/playground'
 
+  -- just some icons
+  use "kyazdani42/nvim-web-devicons"
 
   -- colorschemes
   -- kosmikoa

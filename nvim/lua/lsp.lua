@@ -6,15 +6,23 @@ local lspinstall_path = vim.fn.stdpath('data') .. "/lspinstall"
 local sumneko_binary = lspinstall_path .. "/lua/sumneko-lua-language-server"
 
 local custom_lsp_attach = function(client)
-    -- print('roiroi')
-    -- print(vim.inspect(client))
-    -- See `:help nvim_buf_set_keymap()` for more information
+
+    roiprint = function()
+      print('roiroi')
+      print(vim.inspect(client))
+    end
+
+    vim.api.nvim_buf_set_keymap(0, 'n', 'gh', '<cmd>lua vim.lsp.buf.hover()<CR>', {noremap = true})
     vim.api.nvim_buf_set_keymap(0, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', {noremap = true})
-    vim.api.nvim_buf_set_keymap(0, 'n', 'D', '<cmd>lua vim.lsp.buf.definition()<CR>', {noremap = true})
-    -- ... and other keymappings for LSP
+    vim.api.nvim_buf_set_keymap(0, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', {noremap = true})
+    vim.api.nvim_buf_set_keymap(0, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', {noremap = true})
+    vim.api.nvim_buf_set_keymap(0, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', {noremap = true})
+    vim.api.nvim_buf_set_keymap(0, 'n', 'gt', '<cmd>lua roiprint()<CR>', {noremap = true})
+
     -- Use LSP as the handler for omnifunc.
-    --    See `:help omnifunc` and `:help ins-completion` for more information.
-    vim.api.nvim_buf_set_option(0, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+    -- See `:help omnifunc` and `:help ins-completion` for more information.
+    -- vim.api.nvim_buf_set_option(0, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+    vim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
     -- For plugins with an `on_attach` callback, call them here. For example:
     -- require('completion').on_attach()
 end
@@ -46,6 +54,7 @@ require'lspconfig'.sumneko_lua.setup {
     }
 }
 
+-- typescript language server
 local typescript_language_server_binary = lspinstall_path .. "/typescript/node_modules/.bin/typescript-language-server"
 require'lspconfig'.tsserver.setup{
     on_attach = custom_lsp_attach,
@@ -54,5 +63,12 @@ require'lspconfig'.tsserver.setup{
     -- cmd = { "typescript-language-server", "--stdio" }
     -- filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
     -- root_dir = root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git")
+}
+
+-- python language server
+local pyright_language_server_binary = lspinstall_path .. "/python/node_modules/.bin/pyright-langserver"
+require'lspconfig'.pyright.setup{
+    on_attach = custom_lsp_attach,
+    cmd = {pyright_language_server_binary , "--stdio"},
 }
 
