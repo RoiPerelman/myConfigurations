@@ -3,3 +3,5 @@ autoload
 fonts
 html
 .netrwhist
+
+nvim/plugin
