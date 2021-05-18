@@ -3,7 +3,7 @@ USER = vim.fn.expand('$USER')
 local lspinstall_path = vim.fn.stdpath('data') .. "/lspinstall"
 
 -- this is a bash script calling the binary with a path to main.lua
-local sumneko_binary = lspinstall_path .. "lua/sumneko-lua-language-server"
+local sumneko_binary = lspinstall_path .. "/lua/sumneko-lua-language-server"
 
 local custom_lsp_attach = function(client)
     -- print('roiroi')
