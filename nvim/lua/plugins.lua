@@ -63,6 +63,12 @@ return require("packer").startup(function()
   -- TODO check this out
   -- use 'nvim-treesitter/playground'
 
+  -- color colorizer
+  use {
+    "norcalli/nvim-colorizer.lua",
+    -- config= function() require'colorizer'.setup() end
+  }
+
   -- just some icons
   use "kyazdani42/nvim-web-devicons"
 
