@@ -73,13 +73,17 @@ return require("packer").startup(function()
   use "kyazdani42/nvim-web-devicons"
 
   -- colorschemes
+  -- codedark
+  use "tomasiser/vim-code-dark"
+
   -- kosmikoa
   use {
     "novakne/kosmikoa.nvim",
-    branch = "main",
-    config = function()
-      require"kosmikoa".setup()
-    end,
+    -- branch = "main",
+    -- config = function()
+    --   require"kosmikoa".setup()
+    -- end,
   }
+
 
 end)

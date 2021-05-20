@@ -78,6 +78,8 @@ local typescript_language_server_binary = lspinstall_path .. "/typescript/node_m
 require'lspconfig'.tsserver.setup {
     on_attach = custom_lsp_attach,
     cmd = {typescript_language_server_binary, "--stdio"},
+    root_dir = require'lspconfig/util'.root_pattern("package.json", ".git"),
+    settings = {documentFormatting = false},
     -- defaults
     -- cmd = { "typescript-language-server", "--stdio" }
     -- filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
@@ -89,11 +91,18 @@ local pyright_language_server_binary = lspinstall_path .. "/python/node_modules/
 require'lspconfig'.pyright.setup {
     on_attach = custom_lsp_attach,
     cmd = {pyright_language_server_binary , "--stdio"},
+    settings = {
+      python = {
+        analysis = {
+          useLibraryCodeForTypes = false
+        }
+      }
+    }
 }
 
 
 -- tsserver/web javascript react, vue, json, html, css, yaml
-local prettier = {formatCommand = "prettier --stdin-filepath ${INPUT}", formatStdin = true}
+-- local prettier = {formatCommand = "prettier --stdin-filepath ${INPUT}", formatStdin = true}
 -- You can look for project scope Prettier and Eslint with e.g. vim.fn.glob("node_modules/.bin/prettier") etc. If it is not found revert to global Prettier where needed.
 -- local prettier = {formatCommand = "./node_modules/.bin/prettier --stdin-filepath ${INPUT}", formatStdin = true}
 
@@ -110,7 +119,7 @@ local eslint = {
 local efm_language_server = lspinstall_path .. "/efm/efm-langserver"
 require'lspconfig'.efm.setup {
   cmd = {efm_language_server},
-  init_options = {documentFormatting = true, codeAction = false},
+  init_options = {documentFormatting = true, hover= true, documentSymbol= true, codeAction = true, completion= true},
   -- filetypes = {"lua", "python", "javascriptreact", "javascript", "typescript","typescriptreact","sh", "html", "css", "json", "yaml", "markdown", "vue"},
   filetypes = {"javascriptreact", "javascript", "typescript","typescriptreact"},
   settings = {
@@ -122,7 +131,14 @@ require'lspconfig'.efm.setup {
       javascript = eslint,
       javascriptreact = eslint,
       typescript = eslint,
-      typescriptreact = eslint,
+      typescriptreact = {
+        lintCommand = "./node_modules/.bin/eslint --stdin --stdin-filename ${INPUT}",
+        lintIgnoreExitCode = true,
+        lintStdin = true,
+        lintFormats = {"%f:%l:%c: %m"},
+        formatCommand = "./node_modules/.bin/eslint --fix-to-stdout --stdin --stdin-filename=${INPUT}",
+        formatStdin = true
+      },
       -- html = {prettier},
       -- css = {prettier},
       -- json = {prettier},

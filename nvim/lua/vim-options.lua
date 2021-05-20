@@ -17,16 +17,18 @@ vim.o.ignorecase = true -- ignore case in search
 vim.o.smartcase = true -- ignore case in search only if no capital letter
 vim.o.scrolloff = 1 -- scroll before getting to the last line
 vim.o.clipboard = "unnamedplus" -- always use the system clipboard
+vim.o.inccommand = "nosplit"
 -- vim.o.guifont = "" -- change font
 
 -- window options
 vim.wo.number = true
 vim.wo.relativenumber = true
-vim.wo.wrap = false -- do not wrap lines 
+vim.wo.wrap = false -- do not wrap lines
 vim.wo.cursorline = true
 
 -- TODO fix how to set option from lua vim api and not vim.cmd
 vim.cmd('set iskeyword+=-') -- treat dash separated words as a word text object
+vim.cmd('colorscheme codedark') -- set colorscheme
 
 -- " return to last edit position when opening files!
 -- au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
