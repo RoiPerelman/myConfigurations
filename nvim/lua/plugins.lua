@@ -25,6 +25,8 @@ return require("packer").startup(function()
   -- to use lspinstall first :PackerLoad nvim-lspinstall
   -- to see installed servers :lua print(vim.inspect(require"lspinstall".installed_servers()))
   use { "kabouzeid/nvim-lspinstall", opt = true }
+  -- lua-dev for better sumneko_lua language server
+  use "folke/lua-dev.nvim"
 
   -- completion
   -- use "nvim-lua/completion-nvim"
@@ -44,6 +46,17 @@ return require("packer").startup(function()
   use 'tpope/vim-commentary'
   -- Add repeat with '.' to other plugins
   use 'tpope/vim-repeat'
+
+  -- gitsigns
+  use {
+    'lewis6991/gitsigns.nvim',
+    requires = {
+      'nvim-lua/plenary.nvim'
+    },
+    config = function()
+      require('gitsigns').setup()
+    end
+  }
 
   -- fzf telescope
   use {

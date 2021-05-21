@@ -28,7 +28,7 @@ vim.wo.cursorline = true
 
 -- TODO fix how to set option from lua vim api and not vim.cmd
 vim.cmd('set iskeyword+=-') -- treat dash separated words as a word text object
-vim.cmd('colorscheme codedark') -- set colorscheme
+vim.cmd('colorscheme kosmikoa') -- set colorscheme
 
 -- " return to last edit position when opening files!
 -- au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
