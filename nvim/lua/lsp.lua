@@ -15,7 +15,7 @@ local custom_lsp_attach = function(client)
     vim.api.nvim_buf_set_keymap(0, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', {noremap = true})
     vim.api.nvim_buf_set_keymap(0, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', {noremap = true})
     vim.api.nvim_buf_set_keymap(0, 'n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', {noremap = true})
-    vim.api.nvim_buf_set_keymap(0, 'n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_pr)<CR>', {noremap = true})
+    vim.api.nvim_buf_set_keymap(0, 'n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', {noremap = true})
 
 
     -- Use LSP as the handler for omnifunc.
@@ -152,7 +152,12 @@ nvim_lsp.efm.setup({
       python = {flake8},
     },
   },
-}
+  handlers = {
+    ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+      virtual_text = false,
+    })
+  }
+})
 
 -- local function eslint_config_exists()
 --   local eslintrc = vim.fn.glob(".eslintrc*", 0, 1)
@@ -170,4 +175,3 @@ nvim_lsp.efm.setup({
 --   return false
 -- end
 
-)

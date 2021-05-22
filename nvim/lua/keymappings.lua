@@ -15,9 +15,9 @@ keymap('i', 'jk', '<ESC>', {noremap = true, silent = true})
 keymap('i', 'kj', '<ESC>', {noremap = true, silent = true})
 
 -- keymap('n', '', 'viwU<ESC>', {noremap = true, silent = true}) -- easy uppercase
--- keymap('n', '', ':bnext', {noremap = true, silent = true}) -- move to next buffer
--- keymap('n', '', ':bprevious', {noremap = true, silent = true}) -- move to previous buffer
--- TODO doesn't work
+keymap('n', ']b', ':bnext<CR>', {noremap = true, silent = true}) -- move to next buffer
+keymap('n', '[b', ':bprevious<CR>', {noremap = true, silent = true}) -- move to previous buffer
+
 keymap('n', '<C-s>', ':w<CR>', {noremap = true, silent = true }) -- alternate way to save
 
 keymap('v', '<', '<gv', {noremap = true, silent = true }) -- do not loose visual mode when indenting
@@ -33,7 +33,7 @@ keymap('v', '>', '>gv', {noremap = true, silent = true }) -- do not loose visual
 -- Telescope
 keymap('n', '<Leader>ff', ':Telescope find_files<CR>', {noremap = true, silent = true})
 keymap('n', '<Leader>fg', ':Telescope live_grep<CR>', {noremap = true, silent = true})
-keymap('n', '<Leader>fd', ':Telescope current_buffer_fuzzy_find<CR>', {noremap = true, silent = true})
+keymap('n', '<Leader>fd', ':Telescope lsp_document_diagnostics<CR>', {noremap = true, silent = true})
 keymap('n', '<Leader>fb', ':Telescope buffers<CR>', {noremap = true, silent = true})
 keymap('n', '<Leader>fh', ':Telescope help_tags<CR>', {noremap = true, silent = true})
 keymap('n', '<Leader>fm', ':Telescope man_pages<CR>', {noremap = true, silent = true})
@@ -61,9 +61,9 @@ keymap('n', '<Leader>e', ':NvimTreeToggle<CR>', {noremap = true, silent = true})
 -- nnoremap <S-TAB> :bprevious<CR>
 
 -- " Move lines up and down
-vim.cmd([[nnoremap <A-Down> :m .+1<CR>==]])
-vim.cmd([[nnoremap <A-Up> :m .-2<CR>==]])
-vim.cmd([[inoremap <A-Down> <Esc>:m .+1<CR>==gi]])
-vim.cmd([[inoremap <A-Up> <Esc>:m .-2<CR>==gi]])
-vim.cmd([[vnoremap <A-Down> :m '>+1<CR>gv=gv]])
-vim.cmd([[vnoremap <A-Up> :m '<-2<CR>gv=gv]])
+vim.cmd([[nnoremap <A-j> :m .+1<CR>==]])
+vim.cmd([[nnoremap <A-k> :m .-2<CR>==]])
+vim.cmd([[inoremap <A-j> <Esc>:m .+1<CR>==gi]])
+vim.cmd([[inoremap <A-k> <Esc>:m .-2<CR>==gi]])
+vim.cmd([[vnoremap <A-j> :m '>+1<CR>gv=gv]])
+vim.cmd([[vnoremap <A-k> :m '<-2<CR>gv=gv]])
