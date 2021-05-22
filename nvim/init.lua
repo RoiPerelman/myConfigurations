@@ -7,5 +7,6 @@ else
   require'lsp'
   require'plugins-settings'
   require'function-utils'
+  require'autocommands'
 end
 

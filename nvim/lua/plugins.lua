@@ -27,6 +27,8 @@ return require("packer").startup(function()
   use { "kabouzeid/nvim-lspinstall", opt = true }
   -- lua-dev for better sumneko_lua language server
   use "folke/lua-dev.nvim"
+  -- lsp saga for code actions, signature and hover previewers
+  use "glepnir/lspsaga.nvim"
 
   -- completion
   -- use "nvim-lua/completion-nvim"
@@ -46,6 +48,18 @@ return require("packer").startup(function()
   use 'tpope/vim-commentary'
   -- Add repeat with '.' to other plugins
   use 'tpope/vim-repeat'
+  -- Text navigation - adds highlights on letters for 'f''F' and 't''T'
+  -- TODO Do i want it?
+  -- use 'unblevable/quick-scope'
+  -- Incremental Search imporved (automatically clear highlights)
+  use 'haya14busa/is.vim'
+  -- Asterisk behavior change 
+  -- use 'haya14busa/vim-asterisk'
+  -- Vim Wiki
+  use 'vimwiki/vimwiki'
+  -- Startify
+  use 'mhinz/vim-startify'
+
 
   -- gitsigns
   use {

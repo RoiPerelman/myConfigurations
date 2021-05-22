@@ -1,4 +1,4 @@
 " change vimwiki path
-let g:vimwiki_list = [{'path': '~/myConfigurations/nvim/vimwiki/', 'path_html': '~/myConfigurations/nvim/vimwiki/html'}]
+let g:vimwiki_list = [{'path': '~/.config/nvim/vimwiki/', 'path_html': '~/.config/nvim/vimwiki/html'}]
 nmap <Leader>wa <Plug>VimwikiUISelect
 
