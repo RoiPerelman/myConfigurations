@@ -14,6 +14,9 @@ local custom_lsp_attach = function(client)
     vim.api.nvim_buf_set_keymap(0, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', {noremap = true})
     vim.api.nvim_buf_set_keymap(0, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', {noremap = true})
     vim.api.nvim_buf_set_keymap(0, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', {noremap = true})
+    vim.api.nvim_buf_set_keymap(0, 'n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', {noremap = true})
+    vim.api.nvim_buf_set_keymap(0, 'n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_pr)<CR>', {noremap = true})
+
 
     -- Use LSP as the handler for omnifunc.
     vim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
@@ -111,8 +114,15 @@ local eslint = {
   formatStdin = true
 }
 
-local pep8 = {
+local flake8 = {
+  LintCommand = "flake8 --max-line-length=90 --ignore='E122, E125, E127, E131, E221, E251' --stdin-display-name ${INPUT} -",
+  lintStdin = true,
+  lintFormats = {"%f:%l:%c: %m"}
 }
+
+-- local autopep8 = {
+--   formatCommand = "autopep8 --max-line-length=90 --ignore=E122, E125, E127, E131, E221, E251 --quiet",
+-- }
 
 local efm_language_server = lspinstall_path .. "/efm/efm-langserver"
 nvim_lsp.efm.setup({
@@ -125,7 +135,13 @@ nvim_lsp.efm.setup({
     codeAction = true,
     completion = true,
   },
-  filetypes = {'javascript', 'javascriptreact', 'typescript', 'typescriptreact'},
+  filetypes = {
+    'javascript',
+    'javascriptreact',
+    'typescript',
+    'typescriptreact',
+    'python'
+  },
   settings = {
     rootMarkers = {'.git/'},
     languages = {
@@ -133,6 +149,7 @@ nvim_lsp.efm.setup({
       javascriptreact = {eslint},
       typescript = {eslint},
       typescriptreact = {eslint},
+      python = {flake8},
     },
   },
 }
