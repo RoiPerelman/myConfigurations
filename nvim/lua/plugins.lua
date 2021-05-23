@@ -88,7 +88,7 @@ return require("packer").startup(function()
   -- treesitter - code parser (used in colorschemes)
   use {"nvim-treesitter/nvim-treesitter", run = ":TSUpdate"}
   -- TODO check this out
-  -- use 'nvim-treesitter/playground'
+  use 'nvim-treesitter/playground'
 
   -- color colorizer
   use {
@@ -112,5 +112,7 @@ return require("packer").startup(function()
     -- end,
   }
 
+  -- monokai
+  use 'tanvirtin/monokai.nvim'
 
 end)
