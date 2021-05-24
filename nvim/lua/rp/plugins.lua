@@ -115,4 +115,7 @@ return require("packer").startup(function()
   -- monokai
   use 'tanvirtin/monokai.nvim'
 
+  -- nvcode-color-schemes
+  use 'ChristianChiarulli/nvcode-color-schemes.vim'
+
 end)

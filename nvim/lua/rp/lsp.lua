@@ -5,6 +5,7 @@ USER = vim.fn.expand('$USER')
 local lspinstall_path = vim.fn.stdpath('data') .. "/lspinstall"
 
 local custom_lsp_attach = function(client)
+
     if client.config.flags then
       client.config.flags.allow_incremental_sync = true
     end
@@ -135,6 +136,7 @@ nvim_lsp.efm.setup({
     codeAction = true,
     completion = true,
   },
+  root_dir = root_pattern(".eslintrc", ".git")
   filetypes = {
     'javascript',
     'javascriptreact',
@@ -143,7 +145,7 @@ nvim_lsp.efm.setup({
     'python'
   },
   settings = {
-    rootMarkers = {'.git/'},
+    -- rootMarkers = {'.git/'},
     languages = {
       javascript = {eslint},
       javascriptreact = {eslint},
@@ -152,11 +154,11 @@ nvim_lsp.efm.setup({
       python = {flake8},
     },
   },
-  handlers = {
-    ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-      virtual_text = false,
-    })
-  }
+  -- handlers = {
+  --   ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+  --     virtual_text = false,
+  --   })
+  -- }
 })
 
 -- local function eslint_config_exists()
