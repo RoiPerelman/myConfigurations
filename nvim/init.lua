@@ -8,5 +8,6 @@ else
   require'rp/plugins-settings'
   require'rp/function-utils'
   require'rp/autocommands'
+  vim.cmd('colorscheme nvcode')
 end
 

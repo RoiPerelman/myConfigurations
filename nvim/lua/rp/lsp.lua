@@ -106,6 +106,13 @@ local efm_on_attach = function(client)
   end
 end
 
+-- https://github.com/Koihik/LuaFormatter
+-- local luaFormat = {
+--     formatCommand = "lua-format -i --no-keep-simple-function-one-line --column-limit=120",
+--     formatStdin = true
+-- }
+
+-- npm install -g eslint_d
 local eslint = {
   lintCommand = "eslint_d -f unix --stdin --stdin-filename ${INPUT}",
   lintStdin = true,
@@ -142,7 +149,8 @@ nvim_lsp.efm.setup({
     'javascriptreact',
     'typescript',
     'typescriptreact',
-    'python'
+    'python',
+    -- 'lua',
   },
   settings = {
     languages = {
@@ -151,6 +159,7 @@ nvim_lsp.efm.setup({
       typescript = {eslint},
       typescriptreact = {eslint},
       python = {flake8},
+      -- lua = {luaFormat},
     },
   },
   -- handlers = {

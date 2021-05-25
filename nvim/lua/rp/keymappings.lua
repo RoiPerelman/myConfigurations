@@ -2,21 +2,22 @@ local keymap = vim.api.nvim_set_keymap
 
 -- noremap means no recursive mappings which means if we map x to y and y to z. x would still be mapped to y and not z
 
+local opts = {noremap = true, silent = true}
 -- arrows are for pussies
-keymap('n', '<Up>', '<NOP>', {noremap = true, silent = true})
-keymap('n', '<Down>', '<NOP>', {noremap = true, silent = true})
-keymap('n', '<Left>', '<NOP>', {noremap = true, silent = true})
-keymap('n', '<Right>', '<NOP>', {noremap = true, silent = true})
+keymap('n', '<Up>', '<NOP>', opts)
+keymap('n', '<Down>', '<NOP>', opts)
+keymap('n', '<Left>', '<NOP>', opts)
+keymap('n', '<Right>', '<NOP>', opts)
 
 -- i hate escape
-keymap('i', 'jj', '<ESC>', {noremap = true, silent = true})
-keymap('i', 'kk', '<ESC>', {noremap = true, silent = true})
-keymap('i', 'jk', '<ESC>', {noremap = true, silent = true})
-keymap('i', 'kj', '<ESC>', {noremap = true, silent = true})
+keymap('i', 'jj', '<ESC>', opts)
+keymap('i', 'kk', '<ESC>', opts)
+keymap('i', 'jk', '<ESC>', opts)
+keymap('i', 'kj', '<ESC>', opts)
 
--- keymap('n', '', 'viwU<ESC>', {noremap = true, silent = true}) -- easy uppercase
-keymap('n', ']b', ':bnext<CR>', {noremap = true, silent = true}) -- move to next buffer
-keymap('n', '[b', ':bprevious<CR>', {noremap = true, silent = true}) -- move to previous buffer
+-- keymap('n', '', 'viwU<ESC>', opts) -- easy uppercase
+keymap('n', ']b', ':bnext<CR>', opts) -- move to next buffer
+keymap('n', '[b', ':bprevious<CR>', opts) -- move to previous buffer
 
 keymap('n', '<C-s>', ':w<CR>', {noremap = true, silent = true }) -- alternate way to save
 
@@ -31,15 +32,25 @@ keymap('v', '>', '>gv', {noremap = true, silent = true }) -- do not loose visual
 
 
 -- Telescope
-keymap('n', '<Leader>ff', ':Telescope find_files<CR>', {noremap = true, silent = true})
-keymap('n', '<Leader>fg', ':Telescope live_grep<CR>', {noremap = true, silent = true})
-keymap('n', '<Leader>fd', ':Telescope lsp_document_diagnostics<CR>', {noremap = true, silent = true})
-keymap('n', '<Leader>fb', ':Telescope buffers<CR>', {noremap = true, silent = true})
-keymap('n', '<Leader>fh', ':Telescope help_tags<CR>', {noremap = true, silent = true})
-keymap('n', '<Leader>fm', ':Telescope man_pages<CR>', {noremap = true, silent = true})
+keymap('n', '<C-p>', ':Telescope find_files<CR>', opts)
+keymap('n', '<C-P>', ':Telescope commands<CR>', opts)
+keymap('n', '<Leader>ff', ':Telescope find_files<CR>', opts)
+keymap('n', '<Leader>fg', ':Telescope live_grep<CR>', opts)
+keymap('n', '<Leader>fr', ':lua require"telescope.builtin".grep_string({ search = vim.fn.input("Grep for > ")})<CR>', opts)
+keymap('n', '<Leader>fd', ':Telescope lsp_document_diagnostics<CR>', opts)
+keymap('n', '<Leader>fb', ':Telescope buffers<CR>', opts)
+keymap('n', '<Leader>fh', ':Telescope help_tags<CR>', opts)
+keymap('n', '<Leader>fm', ':Telescope marks<CR>', opts)
+keymap('n', '<Leader>fp', ':Telescope man_pages<CR>', opts)
+keymap('n', '<Leader>fq', ':Telescope quickfix<CR>', opts)
+keymap('n', '<Leader>fl', ':Telescope loclist<CR>', opts)
+keymap('n', '<Leader>fc', ':Telescope colorscheme<CR>', opts)
+keymap('n', '<Leader>fj', ':Telescope jumplist<CR>', opts)
+keymap('n', '<Leader>fk', ':Telescope keymaps<CR>', opts)
+keymap('n', '<Leader>fh', ':Telescope help_tags<CR>', opts)
 
 -- nvim-tree
-keymap('n', '<Leader>e', ':NvimTreeToggle<CR>', {noremap = true, silent = true})
+keymap('n', '<Leader>e', ':NvimTreeToggle<CR>', opts)
 
 -- " Better window navigation
 -- "nnoremap <C-h> <C-w>h
