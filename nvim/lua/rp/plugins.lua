@@ -16,8 +16,6 @@ return require("packer").startup(function()
   -- Packer can manage itself
   use "wbthomason/packer.nvim"
 
-
-
   -- lsp
   -- lsp client configuration for communicating with lsp server
   use "neovim/nvim-lspconfig"
@@ -53,13 +51,12 @@ return require("packer").startup(function()
   -- use 'unblevable/quick-scope'
   -- Incremental Search imporved (automatically clear highlights)
   use 'haya14busa/is.vim'
-  -- Asterisk behavior change 
+  -- Asterisk behavior change
   -- use 'haya14busa/vim-asterisk'
   -- Vim Wiki
   use 'vimwiki/vimwiki'
   -- Startify
   use 'mhinz/vim-startify'
-
 
   -- gitsigns
   use {
@@ -96,12 +93,17 @@ return require("packer").startup(function()
     -- config= function() require'colorizer'.setup() end
   }
 
+  -- indent lines
+  -- use 'lukas-reineke/indent-blankline.nvim'
+  -- Rainbow parentheses
+  -- use 'kien/rainbow_parentheses.vim'
+  -- Auto pairs for '(' '[' '{'.
+  use 'jiangmiao/auto-pairs'
+
   -- just some icons
   use "kyazdani42/nvim-web-devicons"
 
   -- colorschemes
-  -- codedark
-  use "tomasiser/vim-code-dark"
 
   -- kosmikoa
   use {

@@ -52,6 +52,13 @@ keymap('n', '<Leader>fh', ':Telescope help_tags<CR>', opts)
 -- nvim-tree
 keymap('n', '<Leader>e', ':NvimTreeToggle<CR>', opts)
 
+-- quickfix
+keymap('n', ']q', ':cnext<CR>', opts)
+keymap('n', '[q', ':cprev<CR>', opts)
+
+-- location list
+keymap('n', ']l', ':lnext<CR>', opts)
+keymap('n', '[l', ':lprev<CR>', opts)
 -- " Better window navigation
 -- "nnoremap <C-h> <C-w>h
 -- "nnoremap <C-j> <C-w>j

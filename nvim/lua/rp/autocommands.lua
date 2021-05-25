@@ -16,9 +16,9 @@ vim.cmd(
 ]]
 )
 
--- vim.cmd([[
---   augroup remove_trailing_whitespace
---     autocmd!
---     au BufWritePre * %s/\s\+$//e
---   augroup END
--- ]])
+vim.cmd([[
+  augroup remove_trailing_whitespace
+    autocmd!
+    au BufWritePre * %s/\s\+$//e
+  augroup END
+]])
