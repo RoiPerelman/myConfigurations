@@ -136,7 +136,7 @@ nvim_lsp.efm.setup({
     codeAction = true,
     completion = true,
   },
-  root_dir = root_pattern(".eslintrc", ".git")
+  root_dir = require'lspconfig/util'.root_pattern("package.json", ".eslintrc", ".git"),
   filetypes = {
     'javascript',
     'javascriptreact',
@@ -145,7 +145,6 @@ nvim_lsp.efm.setup({
     'python'
   },
   settings = {
-    -- rootMarkers = {'.git/'},
     languages = {
       javascript = {eslint},
       javascriptreact = {eslint},
@@ -161,19 +160,4 @@ nvim_lsp.efm.setup({
   -- }
 })
 
--- local function eslint_config_exists()
---   local eslintrc = vim.fn.glob(".eslintrc*", 0, 1)
-
---   if not vim.tbl_isempty(eslintrc) then
---     return true
---   end
-
---   if vim.fn.filereadable("package.json") then
---     if vim.fn.json_decode(vim.fn.readfile("package.json"))["eslintConfig"] then
---       return true
---     end
---   end
-
---   return false
--- end
 

@@ -113,7 +113,7 @@ source $ZSH/oh-my-zsh.sh
 # neovim
 
 # add to path, set as editor an alias vi and vim
-export PATH=/home/roiperelman/Applications/nvim-linux64/bin:$PATH
+export PATH=$PATH:/home/roiperelman/Applications/nvim-linux64/bin:/usr/local/go/bin
 export EDITOR='nvim'
 alias vi="nvim"
 alias vim="nvim"
