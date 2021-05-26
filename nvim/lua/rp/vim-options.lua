@@ -18,8 +18,8 @@ vim.o.smartcase = true -- ignore case in search only if no capital letter
 vim.o.scrolloff = 8 -- scroll before getting to the last line
 vim.o.clipboard = "unnamedplus" -- always use the system clipboard
 vim.o.inccommand = "nosplit" -- show effect of command incrementally as you type
-vim.o.swapfile = false
-vim.o.listchars = "tab:»·,trail:·" -- set space char
+vim.o.swapfile = false -- no swap file!
+vim.o.listchars = "lead:·,trail:·,tab:→·,nbsp:•,eol:↲,extends:›,precedes:‹" -- how to show special chars space? →›‹»↲␣·•⟩⟨
 -- vim.o.guifont = "" -- change font
 
 -- window options
