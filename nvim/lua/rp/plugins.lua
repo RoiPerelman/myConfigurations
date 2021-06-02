@@ -52,7 +52,7 @@ return require("packer").startup(function()
   -- Incremental Search imporved (automatically clear highlights)
   use 'haya14busa/is.vim'
   -- Asterisk behavior change
-  -- use 'haya14busa/vim-asterisk'
+  use 'haya14busa/vim-asterisk'
   -- Vim Wiki
   use 'vimwiki/vimwiki'
   -- Startify

@@ -16,11 +16,11 @@ keymap('i', 'jk', '<ESC>', opts)
 keymap('i', 'kj', '<ESC>', opts)
 
 -- alternate way to save
-keymap('n', '<C-s>', ':w<CR>', {noremap = true, silent = true })
+keymap('n', '<C-s>', ':w<CR>', opts)
 
 -- do not loose visual mode when indenting
-keymap('v', '<', '<gv', {noremap = true, silent = true })
-keymap('v', '>', '>gv', {noremap = true, silent = true })
+keymap('v', '<', '<gv', opts)
+keymap('v', '>', '>gv', opts)
 
 -- move lines up and down
 vim.cmd([[nnoremap <A-j> :m .+1<CR>==]])
@@ -41,18 +41,18 @@ keymap('n', ']l', ':lnext<CR>', opts)
 keymap('n', '[l', ':lprev<CR>', opts)
 
 -- split windows with leader key
-keymap('n', '<Leader>ws', ':sp<CR>', {noremap = true, silent = true })
-keymap('n', '<Leader>wv', ':vsp<CR>', {noremap = true, silent = true })
+keymap('n', '<Leader>ws', ':sp<CR>', opts)
+keymap('n', '<Leader>wv', ':vsp<CR>', opts)
 
 -- better window navigation
-keymap('n', '<C-h>', ':wincmd h<CR>', {noremap = true, silent = true })
-keymap('n', '<C-l>', ':wincmd l<CR>', {noremap = true, silent = true })
-keymap('n', '<C-k>', ':wincmd k<CR>', {noremap = true, silent = true })
-keymap('n', '<C-j>', ':wincmd j<CR>', {noremap = true, silent = true })
-keymap('n', '<Leader>h', ':wincmd h<CR>', {noremap = true, silent = true })
-keymap('n', '<Leader>l', ':wincmd l<CR>', {noremap = true, silent = true })
-keymap('n', '<Leader>k', ':wincmd k<CR>', {noremap = true, silent = true })
-keymap('n', '<Leader>j', ':wincmd j<CR>', {noremap = true, silent = true })
+keymap('n', '<C-h>', ':wincmd h<CR>', opts)
+keymap('n', '<C-l>', ':wincmd l<CR>', opts)
+keymap('n', '<C-k>', ':wincmd k<CR>', opts)
+keymap('n', '<C-j>', ':wincmd j<CR>', opts)
+keymap('n', '<Leader>h', ':wincmd h<CR>', opts)
+keymap('n', '<Leader>l', ':wincmd l<CR>', opts)
+keymap('n', '<Leader>k', ':wincmd k<CR>', opts)
+keymap('n', '<Leader>j', ':wincmd j<CR>', opts)
 
 -- resize windows
 vim.cmd([[nnoremap <C-Down> :resize -2<CR>]])
@@ -79,6 +79,11 @@ keymap('n', '<Leader>fh', ':Telescope help_tags<CR>', opts)
 -- nvim-tree
 keymap('n', '<Leader>e', ':NvimTreeToggle<CR>', opts)
 
+-- vim asterisk * should highlight current word. n, N to move
+vim.cmd([[map *  <Plug>(asterisk-z*)]])
+vim.cmd([[map #  <Plug>(asterisk-z#)]])
+vim.cmd([[map g* <Plug>(asterisk-gz*)]])
+vim.cmd([[map g# <Plug>(asterisk-gz#)]])
 -- " Better nav for omnicomplete
 -- "inoremap <expr> <c-j> ("\<C-n>")
 -- inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
