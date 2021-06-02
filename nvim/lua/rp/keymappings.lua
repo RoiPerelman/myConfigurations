@@ -60,6 +60,12 @@ vim.cmd([[nnoremap <C-Up> :resize +2<CR>]])
 vim.cmd([[nnoremap <C-Right> :vertical resize -2<CR>]])
 vim.cmd([[nnoremap <C-Left> :vertical resize +2<CR>]])
 
+-- cut does so to black hole register!!!
+vim.cmd([[noremap c "_c]])
+vim.cmd([[noremap C "_C]])
+vim.cmd([[vnoremap c "_c]])
+vim.cmd([[vnoremap C "_C]])
+
 -- Telescope
 keymap('n', '<Leader>ft', ':Telescope <CR>', opts)
 keymap('n', '<C-p>', ':Telescope find_files<CR>', opts)
