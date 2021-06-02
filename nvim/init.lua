@@ -12,5 +12,6 @@ else
   -- vim.cmd([[source $HOME/.config/nvim/plug-config/rainbow-parentheses.vim]])
   vim.cmd([[source $HOME/.config/nvim/plug-config/startify.vim]])
 
+  vim.cmd([[hi rainbowcol1 guifg=#123456]])
 end
 

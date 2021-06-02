@@ -87,16 +87,16 @@ return require("packer").startup(function()
   -- TODO check this out
   use 'nvim-treesitter/playground'
 
+  -- color rainbow parentheses
+  use 'p00f/nvim-ts-rainbow'
+
+  use 'glepnir/indent-guides.nvim'
   -- color colorizer
   use {
     "norcalli/nvim-colorizer.lua",
     -- config= function() require'colorizer'.setup() end
   }
 
-  -- indent lines
-  -- use 'lukas-reineke/indent-blankline.nvim'
-  -- Rainbow parentheses
-  -- use 'kien/rainbow_parentheses.vim'
   -- Auto pairs for '(' '[' '{'.
   use 'jiangmiao/auto-pairs'
 
