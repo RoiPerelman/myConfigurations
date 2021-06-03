@@ -53,8 +53,10 @@ return require("packer").startup(function()
   use 'haya14busa/is.vim'
   -- Asterisk behavior change
   use 'haya14busa/vim-asterisk'
+
   -- Vim Wiki
   use 'vimwiki/vimwiki'
+
   -- Startify
   use 'mhinz/vim-startify'
 
@@ -87,15 +89,13 @@ return require("packer").startup(function()
   -- TODO check this out
   use 'nvim-treesitter/playground'
 
+  -- Syntax Support
+  use 'sheerun/vim-polyglot'
+
   -- color rainbow parentheses
   use 'p00f/nvim-ts-rainbow'
 
   use 'glepnir/indent-guides.nvim'
-  -- color colorizer
-  use {
-    "norcalli/nvim-colorizer.lua",
-    -- config= function() require'colorizer'.setup() end
-  }
 
   -- Auto pairs for '(' '[' '{'.
   use 'jiangmiao/auto-pairs'
@@ -103,8 +103,13 @@ return require("packer").startup(function()
   -- just some icons
   use "kyazdani42/nvim-web-devicons"
 
-  -- colorschemes
+  -- color colorizer
+  use {
+    "norcalli/nvim-colorizer.lua",
+    config= function() require'colorizer'.setup() end
+  }
 
+  -- colorschemes
   -- kosmikoa
   use {
     "novakne/kosmikoa.nvim",
@@ -113,10 +118,8 @@ return require("packer").startup(function()
     --   require"kosmikoa".setup()
     -- end,
   }
-
   -- monokai
   use 'tanvirtin/monokai.nvim'
-
   -- nvcode-color-schemes
   use 'ChristianChiarulli/nvcode-color-schemes.vim'
 

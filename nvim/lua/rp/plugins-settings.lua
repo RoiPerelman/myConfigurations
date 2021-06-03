@@ -146,3 +146,14 @@ require'nvim-treesitter.configs'.setup {
     max_file_lines = 1000, -- Do not enable for files with more than 1000 lines, int
   }
 }
+vim.cmd([[hi rainbowcol1 guifg=#123456]])
+
+-- indent guides
+require('indent_guides').setup({
+  even_colors = { fg ='#2a3834',bg='#332b36' };
+  odd_colors = {fg='#332b36',bg='#2a3834'};
+  indent_space_guides = true;
+  indent_guide_size = 2;
+  -- put your options in here
+})
+
