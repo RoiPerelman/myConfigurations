@@ -95,7 +95,8 @@ return require("packer").startup(function()
   -- color rainbow parentheses
   use 'p00f/nvim-ts-rainbow'
 
-  use 'glepnir/indent-guides.nvim'
+  -- indent line
+  use {'lukas-reineke/indent-blankline.nvim', branch = "lua"}
 
   -- Auto pairs for '(' '[' '{'.
   use 'jiangmiao/auto-pairs'
