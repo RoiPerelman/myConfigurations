@@ -60,11 +60,14 @@ vim.cmd([[nnoremap <C-Up> :resize +2<CR>]])
 vim.cmd([[nnoremap <C-Right> :vertical resize -2<CR>]])
 vim.cmd([[nnoremap <C-Left> :vertical resize +2<CR>]])
 
+-- Make Y yank till end of line
+keymap('n', 'Y', 'y$', opts)
+
 -- cut does so to black hole register!!!
-vim.cmd([[noremap c "_c]])
-vim.cmd([[noremap C "_C]])
-vim.cmd([[vnoremap c "_c]])
-vim.cmd([[vnoremap C "_C]])
+keymap('n', 'c', '_c', opts)
+keymap('n', 'C', '_C', opts)
+keymap('n', 'c', '_c', opts)
+keymap('n', 'C', '_C', opts)
 
 -- Telescope
 keymap('n', '<Leader>ft', ':Telescope <CR>', opts)
