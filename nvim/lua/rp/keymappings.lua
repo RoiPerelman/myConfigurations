@@ -64,10 +64,10 @@ vim.cmd([[nnoremap <C-Left> :vertical resize +2<CR>]])
 keymap('n', 'Y', 'y$', opts)
 
 -- cut does so to black hole register!!!
-keymap('n', 'c', '_c', opts)
-keymap('n', 'C', '_C', opts)
-keymap('n', 'c', '_c', opts)
-keymap('n', 'C', '_C', opts)
+keymap('n', 'c', '"_c', opts)
+keymap('n', 'C', '"_C', opts)
+keymap('v', 'c', '"_c', opts)
+keymap('v', 'C', '"_C', opts)
 
 -- Telescope
 keymap('n', '<Leader>ft', ':Telescope <CR>', opts)

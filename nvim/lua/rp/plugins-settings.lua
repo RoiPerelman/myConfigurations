@@ -150,4 +150,4 @@ vim.cmd([[hi rainbowcol1 guifg=#123456]])
 
 -- indent-blankline
 vim.cmd("let g:indent_blankline_char = '│'")
-vim.cmd("let g:indent_blankline_char_highlight_list = ['rainbowcol1', 'rainbowcol2', 'rainbowcol3', 'rainbowcol4', 'rainbowcol5', 'rainbowcol6', 'rainbowcol7', ]")
+-- vim.cmd("let g:indent_blankline_char_highlight_list = ['rainbowcol1', 'rainbowcol2', 'rainbowcol3', 'rainbowcol4', 'rainbowcol5', 'rainbowcol6', 'rainbowcol7', ]")

@@ -8,7 +8,7 @@ else
   require'rp/plugins-settings'
   require'rp/function-utils'
   require'rp/autocommands'
-  vim.cmd('colorscheme kosmikoa') --  monokai nvcode kosmikoa
+  vim.cmd('colorscheme nvcode') --  monokai nvcode kosmikoa
   vim.cmd([[source $HOME/.config/nvim/plug-config/startify.vim]])
 end
 
