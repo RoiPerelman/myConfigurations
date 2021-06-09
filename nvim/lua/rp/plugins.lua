@@ -20,30 +20,6 @@ packer.startup(function()
   local use = packer.use
   -- Packer can manage itself
   use "wbthomason/packer.nvim"
-
-  -- lsp
-  -- lsp client configuration for communicating with lsp server
-  use "neovim/nvim-lspconfig"
-  -- lsp server installation tool inside nvim with :LspInstall <language>
-  -- to use lspinstall first :PackerLoad nvim-lspinstall
-  -- to see installed servers :lua print(vim.inspect(require"lspinstall".installed_servers()))
-  use { "kabouzeid/nvim-lspinstall", opt = true }
-  -- lua-dev for better sumneko_lua language server
-  use "folke/lua-dev.nvim"
-  -- lsp saga for code actions, signature and hover previewers
-  use "glepnir/lspsaga.nvim"
-
-  -- completion
-  -- use "nvim-lua/completion-nvim"
-  use "hrsh7th/nvim-compe"
-
-  -- Text manipulation
-  -- Surround
-  -- cs"' - change surrounding "" to ''
-  -- ysiw<q> - you surround inside word with <q> <q/>
-  -- dst - delete surrounding tag (for these kinds of tags <>)
-  -- t=<>, b=(, B={
-  -- :help ys cs or ds for more information
   use 'tpope/vim-surround'
   -- Better Comments
   -- gcc - go comment current
@@ -58,13 +34,13 @@ packer.startup(function()
   use 'haya14busa/is.vim'
   -- Asterisk behavior change
   use 'haya14busa/vim-asterisk'
-
-  -- Vim Wiki
-  use 'vimwiki/vimwiki'
-
-  -- Startify
-  use 'mhinz/vim-startify'
-
+  -- Git
+  -- :Gstatus
+  -- s - stage
+  -- u - unstage
+  -- dv - start resolve conflicts
+  -- :diffget //2 to choose left and :diffget //3 to choose right
+  use 'tpope/vim-fugitive'
   -- gitsigns
   use {
     'lewis6991/gitsigns.nvim',
@@ -75,58 +51,66 @@ packer.startup(function()
       require('gitsigns').setup()
     end
   }
-
+  -- file explorer
+  use "kyazdani42/nvim-tree.lua"
   -- fzf telescope
   use {
     "nvim-telescope/telescope.nvim",
     requires = {{"nvim-lua/popup.nvim"}, {"nvim-lua/plenary.nvim"}}
   }
-
-  -- file explorer
-  use "kyazdani42/nvim-tree.lua"
-
-  -- TODO: do I want it?
+  -- lsp
+  -- lsp client configuration for communicating with lsp server
+  use "neovim/nvim-lspconfig"
+  -- lsp server installation tool inside nvim with :LspInstall <language>
+  -- to use lspinstall first :PackerLoad nvim-lspinstall
+  -- to see installed servers :lua print(vim.inspect(require"lspinstall".installed_servers()))
+  use { "kabouzeid/nvim-lspinstall", opt = true }
+  -- lua-dev for better sumneko_lua language server
+  use "folke/lua-dev.nvim"
+  -- lsp saga for code actions, signature and hover previewers
+  use "glepnir/lspsaga.nvim"
+  -- completion
+  -- use "nvim-lua/completion-nvim"
+  use "hrsh7th/nvim-compe"
+  -- Text manipulation
+  -- Surround
+  -- cs"' - change surrounding "" to ''
+  -- ysiw<q> - you surround inside word with <q> <q/>
+  -- dst - delete surrounding tag (for these kinds of tags <>)
+  -- t=<>, b=(, B={
+  -- :help ys cs or ds for more information
+  -- Startify
+  use 'mhinz/vim-startify'
+  -- Vim Wiki
+  use 'vimwiki/vimwiki'
+  -- TODO: do I want these?
+    -- Status line
+    -- use 'vim-airline/vim-airline'
+    -- use 'vim-airline/vim-airline-themes'
+  -- to create a snippet from code, use Coc action <leader>la or <leader>lA
+  -- use 'honza/vim-snippets'
   -- which key
   -- use "folke/which-key.nvim"
-
-  -- treesitter - code parser (used in colorschemes)
+  -- colorschemes
+  -- treesitter - code parser
   use {"nvim-treesitter/nvim-treesitter", run = ":TSUpdate"}
   -- TODO check this out
   use 'nvim-treesitter/playground'
-
   -- Syntax Support
   use 'sheerun/vim-polyglot'
-
   -- color rainbow parentheses
   use 'p00f/nvim-ts-rainbow'
-
   -- indent line
   use {'lukas-reineke/indent-blankline.nvim', branch = "lua"}
-
   -- Auto pairs for '(' '[' '{'.
   use 'jiangmiao/auto-pairs'
-
   -- just some icons
   use "kyazdani42/nvim-web-devicons"
-
   -- color colorizer
   use {
     "norcalli/nvim-colorizer.lua",
     config= function() require'colorizer'.setup() end
   }
-
-  -- colorschemes
-  -- kosmikoa
-  use {
-    "novakne/kosmikoa.nvim",
-    -- branch = "main",
-    -- config = function()
-    --   require"kosmikoa".setup()
-    -- end,
-  }
-  -- monokai
-  use 'tanvirtin/monokai.nvim'
   -- nvcode-color-schemes
   use 'ChristianChiarulli/nvcode-color-schemes.vim'
-
 end)

@@ -21,7 +21,8 @@ vim.o.inccommand = "nosplit" -- show effect of command incrementally as you type
 vim.o.swapfile = false -- no swap file!
 -- vim.o.listchars = "lead:·,trail:·,space:·,tab:→·,nbsp:•,eol:↲,extends:›,precedes:‹" -- how to show special chars space? →›‹»↲␣·•⟩⟨
 vim.o.listchars = "trail:·,tab:→·,nbsp:•,eol:↲,extends:›,precedes:‹" -- how to show special chars space? →›‹»↲␣·•⟩⟨
-vim.o.termguicolors = true
+vim.o.termguicolors = true -- add term gui colors
+vim.o.autowriteall = true -- autowrite so we can move buffers without errors
 -- vim.o.guifont = "" -- change font
 
 -- window options
