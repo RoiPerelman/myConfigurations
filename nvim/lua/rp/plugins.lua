@@ -10,9 +10,14 @@ if fn.empty(fn.glob(install_path)) > 0 then
   execute "packadd packer.nvim"
 end
 
+-- packer!!!
+local packer = require"packer"
+-- limit jobs because of home computer problem with too many.
+packer.init({ max_jobs = 6 })
+-- startup
+packer.startup(function()
 -- add local use just for lsp saying undefined global `use`
-local use = require("packer").use
-return require("packer").startup(function()
+  local use = packer.use
   -- Packer can manage itself
   use "wbthomason/packer.nvim"
 
