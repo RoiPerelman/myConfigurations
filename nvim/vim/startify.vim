@@ -27,11 +27,11 @@ let g:startify_lists = [
 
 let g:startify_bookmarks = [
       \ { 'm': '~/myConfigurations' },
-      \ { 't': '~/tiny_inspektor' },
       \ { 'c': '~/tiny_inspektor/sw/fixi_client' },
-      \ { 'f': '~/tiny_inspektor/sw/fixi' },
-      \ { 'db': '~/tiny_inspektor/sw/tiny_database' },
-      \ { 'dc': '~/tiny_inspektor/sw/data_coordinator' },
-      \ { 's': '~/tiny_inspektor/sw/tier2/tiny_std' },
       \ ]
+      " \ { 't': '~/tiny_inspektor' },
+      " \ { 'f': '~/tiny_inspektor/sw/fixi' },
+      " \ { 'db': '~/tiny_inspektor/sw/tiny_database' },
+      " \ { 'dc': '~/tiny_inspektor/sw/data_coordinator' },
+      " \ { 's': '~/tiny_inspektor/sw/tier2/tiny_std' },
 

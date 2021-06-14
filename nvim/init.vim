@@ -1,7 +1,7 @@
 if exists('g:vscode')
-  echo 'ROIROI'
+  echo 'loading vscode init.lua conf'
    " vscode extension
 else
-  echo 'ROIROI 2222'
+  echo 'loading init.lua conf'
   :lua require('init')
 endif
