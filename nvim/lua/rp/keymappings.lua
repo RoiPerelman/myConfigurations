@@ -89,10 +89,10 @@ keymap('n', '<Leader>fh', ':Telescope help_tags<CR>', opts)
 keymap('n', '<Leader>e', ':NvimTreeToggle<CR>', opts)
 
 -- vim asterisk * should highlight current word. n, N to move
-vim.cmd([[map *  <Plug>(asterisk-z*)]])
-vim.cmd([[map #  <Plug>(asterisk-z#)]])
-vim.cmd([[map g* <Plug>(asterisk-gz*)]])
-vim.cmd([[map g# <Plug>(asterisk-gz#)]])
+-- vim.cmd([[map *  <Plug>(asterisk-z*)]])
+-- vim.cmd([[map #  <Plug>(asterisk-z#)]])
+-- vim.cmd([[map g* <Plug>(asterisk-gz*)]])
+-- vim.cmd([[map g# <Plug>(asterisk-gz#)]])
 
 -- fugitive
 -- let g:which_key_map['g'] = {'name' : '+git'}

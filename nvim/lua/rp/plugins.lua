@@ -10,6 +10,24 @@ if fn.empty(fn.glob(install_path)) > 0 then
   execute "packadd packer.nvim"
 end
 
+--- Check if a file or directory exists in this path
+--local function require_plugin(plugin)
+--    local plugin_prefix = fn.stdpath("data") .. "/site/pack/packer/opt/"
+
+--    local plugin_path = plugin_prefix .. plugin .. "/"
+--    --	print('test '..plugin_path)
+--    local ok, err, code = os.rename(plugin_path, plugin_path)
+--    if not ok then
+--        if code == 13 then
+--            -- Permission denied, but it exists
+--            return true
+--        end
+--    end
+--    --	print(ok, err, code)
+--    if ok then vim.cmd("packadd " .. plugin) end
+--    return ok, err, code
+--end
+
 -- packer!!!
 local packer = require"packer"
 -- limit jobs because of home computer problem with too many.
@@ -20,20 +38,19 @@ packer.startup(function()
   local use = packer.use
   -- Packer can manage itself
   use "wbthomason/packer.nvim"
+
+  -- Text manipulation
+  -- Surround
+  -- cs"' - change surrounding "" to ''
+  -- ysiw<q> - you surround inside word with <q> <q/>
+  -- dst - delete surrounding tag (for these kinds of tags <>)
+  -- t=<>, b=(, B={
+      -- :help ys cs or ds for more information
   use 'tpope/vim-surround'
   -- Better Comments
-  -- gcc - go comment current
-  -- gcap - go comment a paragraph
   use 'tpope/vim-commentary'
   -- Add repeat with '.' to other plugins
   use 'tpope/vim-repeat'
-  -- Text navigation - adds highlights on letters for 'f''F' and 't''T'
-  -- TODO Do i want it?
-  -- use 'unblevable/quick-scope'
-  -- Incremental Search imporved (automatically clear highlights)
-  use 'haya14busa/is.vim'
-  -- Asterisk behavior change
-  use 'haya14busa/vim-asterisk'
   -- Git
   -- :Gstatus
   -- s - stage
@@ -42,22 +59,26 @@ packer.startup(function()
   -- :diffget //2 to choose left and :diffget //3 to choose right
   use 'tpope/vim-fugitive'
   -- gitsigns
-  use {
-    'lewis6991/gitsigns.nvim',
-    requires = {
-      'nvim-lua/plenary.nvim'
-    },
-    config = function()
-      require('gitsigns').setup()
-    end
-  }
+  use 'lewis6991/gitsigns.nvim'
+  -- git blame
+  use 'f-person/git-blame.nvim'
+
   -- file explorer
   use "kyazdani42/nvim-tree.lua"
+
+    -- Incremental Search improved (automatically clear highlights)
+  -- use 'haya14busa/is.vim'
+  -- Asterisk behavior change
+  -- use 'haya14busa/vim-asterisk'
+
+
   -- fzf telescope
-  use {
-    "nvim-telescope/telescope.nvim",
-    requires = {{"nvim-lua/popup.nvim"}, {"nvim-lua/plenary.nvim"}}
-  }
+  use 'nvim-lua/plenary.nvim'
+  use 'nvim-lua/popup.nvim'
+  use "nvim-telescope/telescope.nvim"
+  -- use "nvim-telescope/telescope-fzy-native.nvim"
+  -- use "nvim-telescope/telescope-project.nvim"
+
   -- lsp
   -- lsp client configuration for communicating with lsp server
   use "neovim/nvim-lspconfig"
@@ -67,22 +88,19 @@ packer.startup(function()
   use { "kabouzeid/nvim-lspinstall", opt = true }
   -- lua-dev for better sumneko_lua language server
   use "folke/lua-dev.nvim"
+  -- A pretty list for showing diagnostics, references, telescope results, quickfix and location lists
+  -- use "folke/trouble.nvim"
   -- lsp saga for code actions, signature and hover previewers
-  use "glepnir/lspsaga.nvim"
+  -- use "glepnir/lspsaga.nvim"
+
   -- completion
   -- use "nvim-lua/completion-nvim"
   use "hrsh7th/nvim-compe"
-  -- Text manipulation
-  -- Surround
-  -- cs"' - change surrounding "" to ''
-  -- ysiw<q> - you surround inside word with <q> <q/>
-  -- dst - delete surrounding tag (for these kinds of tags <>)
-  -- t=<>, b=(, B={
-  -- :help ys cs or ds for more information
-  -- Startify
-  use 'mhinz/vim-startify'
-  -- Vim Wiki
-  use 'vimwiki/vimwiki'
+
+  -- snippets
+  -- use "hrsh7th/vim-vsnip"
+  -- use "rafamadriz/friendly-snippets"
+
   -- TODO: do I want these?
     -- Status line
     -- use 'vim-airline/vim-airline'
@@ -91,26 +109,58 @@ packer.startup(function()
   -- use 'honza/vim-snippets'
   -- which key
   -- use "folke/which-key.nvim"
-  -- colorschemes
+
   -- treesitter - code parser
   use {"nvim-treesitter/nvim-treesitter", run = ":TSUpdate"}
-  -- TODO check this out
-  use 'nvim-treesitter/playground'
-  -- Syntax Support
-  use 'sheerun/vim-polyglot'
   -- color rainbow parentheses
   use 'p00f/nvim-ts-rainbow'
-  -- indent line
-  use {'lukas-reineke/indent-blankline.nvim', branch = "lua"}
-  -- Auto pairs for '(' '[' '{'.
-  use 'jiangmiao/auto-pairs'
+  -- autoclose and autorename html tag
+  use 'windwp/nvim-ts-autotag'
+  -- autopairs aware to context
+  use 'windwp/nvim-autopairs'
+  -- TODO read functionality - jump to any matching tag with %
+  use 'andymass/vim-matchup'
+  -- context aware commenting used with vim-commentary
+  use 'JoosepAlviste/nvim-ts-context-commentstring'
+  -- TODO check this out, use :PackerLoad
+  use {'nvim-treesitter/playground', opt = true}
+
+  -- Startify
+  use 'mhinz/vim-startify'
+
+  -- Vim Wiki
+  use 'vimwiki/vimwiki'
+
   -- just some icons
   use "kyazdani42/nvim-web-devicons"
+
+  -- indent line
+  use {'lukas-reineke/indent-blankline.nvim', branch = "lua"}
+
+  -- Auto pairs for '(' '[' '{'.
+  -- use 'jiangmiao/auto-pairs'
+
   -- color colorizer
   use {
     "norcalli/nvim-colorizer.lua",
     config= function() require'colorizer'.setup() end
   }
-  -- nvcode-color-schemes
+
+  -- Syntax Support
+  use 'sheerun/vim-polyglot'
+
+  -- colorschemes
   use 'ChristianChiarulli/nvcode-color-schemes.vim'
+
+  -- TODO check these out - all optional for now
+  -- use {"Pocco81/TrueZen.nvim", opt = true}
+  -- use {"glepnir/galaxyline.nvim", opt = true}
+  -- use {"romgrk/barbar.nvim", opt = true}
+  -- use {"kevinhwang91/nvim-bqf", opt = true}
+  -- use {"ChristianChiarulli/dashboard-nvim", opt = true}
+  -- use {"mfussenegger/nvim-dap", opt = true}
+
+  -- require optional plugins
+  -- require_plugin('kabouzeid/nvim-lspinstall')
+  -- require_plugin('nvim-treesitter/playground')
 end)

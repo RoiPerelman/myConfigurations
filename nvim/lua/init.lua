@@ -1,4 +1,5 @@
 if vim.g.vscode then
+  print('ROIROI 2222')
   require'rp/vim-options'
 else
   require'rp/plugins'

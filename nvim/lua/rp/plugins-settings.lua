@@ -25,6 +25,9 @@ require'compe'.setup {
   };
 }
 
+-- gitsigns
+require('gitsigns').setup()
+
 -- telescope
 local actions = require('telescope.actions')
 require('telescope').setup{
@@ -84,45 +87,6 @@ require('telescope').setup{
   }
 }
 
--- startify
--- vim.cmd([[
---   let g:startify_session_dir = '~/.config/nvim/session'
-
---   " returns all modified files of the current git repo
---   " `2>/dev/null` makes the command fail quietly, so that when we are not
---   " in a git repo, the list will be empty
---   function! s:gitModified()
---     let files = systemlist('git ls-files -m 2>/dev/null')
---     return map(files, "{'line': v:val, 'path': v:val}")
---   endfunction
-
---   let g:startify_session_autoload = 1
---   let g:startify_session_delete_buffers = 1
---   let g:startify_change_to_vcs_root = 1
---   let g:startify_fortune_use_unicode = 1
---   let g:startify_session_persistence = 1
---   let g:startify_enable_special = 0
-
---   let g:startify_lists = [
---     \ { 'type': 'bookmarks', 'header': ['   Bookmarks']                    },
---     \ { 'type': 'sessions',  'header': ['   Sessions']                     },
---     \ { 'type': function('s:gitModified'),  'header': ['   git modified']  },
---     \ { 'type': 'dir',       'header': ['   Current Directory '. getcwd()] },
---     \ { 'type': 'files',     'header': ['   Files']                        },
---     \ { 'type': 'commands',  'header': ['   Commands']                     },
---     \ ]
-
---   let g:startify_bookmarks = [
---     \ { 'm': '~/myConfigurations' },
---     \ { 't': '~/tiny_inspektor' },
---     \ { 'c': '~/tiny_inspektor/sw/fixi_client' },
---     \ { 'f': '~/tiny_inspektor/sw/fixi' },
---     \ { 'db': '~/tiny_inspektor/sw/tiny_database' },
---     \ { 'dc': '~/tiny_inspektor/sw/data_coordinator' },
---     \ { 's': '~/tiny_inspektor/sw/tier2/tiny_std' },
---     \ ]
--- ]])
-
 -- vimwiki
 -- change vimwiki path
 vim.cmd([[
@@ -130,24 +94,37 @@ vim.cmd([[
   nmap <Leader>wa <Plug>VimwikiUISelect
 ]])
 
--- treesitter
+-- autopairs
+require('nvim-autopairs').setup()
+
+-- treesitter aka ts
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained",
+  -- colorscheme
   highlight = {
     enable = true,
   },
-}
-
--- nvim ts rainbow
-require'nvim-treesitter.configs'.setup {
+  -- rainbow
   rainbow = {
     enable = true,
     extended_mode = true, -- Highlight also non-parentheses delimiters, boolean or table: lang -> boolean
     max_file_lines = 1000, -- Do not enable for files with more than 1000 lines, int
+  },
+  -- autotag
+  autotag = {
+    enable = true,
+  },
+  -- matchup
+  matchup = {
+    enable = true,
+  },
+  -- context commentstring
+  context_commentstring = {
+    enable = true
   }
 }
-vim.cmd([[hi rainbowcol1 guifg=#123456]])
 
 -- indent-blankline
 vim.cmd("let g:indent_blankline_char = '│'")
 -- vim.cmd("let g:indent_blankline_char_highlight_list = ['rainbowcol1', 'rainbowcol2', 'rainbowcol3', 'rainbowcol4', 'rainbowcol5', 'rainbowcol6', 'rainbowcol7', ]")
+
