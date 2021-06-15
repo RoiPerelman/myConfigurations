@@ -128,3 +128,6 @@ require'nvim-treesitter.configs'.setup {
 vim.cmd("let g:indent_blankline_char = '│'")
 -- vim.cmd("let g:indent_blankline_char_highlight_list = ['rainbowcol1', 'rainbowcol2', 'rainbowcol3', 'rainbowcol4', 'rainbowcol5', 'rainbowcol6', 'rainbowcol7', ]")
 
+-- git blame
+vim.cmd([[let g:gitblame_date_format = '%r']])
+vim.cmd([[let g:gitblame_enabled = 0]])

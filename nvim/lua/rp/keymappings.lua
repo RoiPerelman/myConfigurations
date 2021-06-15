@@ -88,6 +88,9 @@ keymap('n', '<Leader>fh', ':Telescope help_tags<CR>', opts)
 -- nvim-tree
 keymap('n', '<Leader>e', ':NvimTreeToggle<CR>', opts)
 
+-- git blame
+keymap('n', '<Leader>gb', ':GitBlameToggle<CR>', opts)
+
 -- vim asterisk * should highlight current word. n, N to move
 -- vim.cmd([[map *  <Plug>(asterisk-z*)]])
 -- vim.cmd([[map #  <Plug>(asterisk-z#)]])
