@@ -19,6 +19,9 @@ local custom_lsp_attach = function(client)
     vim.api.nvim_buf_set_keymap(0, 'n', 'ga', '<cmd>lua vim.lsp.buf.code_action()<CR>', {noremap = true})
     vim.api.nvim_buf_set_keymap(0, 'n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', {noremap = true})
     vim.api.nvim_buf_set_keymap(0, 'n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', {noremap = true})
+    -- TODO decide of the keymap
+    vim.api.nvim_buf_set_keymap(0, 'n', 'g=', '<cmd>lua vim.lsp.buf.formatting_sync()<CR>', {noremap = true})
+    vim.api.nvim_buf_set_keymap(0, 'n', 'gf', '<cmd>lua vim.lsp.buf.formatting_sync()<CR>', {noremap = true})
 
 
     -- Use LSP as the handler for omnifunc.

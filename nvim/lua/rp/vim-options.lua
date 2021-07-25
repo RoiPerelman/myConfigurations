@@ -23,16 +23,18 @@ vim.o.swapfile = false -- no swap file!
 vim.o.listchars = "trail:·,tab:→·,nbsp:•,eol:↲,extends:›,precedes:‹" -- how to show special chars space? →›‹»↲␣·•⟩⟨
 vim.o.termguicolors = true -- add term gui colors
 vim.o.autowriteall = true -- autowrite so we can move buffers without errors
--- vim.o.guifont = "" -- change font
 
--- window options
-vim.wo.list = true -- show listchars
-vim.wo.number = true -- add number
-vim.wo.relativenumber = true -- add relative number
-vim.wo.wrap = false -- do not wrap lines
-vim.wo.cursorline = true -- highlight cursor line
-vim.wo.signcolumn = "yes" -- add extra space to the left column for signs
-vim.wo.colorcolumn = "90" -- color a column at 90
+if not vim.g.vscode then
+  -- window options
+  --
+  vim.wo.list = true -- show listchars
+  vim.wo.number = true -- add number
+  vim.wo.relativenumber = true -- add relative number
+  vim.wo.wrap = false -- do not wrap lines
+  vim.wo.cursorline = true -- highlight cursor line
+  vim.wo.signcolumn = "yes" -- add extra space to the left column for signs
+  vim.wo.colorcolumn = "90" -- color a column at 90
+end
 
 -- TODO fix how to set option from lua vim api and not vim.cmd
 vim.cmd('set iskeyword+=-') -- treat dash separated words as a word text object

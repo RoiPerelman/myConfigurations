@@ -1,6 +1,12 @@
 if vim.g.vscode then
-  print('ROIROI 2222')
+  -- require'rp/vim-options'
   require'rp/vim-options'
+  vim.cmd([[
+    xmap gc  <Plug>VSCodeCommentary
+    nmap gc  <Plug>VSCodeCommentary
+    omap gc  <Plug>VSCodeCommentary
+    nmap gcc <Plug>VSCodeCommentaryLine
+  ]])
 else
   require'rp/plugins'
   require'rp/vim-options'
@@ -9,7 +15,7 @@ else
   require'rp/plugins-settings'
   require'rp/function-utils'
   require'rp/autocommands'
-  vim.cmd('colorscheme nvcode') --  monokai nvcode kosmikoa
+  vim.cmd('colorscheme dracula') -- nvcode monokai nvcode kosmikoa
   vim.cmd([[source $HOME/.config/nvim/vim/startify.vim]])
 end
 

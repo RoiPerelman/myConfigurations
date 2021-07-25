@@ -151,6 +151,7 @@ packer.startup(function()
 
   -- colorschemes
   use 'ChristianChiarulli/nvcode-color-schemes.vim'
+  use 'dracula/vim'
 
   -- TODO check these out - all optional for now
   -- use {"Pocco81/TrueZen.nvim", opt = true}
