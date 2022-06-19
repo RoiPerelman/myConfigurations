@@ -18,6 +18,15 @@ return require('packer').startup(function(use)
   -- to see installed servers :lua print(vim.inspect(require"lspinstall".installed_servers()))
   use "williamboman/nvim-lsp-installer"
 
+  -- completion
+  use 'hrsh7th/nvim-cmp'
+  -- use 'hrsh7th/cmp-nvim-lsp'
+  use 'hrsh7th/cmp-buffer'
+  -- use 'hrsh7th/cmp-path'
+  -- use 'hrsh7th/cmp-cmdline'
+  -- use 'hrsh7th/cmp-nvim-lua'
+  -- use "saadparwaiz1/cmp_luasnip"
+
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if packer_bootstrap then
