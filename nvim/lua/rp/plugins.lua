@@ -11,11 +11,7 @@ return require('packer').startup(function(use)
 
   -- My plugins here
   -- lsp
-  -- lsp client configuration for communicating with lsp server
-  use { "neovim/nvim-lspconfig", after = "nvim-lsp-installer" }
-  -- lsp server installation tool inside nvim with :LspInstall <language>
-  -- to use lspinstall first :PackerLoad nvim-lspinstall
-  -- to see installed servers :lua print(vim.inspect(require"lspinstall".installed_servers()))
+  use "neovim/nvim-lspconfig"
   use "williamboman/nvim-lsp-installer"
 
   -- completion
@@ -27,6 +23,22 @@ return require('packer').startup(function(use)
   -- use 'hrsh7th/cmp-nvim-lua'
   -- use "saadparwaiz1/cmp_luasnip"
 
+  -- telescope
+  use {
+    'nvim-telescope/telescope.nvim',
+    requires = { {'nvim-lua/plenary.nvim'} }
+  }
+  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+
+  -- Git
+  -- :Gstatus
+  -- s - stage
+  -- u - unstage
+  -- dv - start resolve conflicts
+  -- :diffget //2 to choose left and :diffget //3 to choose right
+  use 'tpope/vim-fugitive'
+
+  -- use 'tpope/vim-fugitive'
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if packer_bootstrap then
