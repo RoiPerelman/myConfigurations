@@ -30,6 +30,14 @@ return require('packer').startup(function(use)
   }
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 
+  -- comment
+  use {
+      'numToStr/Comment.nvim',
+      config = function()
+          require('Comment').setup()
+      end
+  }
+
   -- Git
   -- :Gstatus
   -- s - stage
