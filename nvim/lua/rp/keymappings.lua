@@ -71,8 +71,7 @@ keymap('v', 'C', '"_C', opts)
 
 -- Telescope
 keymap('n', '<Leader>ft', ':Telescope <CR>', opts)
-keymap('n', '<C-p>', ':Telescope find_files<CR>', opts)
-keymap('n', '<Leader>ff', ':lua require"telescope.builtin".find_files({ hidden = true })<CR>', opts)
+keymap('n', '<Leader>ff', ':Telescope find_files<CR>', opts)
 keymap('n', '<Leader>fg', ':Telescope live_grep<CR>', opts)
 keymap('n', '<Leader>fr', ':lua require"telescope.builtin".grep_string({ use_regex = true, search = vim.fn.input("Grep for > ")})<CR>', opts)
 keymap('n', '<Leader>fe', ':Telescope file_browser<CR>', opts)
@@ -84,6 +83,8 @@ keymap('n', '<Leader>fq', ':Telescope quickfix<CR>', opts)
 keymap('n', '<Leader>fl', ':Telescope loclist<CR>', opts)
 keymap('n', '<Leader>fk', ':Telescope keymaps<CR>', opts)
 keymap('n', '<Leader>fh', ':Telescope help_tags<CR>', opts)
+
+keymap('n', '<C-p>', ':Telescope find_files<CR>', opts)
 
 -- nvim-tree
 keymap('n', '<Leader>e', ':NvimTreeToggle<CR>', opts)
