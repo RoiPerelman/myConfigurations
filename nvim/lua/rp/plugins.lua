@@ -46,6 +46,8 @@ return require('packer').startup(function(use)
   -- :diffget //2 to choose left and :diffget //3 to choose right
   use 'tpope/vim-fugitive'
 
+  use {'dracula/vim', as = 'dracula'}
+
   -- use 'tpope/vim-fugitive'
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
