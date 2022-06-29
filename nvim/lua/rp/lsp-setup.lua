@@ -62,3 +62,11 @@ require"lspconfig".sumneko_lua.setup {
 require('lspconfig')['tsserver'].setup{
     on_attach = on_attach,
 }
+
+require("null-ls").setup({
+    sources = {
+        require("null-ls").builtins.formatting.stylua,
+        require("null-ls").builtins.diagnostics.eslint,
+        require("null-ls").builtins.completion.spell,
+    },
+})
