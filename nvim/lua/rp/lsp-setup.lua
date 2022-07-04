@@ -13,6 +13,9 @@ vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
+	if client.name == "tsserver" or client.name == "sumneko_lua" then
+		client.resolved_capabilities.document_formatting = false
+	end
 	-- Enable completion triggered by <c-x><c-o>
 	vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 
@@ -63,10 +66,18 @@ require("lspconfig")["tsserver"].setup({
 	on_attach = on_attach,
 })
 
+-- require("lspconfig").tsserver.setup({
+-- 	capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+-- 	on_attach = function(client)
+-- 		client.resolved_capabilities.document_formatting = false
+-- 	end,
+-- })
+
 require("null-ls").setup({
 	sources = {
 		require("null-ls").builtins.formatting.stylua,
 		require("null-ls").builtins.diagnostics.eslint,
+		require("null-ls").builtins.code_actions.eslint,
 		require("null-ls").builtins.completion.spell,
 	},
 })
