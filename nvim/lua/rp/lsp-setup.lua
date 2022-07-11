@@ -66,6 +66,8 @@ require("lspconfig")["tsserver"].setup({
 	on_attach = on_attach,
 })
 
+-- prerequisites 
+-- stylua - https://github.com/JohnnyMorganz/StyLua/releases
 require("null-ls").setup({
 	sources = {
 		require("null-ls").builtins.formatting.stylua,
