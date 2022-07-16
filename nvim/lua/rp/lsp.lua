@@ -135,8 +135,8 @@ local flake8 = {
 
 -- local autopep8 = {
 --   formatCommand = "autopep8 --max-line-length=90 --ignore=E122, E125, E127, E131, E221, E251 --quiet",
--- }
 
+-- }
 local efm_language_server = lspinstall_path .. "/efm/efm-langserver"
 nvim_lsp.efm.setup({
   cmd = {efm_language_server, '-logfile', '/tmp/efm.log', '-loglevel', '5'},

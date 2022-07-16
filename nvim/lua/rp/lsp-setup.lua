@@ -24,6 +24,7 @@ local on_attach = function(client, bufnr)
 	local bufopts = { noremap = true, silent = true, buffer = bufnr }
 	vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
 	vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
+	vim.keymap.set("n", "gh", vim.lsp.buf.hover, bufopts)
 	vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
 	vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
 	vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
@@ -39,7 +40,7 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set("n", "<space>f", vim.lsp.buf.formatting, bufopts)
 end
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
+local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 require("lspconfig").sumneko_lua.setup({
 	on_attach = on_attach,
@@ -66,7 +67,13 @@ require("lspconfig")["tsserver"].setup({
 	on_attach = on_attach,
 })
 
--- prerequisites 
+-- local flake8 = {
+--   LintCommand = "flake8 --max-line-length=90 --ignore='E122, E125, E127, E131, E221, E251' --stdin-display-name ${INPUT} -",
+--   lintStdin = true,
+--   lintFormats = {"%f:%l:%c: %m"}
+-- }
+
+-- prerequisites
 -- stylua - https://github.com/JohnnyMorganz/StyLua/releases
 require("null-ls").setup({
 	sources = {
