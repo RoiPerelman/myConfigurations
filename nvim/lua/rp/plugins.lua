@@ -31,12 +31,14 @@ return require("packer").startup(function(use)
 
 	-- completion
 	use("hrsh7th/nvim-cmp")
-	use 'hrsh7th/cmp-nvim-lsp'
+	use("hrsh7th/cmp-nvim-lsp")
 	use("hrsh7th/cmp-buffer")
-	use 'hrsh7th/cmp-path'
-	use 'hrsh7th/cmp-cmdline'
-	use 'hrsh7th/cmp-nvim-lua'
-	use "saadparwaiz1/cmp_luasnip"
+	use("hrsh7th/cmp-path")
+	use("hrsh7th/cmp-cmdline")
+	use("hrsh7th/cmp-nvim-lua")
+	use("saadparwaiz1/cmp_luasnip")
+	use("kdheepak/cmp-latex-symbols")
+	use("onsails/lspkind.nvim")
 
 	-- snippets
 	use("L3MON4D3/LuaSnip") --snippet engine
@@ -51,12 +53,20 @@ return require("packer").startup(function(use)
 	use("JoosepAlviste/nvim-ts-context-commentstring") -- context aware commenting used with vim-commentary
 	-- use "lukas-reineke/indent-blankline.nvim" -- indent line
 	-- use "windwp/nvim-autopairs" -- Autopairs, integrates with both cmp and treesitter
-
 	-- comment
+
 	use({
 		"numToStr/Comment.nvim",
 		config = function()
 			require("Comment").setup()
+		end,
+	})
+
+	-- org mode!
+	use({
+		"nvim-orgmode/orgmode",
+		config = function()
+			require("orgmode").setup({})
 		end,
 	})
 
@@ -67,6 +77,7 @@ return require("packer").startup(function(use)
 	-- dst - delete surrounding tag (for these kinds of tags <>)
 	-- t=<>, b=(, B={
 	-- :help ys cs or ds for more information
+	--
 	use("tpope/vim-surround")
 	use("tpope/vim-repeat")
 

@@ -1,5 +1,6 @@
 -- Setup nvim-cmp.
 local cmp = require("cmp")
+local lspkind = require("lspkind")
 
 cmp.setup({
 	snippet = {
@@ -24,34 +25,29 @@ cmp.setup({
 		["<C-Space>"] = cmp.mapping.complete(),
 		["<C-e>"] = cmp.mapping.abort(),
 		["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+		["<Right>"] = cmp.mapping.confirm({ select = true }),
 	}),
 	sources = cmp.config.sources({
-    { name = "nvim lua" },
+		{ name = "nvim lua" },
 		{ name = "nvim_lsp" },
-    { name = "path" },
+		{ name = "path" },
+		{ name = "orgmode" },
+		{ name = "latex_symbols" }, -- For luasnip users.
 		{ name = "luasnip" }, -- For luasnip users.
 		{ name = "buffer" },
 	}),
-	-- formatting = {
-	--   -- Youtube: How to set up nice formatting for your sources.
-	--   format = lspkind.cmp_format {
-	--     with_text = true,
-	--     menu = {
-	--       buffer = "[buf]",
-	--       nvim_lsp = "[LSP]",
-	--       nvim_lua = "[api]",
-	--       path = "[path]",
-	--       luasnip = "[snip]",
-	--     },
-	--   },
-	-- },
-
+	formatting = {
+	  -- Youtube: How to set up nice formatting for your sources.
+	  format = require'lspkind'.cmp_format {
+	    -- with_text = true,
+	  },
+	},
 	experimental = {
 		-- I like the new menu better! Nice work hrsh7th
-		native_menu = false,
+    -- Let's play with this for a day or two
+    -- native_menu = true,
 
-		-- Let's play with this for a day or two
-		ghost_text = false,
+		ghost_text = true,
 	},
 })
 -- Set configuration for specific filetype.
