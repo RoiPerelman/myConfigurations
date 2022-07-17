@@ -1,15 +1,10 @@
 -- Setup nvim-cmp.
 local cmp = require("cmp")
-local lspkind = require("lspkind")
 
 cmp.setup({
 	snippet = {
-		-- REQUIRED - you must specify a snippet engine
 		expand = function(args)
-			-- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
 			require("luasnip").lsp_expand(args.body) -- For `luasnip` users.
-			-- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-			-- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
 		end,
 	},
 	window = {
@@ -37,15 +32,15 @@ cmp.setup({
 		{ name = "buffer" },
 	}),
 	formatting = {
-	  -- Youtube: How to set up nice formatting for your sources.
-	  format = require'lspkind'.cmp_format {
-	    -- with_text = true,
-	  },
+		-- Youtube: How to set up nice formatting for your sources.
+		format = require("lspkind").cmp_format({
+			-- with_text = true,
+		}),
 	},
 	experimental = {
 		-- I like the new menu better! Nice work hrsh7th
-    -- Let's play with this for a day or two
-    -- native_menu = true,
+		-- Let's play with this for a day or two
+		-- native_menu = true,
 
 		ghost_text = true,
 	},
