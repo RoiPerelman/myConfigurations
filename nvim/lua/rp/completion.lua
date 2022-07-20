@@ -36,7 +36,7 @@ local kind_icons = {
 cmp.setup({
 	snippet = {
 		expand = function(args)
-			require("luasnip").lsp_expand(args.body) -- For `luasnip` users.
+			luasnip.lsp_expand(args.body) -- For `luasnip` users.
 		end,
 	},
 	window = {
@@ -106,6 +106,14 @@ cmp.setup({
 		-- Youtube: How to set up nice formatting for your sources.
 		format = lspkind.cmp_format({
 			with_text = true,
+			menu = {
+				buffer = "[buf]",
+				nvim_lsp = "[LSP]",
+				nvim_lua = "[api]",
+				path = "[path]",
+				luasnip = "[snip]",
+				latex_symbols = "[symbol]",
+			},
 		}),
 	},
 	experimental = {
