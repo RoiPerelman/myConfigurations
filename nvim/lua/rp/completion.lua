@@ -91,7 +91,6 @@ cmp.setup({
 		{ name = "nvim_lsp" },
 		{ name = "path" },
 		{ name = "orgmode" },
-		{ name = "latex_symbols" }, -- For luasnip users.
 		{ name = "luasnip" }, -- For luasnip users.
 		{ name = "buffer" },
 	}),

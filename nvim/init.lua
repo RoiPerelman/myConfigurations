@@ -1,7 +1,7 @@
 require("rp/plugins")
 require("rp/options")
-require("rp/keymappings")
 require("rp/lsp-setup")
+require("rp/keymappings")
 require("rp/plugins-setup")
 require("rp/telescope")
 
@@ -23,3 +23,4 @@ vim.cmd("colorscheme dracula") -- nvcode monokai nvcode kosmikoa
 -- vim.cmd("hi VertSplit guibg=none ctermbg=none")
 -- vim.cmd("hi SignColumn guibg=none ctermbg=none")
 -- vim.cmd("hi EndOfBuffer guibg=none ctermbg=none")
+-- http://cht.sh/curl

@@ -67,6 +67,10 @@ require("lspconfig")["tsserver"].setup({
 	on_attach = on_attach,
 })
 
+require("lspconfig")["pyright"].setup({
+	on_attach = on_attach,
+})
+
 -- local flake8 = {
 --   LintCommand = "flake8 --max-line-length=90 --ignore='E122, E125, E127, E131, E221, E251' --stdin-display-name ${INPUT} -",
 --   lintStdin = true,

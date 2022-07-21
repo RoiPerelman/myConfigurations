@@ -6,9 +6,6 @@
   editor = nvim
 	excludesFile = ~/.gitignore
 
-  pager = delta
-    ; autocrlf = input
-
 [pull]
   rebase = true
 

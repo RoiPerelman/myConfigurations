@@ -59,7 +59,6 @@ return packer.startup(function(use)
 	use("hrsh7th/cmp-cmdline")
 	use("hrsh7th/cmp-nvim-lua")
 	use("saadparwaiz1/cmp_luasnip")
-	use("kdheepak/cmp-latex-symbols")
 	use("onsails/lspkind.nvim")
 
 	-- snippets
