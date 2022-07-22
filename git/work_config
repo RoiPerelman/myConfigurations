@@ -1,6 +1,6 @@
 [user]
-  name = roiperelman
-  email = roiperelman@gmail.com
+  name = roip
+  email = roip@inspekto.com
 
 [core]
   editor = nvim
