@@ -115,13 +115,6 @@ cmp.setup({
 			},
 		}),
 	},
-	experimental = {
-		-- I like the new menu better! Nice work hrsh7th
-		-- Let's play with this for a day or two
-		-- native_menu = true,
-
-		ghost_text = true,
-	},
 })
 -- Set configuration for specific filetype.
 cmp.setup.filetype("gitcommit", {
