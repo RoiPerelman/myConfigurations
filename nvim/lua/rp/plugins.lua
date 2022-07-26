@@ -106,6 +106,9 @@ return packer.startup(function(use)
 	use({ "dracula/vim", as = "dracula" })
 	use({ "sainnhe/sonokai" })
 
+  -- tmux
+  use("aserowy/tmux.nvim")
+
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
 	if packer_bootstrap then
