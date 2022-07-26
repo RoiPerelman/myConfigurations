@@ -5,8 +5,14 @@ local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
 local packer_bootstrap = nil
 
 if fn.empty(fn.glob(install_path)) > 0 then
-	Packer_Bootstrap =
-		fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path })
+	Packer_Bootstrap = fn.system({
+		"git",
+		"clone",
+		"--depth",
+		"1",
+		"https://github.com/wbthomason/packer.nvim",
+		install_path,
+	})
 	print("---------------------------------------------------------")
 	print("Press Enter to install packer and plugins.")
 	print("After install -- close and reopen Neovim to load configs!")
@@ -100,7 +106,9 @@ return packer.startup(function(use)
 	-- :diffget //2 to choose left and :diffget //3 to choose right
 	use("tpope/vim-fugitive")
 	use("lewis6991/gitsigns.nvim") -- gitsigns
-	use("f-person/git-blame.nvim") -- git blame
+
+	-- file explorer
+	use("kyazdani42/nvim-tree.lua")
 
 	-- colorschemes
 	use({ "dracula/vim", as = "dracula" })
