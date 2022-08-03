@@ -22,3 +22,10 @@ vim.cmd([[
     au BufWritePre * %s/\s\+$//e
   augroup END
 ]])
+
+-- vim.create_autocmd('TextYankPost', {
+--   group = num_au
+--   callback = function()
+--     vim.highlight.on_yank({ higroup = 'Visual', timeout = 120 })
+--   end,
+-- })
