@@ -33,6 +33,10 @@
 (set-frame-parameter (selected-frame) 'alpha rp/frame-transparency)
 (add-to-list 'default-frame-alist `(alpha . ,rp/frame-transparency))
 
+;; set custom file - so things wont be added in this file
+(setq custom-file (concat user-emacs-directory "custom.el"))
+(load custom-file 'noerror)
+
 ;; add mepla as package archive
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -70,16 +74,3 @@
   :init
   (marginalia-mode))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(doom-modeline all-the-icons doom-themes use-package marginalia)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
