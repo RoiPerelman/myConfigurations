@@ -5,7 +5,7 @@ require("telescope").setup({
 	defaults = {
 		vimgrep_arguments = {
 			"rg",
-      "--follow",
+			"--follow",
 			"--color=never",
 			"--no-heading",
 			"--with-filename",
@@ -13,6 +13,10 @@ require("telescope").setup({
 			"--column",
 			"--smart-case",
 			"--trim", -- add this value
+		},
+		sorting_strategy = "ascending",
+		layout_config = {
+			prompt_position = "top",
 		},
 	},
 	pickers = {

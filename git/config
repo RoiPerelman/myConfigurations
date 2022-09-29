@@ -16,3 +16,8 @@
   # Thanks r00k, this creates a pretty graph view of the log
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
 
+[merge]
+  tool = code-insiders
+[mergetool "code-insiders"]
+  cmd = code-insiders --wait --merge $REMOTE $LOCAL $BASE $MERGED
+

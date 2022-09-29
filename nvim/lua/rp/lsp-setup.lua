@@ -2,6 +2,9 @@
 -- call it before any server setups
 require("nvim-lsp-installer").setup()
 
+-- remove virtual text
+vim.diagnostic.config({ virtual_text = false })
+
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
 local opts = { noremap = true, silent = true }
@@ -27,17 +30,18 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set("n", "gh", vim.lsp.buf.hover, bufopts)
 	vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
 	vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
-	vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
-	vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, bufopts)
-	vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
-	vim.keymap.set("n", "<space>wl", function()
-		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-	end, bufopts)
-	vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, bufopts)
-	vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, bufopts)
-	vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, bufopts)
 	vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
-	vim.keymap.set("n", "<space>f", vim.lsp.buf.formatting, bufopts)
+	vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
+	vim.keymap.set("n", "gk", vim.diagnostic.open_float, bufopts)
+	-- vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, bufopts)
+	-- vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
+	-- vim.keymap.set("n", "<space>wl", function()
+	-- 	print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+	-- end, bufopts)
+	-- vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, bufopts)
+	-- vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, bufopts)
+	-- vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, bufopts)
+	-- vim.keymap.set("n", "<space>f", vim.lsp.buf.formatting, bufopts)
 end
 
 local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -69,8 +73,18 @@ require("lspconfig")["tsserver"].setup({
 
 require("lspconfig")["pyright"].setup({
 	on_attach = on_attach,
+	settings = {
+		python = {
+			analysis = {
+				typeCheckingMode = "off",
+			},
+		},
+	},
 })
 
+require("lspconfig")["ansiblels"].setup({
+	on_attach = on_attach,
+})
 -- local flake8 = {
 --   LintCommand = "flake8 --max-line-length=90 --ignore='E122, E125, E127, E131, E221, E251' --stdin-display-name ${INPUT} -",
 --   lintStdin = true,
@@ -82,6 +96,7 @@ require("lspconfig")["pyright"].setup({
 require("null-ls").setup({
 	sources = {
 		require("null-ls").builtins.formatting.stylua,
+		require("null-ls").builtins.formatting.black,
 		require("null-ls").builtins.formatting.prettier,
 		require("null-ls").builtins.diagnostics.eslint,
 		require("null-ls").builtins.completion.spell,
@@ -90,3 +105,4 @@ require("null-ls").setup({
 
 vim.cmd("autocmd BufWritePost *.lua lua vim.lsp.buf.formatting()")
 vim.cmd("autocmd BufWritePost *.tsx,*.ts,*.jsx,*.js, lua vim.lsp.buf.formatting()")
+-- vim.cmd("autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()")

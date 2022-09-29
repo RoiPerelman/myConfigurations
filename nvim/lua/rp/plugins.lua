@@ -87,6 +87,14 @@ return packer.startup(function(use)
 	-- org mode!
 	use("nvim-orgmode/orgmode")
 
+	-- terminal
+	use({
+		"akinsho/toggleterm.nvim",
+		tag = "v2.*",
+		config = function()
+			require("toggleterm").setup()
+		end,
+	})
 	-- Text manipulation
 	-- Surround
 	-- cs"' - change surrounding "" to ''
