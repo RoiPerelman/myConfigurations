@@ -1,0 +1,95 @@
+" Ctrl-Shift+O to reload ideavimrc
+
+let mapleader = ' '
+
+" general settings
+set clipboard+=unnamed,unnamedplus
+set ignorecase
+set smartcase
+set showmode
+set number
+set relativenumber
+set incsearch
+set scrolloff=5
+set visualbell
+
+" fix Y to copy till end of line"
+nnoremap Y y$
+
+" window navigation
+sethandler <c-j> a:vim
+sethandler <c-k> a:vim
+nnoremap <c-h> <c-w>h
+nnoremap <c-l> <c-w>l
+nnoremap <c-j> <c-w>j
+nnoremap <c-k> <c-w>k
+nnoremap <c-\> :action SplitVertically<CR>
+nnoremap <c--> :action SplitHorizontally<CR>
+nnoremap <c-=> :action Unsplit<CR>
+nnoremap <c-m> :action MoveEditorToOppositeTabGroup<CR>
+nnoremap <c-w>x :action CloseAllEditorsButActive<CR>
+
+" emacs like keybindings for command mode and insert mode
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
+cnoremap <C-b> <Left>
+cnoremap <C-f> <Right>
+cnoremap <C-d> <Del>
+cnoremap <C-n> <Down>
+cnoremap <C-p> <Up>
+
+inoremap <C-a> <Home>
+inoremap <C-e> <End>
+inoremap <C-b> <Left>
+inoremap <C-f> <Right>
+inoremap <C-d> <Del>
+inoremap <C-n> <Down>
+inoremap <C-p> <Up>
+
+" next previous commands"
+nmap [e <Action>(GotoPreviousError)
+nmap ]e <Action>(GotoNextError)
+nmap [t <Action>(PreviousTab)
+nmap ]t <Action>(NextTab)
+nnoremap [m :action MethodUp<CR>
+nnoremap ]m :action MethodDown<CR>
+
+nnoremap <leader>t> :action ActivateTerminalToolWindow<CR>
+
+" not working correctly in js files. hasn't been tested in python files"
+nmap <Leader>= <Action>(ReformatCode)
+
+nmap <Leader>fa <Action>(GotoAction)
+nmap <Leader>ff <Action>(GotoFile)
+nmap <Leader>fr <Action>(RecentFiles)
+" recent edited files
+nmap <Leader>fe <Action>(RecentChangedFiles)
+
+" yank file path
+nmap <Leader>yp <Action>(CopyPaths)
+" yank function reference (for import at another location)
+nmap <Leader>yr <Action>(CopyReference)
+
+nmap <C-k> <Action>(ShowErrorDescription)
+
+nnoremap <c-z> :action TogglePresentationMode<CR>
+
+vnoremap < <gv
+vnoremap > >gv
+
+nnoremap za :action ExpandCollapseToggleAction<CR>
+nnoremap zc :action CollapseRegion<CR>
+nnoremap zo :action ExpandRegion<CR>
+nnoremap zC :action CollapseAllRegions<CR>
+nnoremap zO :action ExpandAllRegions<CR>
+
+nnoremap <leader>r :action Refactorings.QuickListPopupAction<CR>
+
+" plugins
+set nerdtree
+set surround
+set commentary
+set ideajoin
+
+" handlers
+sethandler <C-C> a:ide
