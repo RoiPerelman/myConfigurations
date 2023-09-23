@@ -1,4 +1,6 @@
 " Ctrl-Shift+O to reload ideavimrc
+nnoremap \e :e ~/.ideavimrc<CR>
+nnoremap \r :action IdeaVim.ReloadVimRc.reload<CR>
 
 let mapleader = ' '
 
@@ -17,62 +19,61 @@ set visualbell
 nnoremap Y y$
 
 " window navigation
+" <c-w>c - close window
+sethandler <c-w> a:vim
 sethandler <c-j> a:vim
 sethandler <c-k> a:vim
 nnoremap <c-h> <c-w>h
 nnoremap <c-l> <c-w>l
 nnoremap <c-j> <c-w>j
+" Doesn't work - need to use <c-w>k
 nnoremap <c-k> <c-w>k
 nnoremap <c-\> :action SplitVertically<CR>
 nnoremap <c--> :action SplitHorizontally<CR>
 nnoremap <c-=> :action Unsplit<CR>
 nnoremap <c-m> :action MoveEditorToOppositeTabGroup<CR>
-nnoremap <c-w>x :action CloseAllEditorsButActive<CR>
-
-" emacs like keybindings for command mode and insert mode
-cnoremap <C-a> <Home>
-cnoremap <C-e> <End>
-cnoremap <C-b> <Left>
-cnoremap <C-f> <Right>
-cnoremap <C-d> <Del>
-cnoremap <C-n> <Down>
-cnoremap <C-p> <Up>
-
-inoremap <C-a> <Home>
-inoremap <C-e> <End>
-inoremap <C-b> <Left>
-inoremap <C-f> <Right>
-inoremap <C-d> <Del>
-inoremap <C-n> <Down>
-inoremap <C-p> <Up>
+nnoremap <c-w>t :action CloseAllEditorsButActive<CR>
+nnoremap <c-w>k :action CloseContent<CR>
+nnoremap <c-w>x :action CloseAllEditors<CR>
 
 " next previous commands"
-nmap [e <Action>(GotoPreviousError)
-nmap ]e <Action>(GotoNextError)
-nmap [t <Action>(PreviousTab)
-nmap ]t <Action>(NextTab)
+nnoremap [e :action GotoPreviousError<CR>
+nnoremap ]e :action GotoNextError<CR>
+nnoremap [t :action PreviousTab<CR>
+nnoremap ]t :action NextTab<CR>
 nnoremap [m :action MethodUp<CR>
 nnoremap ]m :action MethodDown<CR>
 
-nnoremap <leader>t> :action ActivateTerminalToolWindow<CR>
+" faster tabs
+nnoremap <TAB> :action PreviousTab<CR>
+nnoremap <s-TAB> :action NextTab<CR>
+
+" go to settings and
+" for this to work we need to go to Tools, Terminal and untick Override IDE shortcuts
+" alt D - dock (keymap others, tool windows view modes, dock)
+" alt F - float (keymap others, tool windows view modes, float)
+" alt W - window (keymap others, tool windows view modes, windows)
+" alt H - hide (keymap main menu, window, active tool window, hide active tool window)
+nnoremap <leader>t :action ActivateTerminalToolWindow<CR>
+nnoremap <leader>o :action Terminal.OpenInTerminal<CR>
 
 " not working correctly in js files. hasn't been tested in python files"
-nmap <Leader>= <Action>(ReformatCode)
+nnoremap <Leader>= :action ReformatCode<CR>
 
-nmap <Leader>fa <Action>(GotoAction)
-nmap <Leader>ff <Action>(GotoFile)
-nmap <Leader>fr <Action>(RecentFiles)
+nnoremap <Leader>fa :action GotoAction<CR>
+nnoremap <Leader>ff :action GotoFile<CR>
+nnoremap <Leader>fr :action RecentFiles<CR>
 " recent edited files
-nmap <Leader>fe <Action>(RecentChangedFiles)
+nnoremap <Leader>fe :action RecentChangedFiles<CR>
 
 " yank file path
-nmap <Leader>yp <Action>(CopyPaths)
+nmap <Leader>yp :action CopyPaths<CR>
 " yank function reference (for import at another location)
-nmap <Leader>yr <Action>(CopyReference)
+nmap <Leader>yr :action CopyReference<CR>
 
-nmap <C-k> <Action>(ShowErrorDescription)
+nmap <C-k> :action ShowErrorDescription<CR>
 
-nnoremap <c-z> :action TogglePresentationMode<CR>
+nnoremap <c-z> :action ToggleDistractionFreeMode<CR>
 
 vnoremap < <gv
 vnoremap > >gv
@@ -90,6 +91,28 @@ set nerdtree
 set surround
 set commentary
 set ideajoin
+nnoremap <Leader>e :NERDTreeToggle<CR>
 
 " handlers
-sethandler <C-C> a:ide
+sethandler <C-c> a:ide
+
+" emacs like keybindings for command mode and insert mode
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
+cnoremap <C-b> <Left>
+cnoremap <C-f> <Right>
+cnoremap <C-d> <Del>
+cnoremap <C-n> <Down>
+cnoremap <C-p> <Up>
+cnoremap <M-b> <C-left>
+cnoremap <M-f> <C-Right>
+
+inoremap <C-a> <Home>
+inoremap <C-e> <End>
+inoremap <C-b> <Left>
+inoremap <C-f> <Right>
+inoremap <C-d> <Del>
+inoremap <C-n> <Down>
+inoremap <C-p> <Up>
+inoremap <M-b> <C-left>
+inoremap <M-f> <C-Right>
