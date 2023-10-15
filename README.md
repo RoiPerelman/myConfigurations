@@ -25,3 +25,8 @@ ln -snf ~/myConfigurations/nvim ~/.config/nvim
 ``` bash
 ln -snf ~/myConfigurations/zsh/zshrc ~/.zshrc
 ```
+
+# ideavimrc
+```bash
+ln -snf ~/myConfigurations/ideavimrc ~/.ideavimrc
+```
