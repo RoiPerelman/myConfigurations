@@ -1,28 +1,23 @@
-local function keymap(m, k, v)
-	-- noremap means no recursive mappings which means if we map x to y and y to z.
-	-- x would still be mapped to y and not z
-	local opts = { noremap = true, silent = true }
-	vim.api.nvim_set_keymap(m, k, v, opts)
-end
+vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
--- arrows are for pussies
-keymap("n", "<Up>", "<NOP>")
-keymap("n", "<Down>", "<NOP>")
-keymap("n", "<Left>", "<NOP>")
-keymap("n", "<Right>", "<NOP>")
+-- arrows are for pussies (can use <NOP>)
+vim.keymap.set("n", "<left>", '<cmd>echo "Use h to move!!"<CR>')
+vim.keymap.set("n", "<right>", '<cmd>echo "Use l to move!!"<CR>')
+vim.keymap.set("n", "<up>", '<cmd>echo "Use k to move!!"<CR>')
+vim.keymap.set("n", "<down>", '<cmd>echo "Use j to move!!"<CR>')
 
 -- i hate escape
-keymap("i", "jj", "<ESC>")
-keymap("i", "kk", "<ESC>")
-keymap("i", "jk", "<ESC>")
-keymap("i", "kj", "<ESC>")
+vim.keymap.set("i", "jj", "<ESC>")
+vim.keymap.set("i", "kk", "<ESC>")
+vim.keymap.set("i", "jk", "<ESC>")
+vim.keymap.set("i", "kj", "<ESC>")
 
 -- alternate way to save
-keymap("n", "<C-s>", ":w<CR>")
+vim.keymap.set("n", "<C-s>", ":w<CR>")
 
 -- do not loose visual mode when indenting
-keymap("v", "<", "<gv")
-keymap("v", ">", ">gv")
+vim.keymap.set("v", "<", "<gv")
+vim.keymap.set("v", ">", ">gv")
 
 -- move lines up and down
 vim.cmd([[nnoremap <A-j> :m .+1<CR>==]])
@@ -34,27 +29,19 @@ vim.cmd([[vnoremap <A-k> :m '<-2<CR>gv=gv]])
 
 -- next prev key bindings
 -- buffers
-keymap("n", "]b", ":bnext<CR>")
-keymap("n", "[b", ":bprevious<CR>")
+vim.keymap.set("n", "]b", ":bnext<CR>")
+vim.keymap.set("n", "[b", ":bprevious<CR>")
 -- quickfix and locallist
-keymap("n", "]q", ":cnext<CR>")
-keymap("n", "[q", ":cprev<CR>")
-keymap("n", "]l", ":lnext<CR>")
-keymap("n", "[l", ":lprev<CR>")
+vim.keymap.set("n", "]q", ":cnext<CR>")
+vim.keymap.set("n", "[q", ":cprev<CR>")
+vim.keymap.set("n", "]l", ":lnext<CR>")
+vim.keymap.set("n", "[l", ":lprev<CR>")
 
--- split windows with leader key
-keymap("n", "<Leader>ws", ":sp<CR>")
-keymap("n", "<Leader>wv", ":vsp<CR>")
-
--- better window navigation
-keymap("n", "<C-h>", ":wincmd h<CR>")
-keymap("n", "<C-l>", ":wincmd l<CR>")
-keymap("n", "<C-k>", ":wincmd k<CR>")
-keymap("n", "<C-j>", ":wincmd j<CR>")
-keymap("n", "<Leader>h", ":wincmd h<CR>")
-keymap("n", "<Leader>l", ":wincmd l<CR>")
-keymap("n", "<Leader>k", ":wincmd k<CR>")
-keymap("n", "<Leader>j", ":wincmd j<CR>")
+-- better window navigation See `:help wincmd`
+vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" }) -- :wincmd h<CR>
+vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" }) -- :wincmd l<CR>
+vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" }) -- :wincmd j<CR>
+vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" }) -- :wincmd k<CR>
 
 -- resize windows
 vim.cmd([[nnoremap <C-Down> :resize -2<CR>]])
@@ -62,35 +49,17 @@ vim.cmd([[nnoremap <C-Up> :resize +2<CR>]])
 vim.cmd([[nnoremap <C-Right> :vertical resize -2<CR>]])
 vim.cmd([[nnoremap <C-Left> :vertical resize +2<CR>]])
 
--- Make Y yank till end of line
-keymap("n", "Y", "y$")
+-- Make Y yank till end of line (Check if still necessary)
+vim.keymap.set("n", "Y", "y$")
 
 -- cut does so to black hole register!!!
-keymap("n", "c", '"_c')
-keymap("n", "C", '"_C')
-keymap("v", "c", '"_c')
-keymap("v", "C", '"_C')
+vim.keymap.set("n", "c", '"_c')
+vim.keymap.set("n", "C", '"_C')
+vim.keymap.set("v", "c", '"_c')
+vim.keymap.set("v", "C", '"_C')
 
--- Telescope
-keymap("n", "<Leader>ft", ":Telescope <CR>")
-keymap("n", "<Leader>ff", ":Telescope find_files<CR>")
-keymap("n", "<Leader>fg", ":Telescope live_grep<CR>")
-keymap(
-	"n",
-	"<Leader>fr",
-	':lua require"telescope.builtin".grep_string({ use_regex = true, search = vim.fn.input("Grep for > ")})<CR>'
-)
-keymap("n", "<Leader>fe", ":Telescope file_browser<CR>")
-keymap("n", "<Leader>fd", ":Telescope lsp_document_diagnostics<CR>")
-keymap("n", "<Leader>fb", ":Telescope buffers<CR>")
-keymap("n", "<Leader>fm", ":Telescope marks<CR>")
-keymap("n", "<Leader>fj", ":Telescope jumplist<CR>")
-keymap("n", "<Leader>fq", ":Telescope quickfix<CR>")
-keymap("n", "<Leader>fl", ":Telescope loclist<CR>")
-keymap("n", "<Leader>fk", ":Telescope keymaps<CR>")
-keymap("n", "<Leader>fh", ":Telescope help_tags<CR>")
-
-keymap("n", "<C-p>", ":Telescope find_files<CR>")
-
--- nvim-tree
-keymap("n", "<Leader>e", ":NvimTreeToggle<CR>")
+-- Diagnostic keymaps
+vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous [D]iagnostic message" })
+vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next [D]iagnostic message" })
+vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror messages" })
+vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })

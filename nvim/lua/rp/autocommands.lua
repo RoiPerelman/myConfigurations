@@ -1,20 +1,17 @@
-vim.cmd(
-  [[
+vim.cmd([[
   augroup last_edit_position
     autocmd!
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
   augroup END
-]]
-)
+]])
 
-vim.cmd(
-  [[
-  augroup highlight_yank
-      autocmd!
-      au TextYankPost * silent! lua vim.highlight.on_yank{higroup="IncSearch", timeout=700}
-  augroup END
-]]
-)
+vim.api.nvim_create_autocmd("TextYankPost", {
+	desc = "Highlight when yanking text",
+	group = vim.api.nvim_create_augroup("highlight-yank", { clear = true }),
+	callback = function()
+		vim.highlight.on_yank()
+	end,
+})
 
 vim.cmd([[
   augroup remove_trailing_whitespace
@@ -22,10 +19,3 @@ vim.cmd([[
     au BufWritePre * %s/\s\+$//e
   augroup END
 ]])
-
--- vim.create_autocmd('TextYankPost', {
---   group = num_au
---   callback = function()
---     vim.highlight.on_yank({ higroup = 'Visual', timeout = 120 })
---   end,
--- })
