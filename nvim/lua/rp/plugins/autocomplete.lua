@@ -63,6 +63,7 @@ return {
 				["<C-b>"] = cmp.mapping.scroll_docs(-4),
 				["<C-f>"] = cmp.mapping.scroll_docs(4),
 				["<C-y>"] = cmp.mapping.confirm({ select = true }),
+				["<C-e>"] = cmp.mapping.abort(),
 				["<C-Space>"] = cmp.mapping.complete({}),
 
 				-- in snippters - move between locations
@@ -80,41 +81,40 @@ return {
 				-- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
 				--    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
 			}),
-
 			formatting = {
 				expandable_indicator = true,
 				fields = { "kind", "abbr", "menu" },
 				format = function(entry, vim_item)
 					local kind_icons = {
-						Text = "",
-						Method = "m",
-						Function = "",
-						Constructor = "",
-						Field = "",
-						Variable = "",
-						Class = "",
+						Text = "󰉿",
+						Method = "󰆧",
+						Function = "󰊕",
+						Constructor = "",
+						Field = "󰜢",
+						Variable = "󰀫",
+						Class = "󰠱",
 						Interface = "",
 						Module = "",
-						Property = "",
-						Unit = "",
-						Value = "",
+						Property = "󰜢",
+						Unit = "󰑭",
+						Value = "󰎠",
 						Enum = "",
-						Keyword = "",
-						Snippet = "",
-						Color = "",
-						File = "",
-						Reference = "",
-						Folder = "",
+						Keyword = "󰌋",
+						Snippet = "",
+						Color = "󰏘",
+						File = "󰈙",
+						Reference = "󰈇",
+						Folder = "󰉋",
 						EnumMember = "",
-						Constant = "",
-						Struct = "",
+						Constant = "󰏿",
+						Struct = "󰙅",
 						Event = "",
-						Operator = "",
-						TypeParameter = "",
+						Operator = "󰆕",
+						TypeParameter = "",
 					}
-					-- Kind icons
-					vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
-					-- vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind) -- This concatonates the icons with the name of the item kind
+					-- vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
+					-- This concatonates the icons with the name of the item kind
+					vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind)
 					vim_item.menu = ({
 						nvim_lsp = "[LSP]",
 						luasnip = "[Snippet]",
