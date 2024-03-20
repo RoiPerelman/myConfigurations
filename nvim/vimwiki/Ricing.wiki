@@ -1,5 +1,0 @@
-# Ricing
-
-== Fonts ==
-to make the fonts work, we need to to put them in /usr/local/share/fonts
-ln -snf ~/myConfigurations/fonts /usr/local/share/fonts

@@ -1,9 +1,23 @@
-return { -- Highlight, edit, and navigate code
+-- Highlight, edit, and navigate code
+return {
 	"nvim-treesitter/nvim-treesitter",
 	build = ":TSUpdate",
 	opts = {
-		ensure_installed = { "bash", "c", "html", "lua", "markdown", "vim", "vimdoc" },
-		-- Autoinstall languages that are not installed
+		ensure_installed = {
+			"bash",
+			"c",
+			"html",
+			"lua",
+			"markdown",
+			"vim",
+			"vimdoc",
+			"javascript",
+			"typescript",
+			"python",
+			"dockerfile",
+			"json",
+			"jsonc",
+		},
 		auto_install = true,
 		highlight = {
 			enable = true,
