@@ -31,7 +31,7 @@ vim.opt.listchars = { trail = "·", tab = "→ ", nbsp = "␣", extends = "›",
 -- window options
 vim.opt.list = true -- show listchars
 vim.opt.number = true -- add number
-vim.opt.relativenumber = true -- add relative number
+vim.opt.relativenumber = false -- add relative number
 vim.opt.wrap = false -- do not wrap lines
 vim.opt.cursorline = true -- highlight cursor line
 vim.opt.signcolumn = "yes" -- add extra space to the left column for signs

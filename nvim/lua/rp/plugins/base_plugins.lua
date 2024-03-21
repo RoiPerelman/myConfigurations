@@ -1,13 +1,6 @@
 return {
 	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
 	{ "numToStr/Comment.nvim", opts = {} }, -- "gc" or "gb" to comment visual regions/lines
-	-- Highlight todo, notes, etc in comments
-	{
-		"folke/todo-comments.nvim",
-		event = "VimEnter",
-		dependencies = { "nvim-lua/plenary.nvim" },
-		opts = { signs = false },
-	},
 	-- Collection of various small independent plugins/modules
 	{
 		"echasnovski/mini.nvim",
@@ -39,6 +32,14 @@ return {
 			end
 		end,
 	},
+	-- Highlight todo, notes, etc in comments
+	{
+		"folke/todo-comments.nvim",
+		event = "VimEnter",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		opts = { signs = false },
+	},
+	-- add nvim-tree
 	{
 		"kyazdani42/nvim-tree.lua",
 		config = function()
