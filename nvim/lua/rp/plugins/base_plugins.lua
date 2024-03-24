@@ -48,6 +48,7 @@ return {
 		end,
 	},
 	"kyazdani42/nvim-web-devicons",
+	{ "stevearc/oil.nvim", opts = {} },
 }
 
 -- -- Text manipulation
