@@ -57,6 +57,7 @@ vim.keymap.set("n", "c", '"_c')
 vim.keymap.set("n", "C", '"_C')
 vim.keymap.set("v", "c", '"_c')
 vim.keymap.set("v", "C", '"_C')
+vim.keymap.set("x", "p", [["_dP"]])
 
 -- Diagnostic keymaps
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous [D]iagnostic message" })

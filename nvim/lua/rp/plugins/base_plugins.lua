@@ -1,4 +1,14 @@
 return {
+	-- Text manipulation
+	-- Surround
+	-- cs"' - change surrounding "" to ''
+	-- ysiw<q> - you surround inside word with <q> <q/>
+	-- dst - delete surrounding tag (for these kinds of tags <>)
+	-- t=<>, b=(, B={
+	-- :help ys cs or ds for more information
+	--
+	"tpope/vim-surround",
+	"tpope/vim-repeat",
 	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
 	{ "numToStr/Comment.nvim", opts = {} }, -- "gc" or "gb" to comment visual regions/lines
 	-- Collection of various small independent plugins/modules
@@ -15,7 +25,7 @@ return {
 			-- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
 			-- - sd'   - [S]urround [D]elete [']quotes
 			-- - sr)'  - [S]urround [R]eplace [)] [']
-			require("mini.surround").setup()
+			-- require("mini.surround").setup()
 
 			require("mini.pairs").setup()
 
@@ -50,14 +60,3 @@ return {
 	"kyazdani42/nvim-web-devicons",
 	{ "stevearc/oil.nvim", opts = {} },
 }
-
--- -- Text manipulation
--- -- Surround
--- -- cs"' - change surrounding "" to ''
--- -- ysiw<q> - you surround inside word with <q> <q/>
--- -- dst - delete surrounding tag (for these kinds of tags <>)
--- -- t=<>, b=(, B={
--- -- :help ys cs or ds for more information
--- --
--- "tpope/vim-surround",
--- "tpope/vim-repeat",
