@@ -9,8 +9,6 @@
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ; make esc work like C-g
 ;; (set-face-attribute 'default nil :font "Fira Code" :height 280)
 
-(load-theme 'wombat)
-
 ; line numbers
 (global-display-line-numbers-mode t) ; show line numbers
 (column-number-mode) ; show column as well as line number in bottom line
@@ -25,8 +23,9 @@
 (defvar rp/default-font-size 180)
 (defvar rp/default-variable-font-size 180)
 
-(set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; make sure we start emacs fullscreen and maximized
+(set-frame-parameter (selected-frame) 'fullscreen 'maximized) ;; sets initial frame
+(add-to-list 'default-frame-alist '(fullscreen . maximized)) ;; sets next frames
 
 ;; Set frame transparency
 (defvar rp/frame-transparency '(100 . 90))
@@ -49,14 +48,14 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
-(use-package doom-themes
-  :init (load-theme 'doom-palenight t))
+;; theme
+(use-package dracula-theme
+  :init (load-theme 'dracula))
+
+;; (use-package doom-themes
+;;   :init (load-theme 'doom-palenight t))
 
 (use-package all-the-icons)
-
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 15)))
 
 (use-package which-key
   :defer 0
@@ -65,12 +64,23 @@
   (which-key-mode)
   (setq which-key-idle-delay 1))
 
+;; completions
+(use-package vertico
+  :init
+  (vertico-mode))
+
+(use-package savehist
+  :init (savehist-mode))
+
 ;; Enable rich annotations using the Marginalia package
 (use-package marginalia
-  ;; Either bind `marginalia-cycle' globally or only in the minibuffer
-  :bind (("M-A" . marginalia-cycle)
-         :map minibuffer-local-map
-         ("M-A" . marginalia-cycle))
-  :init
-  (marginalia-mode))
+  :init (marginalia-mode))
 
+(use-package orderless
+  :init
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
+  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
