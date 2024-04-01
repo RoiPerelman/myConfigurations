@@ -49,14 +49,21 @@ return {
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = { signs = false },
 	},
+	-- TODO: DECIDE if I want to remove
 	-- add nvim-tree
+	-- {
+	-- 	"kyazdani42/nvim-tree.lua",
+	-- 	config = function()
+	-- 		vim.keymap.set("n", "<Leader>e", ":NvimTreeToggle<CR>")
+	-- 		require("nvim-tree").setup({})
+	-- 	end,
+	-- },
+	-- "kyazdani42/nvim-web-devicons",
 	{
-		"kyazdani42/nvim-tree.lua",
+		"stevearc/oil.nvim",
 		config = function()
-			vim.keymap.set("n", "<Leader>e", ":NvimTreeToggle<CR>")
-			require("nvim-tree").setup({})
+			vim.keymap.set("n", "<Leader>e", ":Oil<CR>")
+			require("oil").setup()
 		end,
 	},
-	"kyazdani42/nvim-web-devicons",
-	{ "stevearc/oil.nvim", opts = {} },
 }

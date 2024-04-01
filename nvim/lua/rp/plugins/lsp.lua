@@ -16,7 +16,7 @@ return {
 			group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
 			callback = function(event)
 				-- remove virtual text
-				-- vim.diagnostic.config({ virtual_text = false })
+				vim.diagnostic.config({ virtual_text = false })
 
 				local map = function(keys, func, desc)
 					vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
