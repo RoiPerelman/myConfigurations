@@ -82,5 +82,52 @@ return { -- Fuzzy Finder (files, lsp, etc)
 		vim.keymap.set("n", "<leader>fp", function()
 			builtin.find_files({ cwd = vim.fn.stdpath("config") })
 		end, { desc = "[F]ind files in [P]rivate config" })
+
+		-- TODO: move to a different file
+		--
+		local inspekto_filepaths = {
+			"~/tiny_inspektor/sw/fixi",
+			"~/tiny_inspektor/sw/fixi_client",
+			"~/tiny_inspektor/sw/tiny_database",
+			"~/tiny_inspektor/sw/tier2/tiny_std",
+			"~/tiny_inspektor/sw/tier2/common_std",
+			"~/tiny_inspektor/sw/data_coordinator",
+			"~/tiny_inspektor/sw/connectivity",
+			"~/tiny_inspektor/sw/inspekto_agent",
+			"~/tiny_inspektor/sw/integration_managers",
+		}
+		vim.keymap.set("n", "<leader>fif", function()
+			builtin.find_files({
+				search_dirs = inspekto_filepaths,
+				additional_args = { "--hidden" },
+				-- find_command = {
+				-- 	"rg",
+				-- 	"--files",
+				-- 	"--iglob",
+				-- 	"!.git", -- Explicitly ignore .git directory (usually not needed as rg does this by default)
+				-- 	"--hidden", -- Optional: Remove this line if you do not want to include hidden files
+				-- },
+			})
+		end, { desc = "[F]ind [I]nspekto [F]iles" })
+		vim.keymap.set("n", "<leader>fig", function()
+			builtin.live_grep({
+				search_dirs = inspekto_filepaths,
+				-- path_display = { "shorten" },
+				path_display = { "tail" },
+				-- path_display = function(opts, path)
+				-- 	-- Define the subpath to start displaying from
+				-- 	local subpath_start = "sw/"
+				-- 	-- Find the position where this subpath starts
+				-- 	local start_pos = path:find(subpath_start)
+				-- 	if start_pos then
+				-- 		-- Adjust the path to start from the specified subpath
+				-- 		return path:sub(start_pos + #subpath_start - 1)
+				-- 	end
+				-- 	-- If the specific subpath isn't found, return the whole path
+				-- 	return path
+				-- end,
+				additional_args = { "--hidden", "--ignore-case" }, -- Specified as a table directly
+			})
+		end, { desc = "[F]ind [I]nspekto [G]rep" })
 	end,
 }

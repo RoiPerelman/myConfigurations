@@ -1,5 +1,9 @@
 -- Autocompletion
 return {
+	-- github copilot suggests completions as you type
+	-- it shows text as virtual text in the editor
+	-- to complete the suggestion, press <Tab>
+	"github/copilot.vim",
 	-- nvim-cmp is the engine.
 	-- It has sources it asks for completion options and handles client completions
 	"hrsh7th/nvim-cmp",
