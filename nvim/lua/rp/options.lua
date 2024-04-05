@@ -35,7 +35,7 @@ vim.opt.relativenumber = false -- add relative number
 vim.opt.wrap = false -- do not wrap lines
 vim.opt.cursorline = true -- highlight cursor line
 vim.opt.signcolumn = "yes" -- add extra space to the left column for signs
-vim.opt.colorcolumn = "100" -- color a column at 90
+vim.opt.colorcolumn = "120" -- color a column at 90
 vim.opt.breakindent = true -- Enable break indent
 
 -- buffer options
