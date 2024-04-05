@@ -58,7 +58,7 @@ return {
 	-- 		require("nvim-tree").setup({})
 	-- 	end,
 	-- },
-	-- "kyazdani42/nvim-web-devicons",
+	"kyazdani42/nvim-web-devicons",
 	{
 		"stevearc/oil.nvim",
 		config = function()
