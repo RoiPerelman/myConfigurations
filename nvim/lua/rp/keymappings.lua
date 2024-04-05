@@ -19,6 +19,7 @@ vim.keymap.set("n", "<C-s>", ":w<CR>")
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
+-- TODO: make sure this works
 -- move lines up and down
 vim.cmd([[nnoremap <A-j> :m .+1<CR>==]])
 vim.cmd([[nnoremap <A-k> :m .-2<CR>==]])
@@ -48,9 +49,6 @@ vim.cmd([[nnoremap <C-Down> :resize -2<CR>]])
 vim.cmd([[nnoremap <C-Up> :resize +2<CR>]])
 vim.cmd([[nnoremap <C-Right> :vertical resize -2<CR>]])
 vim.cmd([[nnoremap <C-Left> :vertical resize +2<CR>]])
-
--- Make Y yank till end of line (Check if still necessary)
-vim.keymap.set("n", "Y", "y$")
 
 -- cut does so to black hole register!!!
 vim.keymap.set("n", "c", '"_c')
