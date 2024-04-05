@@ -113,8 +113,9 @@ return {
     vim.list_extend(ensure_installed, {
       "eslint-lsp", -- used to lint and format along tsserver
       "stylua", -- Used to format Lua code
-      "isort",
-      "black",
+      -- "isort",
+      -- "black",
+      -- "ruff-lsp", -- python linter and formatter
     })
     -- Automatically install LSPs and related tools to stdpath for Neovim
     require("mason-tool-installer").setup({ ensure_installed = ensure_installed })

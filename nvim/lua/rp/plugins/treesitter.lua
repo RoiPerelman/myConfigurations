@@ -1,38 +1,49 @@
+-- TODO: `:help nvim-treesitter`
 -- Highlight, edit, and navigate code
 return {
   "nvim-treesitter/nvim-treesitter",
+  event = { "BufReadPre", "BufNewFile" },
   build = ":TSUpdate",
-  opts = {
-    ensure_installed = {
-      "bash",
-      "c",
-      "html",
-      "lua",
-      "markdown",
-      "vim",
-      "vimdoc",
-      "javascript",
-      "typescript",
-      "python",
-      "dockerfile",
-      "json",
-      "jsonc",
-    },
-    auto_install = true,
-    highlight = {
-      enable = true,
-      -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-      --  If you are experiencing weird indenting issues, add the language to
-      --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-      additional_vim_regex_highlighting = { "ruby" },
-    },
-    indent = { enable = true, disable = { "ruby" } },
+  dependencies = {
+    "windwp/nvim-ts-autotag",
   },
-  config = function(_, opts)
-    -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-
-    ---@diagnostic disable-next-line: missing-fields
-    require("nvim-treesitter.configs").setup(opts)
+  config = function()
+    require("nvim-treesitter.configs").setup({
+      ensure_installed = {
+        "bash",
+        "c",
+        "html",
+        "lua",
+        "markdown",
+        "vim",
+        "vimdoc",
+        "javascript",
+        "typescript",
+        "python",
+        "dockerfile",
+        "json",
+        "jsonc",
+      },
+      auto_install = true,
+      highlight = {
+        enable = true,
+      },
+      indent = { enable = true },
+      -- enable autotagging (w/ nvim-ts-autotag plugin)
+      autotag = {
+        enable = true,
+      },
+      -- TODO: check this out
+      -- incremental_selection = {
+      --   enable = true,
+      --   keymaps = {
+      --     init_selection = "<Leader>is",
+      --     node_incremental = "<Leader>is",
+      --     scope_incremental = false,
+      --     node_decremental = "<bs>",
+      --   },
+      -- },
+    })
 
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:

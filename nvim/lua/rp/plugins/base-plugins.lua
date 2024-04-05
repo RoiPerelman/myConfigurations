@@ -1,4 +1,6 @@
 return {
+  -- lua functions that many plugins use
+  "nvim-lua/plenary.nvim",
   -- Text manipulation
   -- Surround
   -- cs"' - change surrounding "" to ''
@@ -7,10 +9,15 @@ return {
   -- t=<>, b=(, B={
   -- :help ys cs or ds for more information
   --
-  "tpope/vim-surround",
-  "tpope/vim-repeat",
+  -- "tpope/vim-surround",
+  -- "tpope/vim-repeat",
   "tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
-
+  {
+    "kylechui/nvim-surround",
+    event = { "BufReadPre", "BufNewFile" },
+    version = "*", -- Use for stability; omit to use `main` branch for the latest features
+    config = true,
+  },
   {
     -- "gc" or "gb" to comment visual regions/lines
     "numToStr/Comment.nvim",
@@ -58,13 +65,6 @@ return {
         return "%2l:%-2v"
       end
     end,
-  },
-  -- Highlight todo, notes, etc in comments
-  {
-    "folke/todo-comments.nvim",
-    event = "VimEnter",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    opts = { signs = false },
   },
   -- TODO: DECIDE if I want to remove
   -- add nvim-tree
