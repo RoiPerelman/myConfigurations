@@ -86,6 +86,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
     -- TODO: move to a different file
     --
     local inspekto_filepaths = {
+      "~/tiny_inspektor/cicd/tinybox",
       "~/tiny_inspektor/sw/fixi",
       "~/tiny_inspektor/sw/fixi_client",
       "~/tiny_inspektor/sw/tiny_database",
@@ -95,39 +96,46 @@ return { -- Fuzzy Finder (files, lsp, etc)
       "~/tiny_inspektor/sw/connectivity",
       "~/tiny_inspektor/sw/inspekto_agent",
       "~/tiny_inspektor/sw/integration_managers",
+      "~/tiny_inspektor/sw/profile_center",
+      "~/tiny_inspektor/sw/inspekto_agent",
     }
-    vim.keymap.set("n", "<leader>fif", function()
+    local inspekto_path_display = function(_, path)
+      -- Define the subpath to start displaying from
+      local sw_subpath_start = "sw/"
+      local cicd_subpath_start = "cicd/"
+      -- Find the position where this subpath starts
+      local sw_start_pos = path:find(sw_subpath_start)
+      local cicd_start_pos = path:find(cicd_subpath_start)
+      if sw_start_pos then
+        -- Adjust the path to start from the end of the specified subpath
+        return path:sub(sw_start_pos + #sw_subpath_start)
+      elseif cicd_start_pos then
+        -- Same for cicd subpath
+        return path:sub(cicd_start_pos + #cicd_subpath_start)
+      end
+      -- If the specific subpath isn't found, return the whole path
+      return path
+    end
+    vim.keymap.set("n", "<leader>if", function()
       builtin.find_files({
         search_dirs = inspekto_filepaths,
         additional_args = { "--hidden" },
-        -- find_command = {
-        -- 	"rg",
-        -- 	"--files",
-        -- 	"--iglob",
-        -- 	"!.git", -- Explicitly ignore .git directory (usually not needed as rg does this by default)
-        -- 	"--hidden", -- Optional: Remove this line if you do not want to include hidden files
-        -- },
+        path_display = inspekto_path_display,
       })
-    end, { desc = "[F]ind [I]nspekto [F]iles" })
-    vim.keymap.set("n", "<leader>fig", function()
+    end, { desc = "[I]nspekto [F]iles" })
+    vim.keymap.set("n", "<leader>ig", function()
       builtin.live_grep({
         search_dirs = inspekto_filepaths,
-        -- path_display = { "shorten" },
-        path_display = { "tail" },
-        -- path_display = function(opts, path)
-        -- 	-- Define the subpath to start displaying from
-        -- 	local subpath_start = "sw/"
-        -- 	-- Find the position where this subpath starts
-        -- 	local start_pos = path:find(subpath_start)
-        -- 	if start_pos then
-        -- 		-- Adjust the path to start from the specified subpath
-        -- 		return path:sub(start_pos + #subpath_start - 1)
-        -- 	end
-        -- 	-- If the specific subpath isn't found, return the whole path
-        -- 	return path
-        -- end,
-        additional_args = { "--hidden", "--ignore-case" }, -- Specified as a table directly
+        path_display = inspekto_path_display,
+        -- additional_args = { "--hidden", "--ignore-case" }, -- Specified as a table directly
       })
-    end, { desc = "[F]ind [I]nspekto [G]rep" })
+    end, { desc = "[I]nspekto [G]rep" })
+    vim.keymap.set("n", "<leader>iw", function()
+      builtin.grep_string({
+        search_dirs = inspekto_filepaths,
+        path_display = inspekto_path_display,
+        -- additional_args = { "--hidden", "--ignore-case" }, -- Specified as a table directly
+      })
+    end, { desc = "[I]nspekto [W]ord" })
   end,
 }
