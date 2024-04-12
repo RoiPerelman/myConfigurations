@@ -37,7 +37,8 @@ return {
 
         local client = vim.lsp.get_client_by_id(event.data.client_id)
 
-        -- specific client fixes
+        -- To know server capabilities, use (for example):
+        -- :lua =vim.lsp.get_active_clients()[1].server_capabilities
         if client.name == "tsserver" then
           -- remove format so eslint can do it
           client.server_capabilities.documentFormattingProvider = false
@@ -49,6 +50,47 @@ return {
             buffer = event.buf,
             command = "EslintFixAll",
           })
+        end
+
+        if client.name == "pyright" then
+          client.server_capabilities.codeActionProvider = false
+        end
+
+        if client.name == "ruff_lsp" then
+          -- Disable hover in favor of Pyright
+          client.server_capabilities.hoverProvider = false
+          -- Disable auto formatting using a command in my function
+          client.server_capabilities.documentFormattingProvider = false
+
+          local organize_imports_and_fix_all = function()
+            vim.lsp.buf.code_action({
+              context = { only = { "source.organizeImports.ruff" } },
+              apply = true,
+            })
+            -- unfortunately, code_action is async, so we need to wait for it to finish
+            vim.wait(100)
+            vim.lsp.buf.code_action({
+              context = { only = { "source.fixAll.ruff" } },
+              apply = true,
+            })
+            vim.wait(100)
+            vim.lsp.buf.execute_command({
+              command = "ruff.applyFormat",
+              arguments = {
+                { uri = vim.uri_from_bufnr(0) },
+              },
+            })
+          end
+          vim.keymap.set(
+            "n",
+            "g=",
+            organize_imports_and_fix_all,
+            { buffer = event.buf, desc = "[G]et [=]format + organize + fix" }
+          )
+          -- vim.api.nvim_create_autocmd("BufWritePre", {
+          --   buffer = event.buf,
+          --   callback = organize_imports_and_fix_all,
+          -- })
         end
 
         -- TODO: Do I want this?
@@ -85,9 +127,15 @@ return {
       tsserver = {},
       pyright = {
         settings = {
+          pyright = {
+            -- Using Ruff's import organizer
+            disableOrganizeImports = true,
+          },
           python = {
             analysis = {
               typeCheckingMode = "off",
+              -- Ignore all files for analysis to exclusively use Ruff for linting
+              -- ignore = { "*" },
             },
           },
         },
@@ -98,7 +146,6 @@ return {
             completion = {
               callSnippet = "Replace",
             },
-            -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
             diagnostics = { disable = { "missing-fields" } },
           },
         },
@@ -115,7 +162,13 @@ return {
       "stylua", -- Used to format Lua code
       -- "isort",
       -- "black",
-      -- "ruff-lsp", -- python linter and formatter
+      ruff_lsp = {
+        settings = {
+          -- Any extra CLI arguments for `ruff` go here.
+          args = {},
+        },
+      }, -- python linter and formatter
+      "mypy", -- python type checker
     })
     -- Automatically install LSPs and related tools to stdpath for Neovim
     require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
