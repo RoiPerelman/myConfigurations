@@ -128,14 +128,11 @@ return {
       pyright = {
         settings = {
           pyright = {
-            -- Using Ruff's import organizer
-            disableOrganizeImports = true,
+            disableOrganizeImports = true, -- Use Ruff's import organizer
           },
           python = {
             analysis = {
-              typeCheckingMode = "off",
-              -- Ignore all files for analysis to exclusively use Ruff for linting
-              -- ignore = { "*" },
+              typeCheckingMode = "strict",
             },
           },
         },
@@ -160,15 +157,7 @@ return {
     vim.list_extend(ensure_installed, {
       "eslint-lsp", -- used to lint and format along tsserver
       "stylua", -- Used to format Lua code
-      -- "isort",
-      -- "black",
-      ruff_lsp = {
-        settings = {
-          -- Any extra CLI arguments for `ruff` go here.
-          args = {},
-        },
-      }, -- python linter and formatter
-      "mypy", -- python type checker
+      ruff_lsp = {}, -- python linter and formatter
     })
     -- Automatically install LSPs and related tools to stdpath for Neovim
     require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
