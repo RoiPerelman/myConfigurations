@@ -132,7 +132,7 @@ return {
           },
           python = {
             analysis = {
-              typeCheckingMode = "strict",
+              typeCheckingMode = "off",
             },
           },
         },
