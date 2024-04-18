@@ -19,14 +19,14 @@ vim.keymap.set("n", "<C-s>", ":w<CR>")
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
--- TODO: make sure this works
+-- TODO: this doesn't work
 -- move lines up and down
-vim.cmd([[nnoremap <A-j> :m .+1<CR>==]])
-vim.cmd([[nnoremap <A-k> :m .-2<CR>==]])
-vim.cmd([[inoremap <A-j> <Esc>:m .+1<CR>==gi]])
-vim.cmd([[inoremap <A-k> <Esc>:m .-2<CR>==gi]])
-vim.cmd([[vnoremap <A-j> :m '>+1<CR>gv=gv]])
-vim.cmd([[vnoremap <A-k> :m '<-2<CR>gv=gv]])
+vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { silent = true })
+vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { silent = true })
+vim.keymap.set("i", "<A-j>", "<Esc>:m .+1<CR>==gi", { silent = true })
+vim.keymap.set("i", "<A-k>", "<Esc>:m .-2<CR>==gi", { silent = true })
+vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { silent = true })
+vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { silent = true })
 
 -- next prev key bindings
 -- buffers
