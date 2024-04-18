@@ -7,7 +7,6 @@ return {
       local gitsigns = require("gitsigns")
       gitsigns.setup()
 
-      vim.keymap.set("n", "<Leader>gb", gitsigns.toggle_current_line_blame, { desc = "[G]it [B]lame Line Toggle" })
       vim.keymap.set("n", "<Leader>gB", gitsigns.blame_line, { desc = "[G]it [B]lame" })
 
       vim.keymap.set("n", "]h", gitsigns.next_hunk, { desc = "Next Hunk" })
@@ -40,6 +39,14 @@ return {
     },
     config = function()
       require("neogit").setup({})
+      vim.keymap.set("n", "<Leader>gg", "<cmd>Neogit<cr>", { desc = "Neo[G]it Magit" })
+    end,
+  },
+  {
+    "FabijanZulj/blame.nvim",
+    config = function()
+      require("blame").setup()
+      vim.keymap.set("n", "<Leader>gb", "<cmd>BlameToggle<cr>", { desc = "[G]it [B]lame Line Toggle" })
     end,
   },
 }
