@@ -6,6 +6,9 @@ return {
         show_hidden = true,
       },
     })
+    require("oil.util").run_after_load(0, function()
+      require("oil").select({ preview = true })
+    end)
     vim.keymap.set("n", "<Leader>e", ":Oil<CR>", { desc = "File [E]xplorer" })
   end,
   -- TODO: DECIDE if I want to remove
