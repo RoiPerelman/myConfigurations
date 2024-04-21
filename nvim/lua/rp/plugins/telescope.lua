@@ -14,18 +14,45 @@ return { -- Fuzzy Finder (files, lsp, etc)
     },
     { "nvim-telescope/telescope-ui-select.nvim" },
     { "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
+    {
+      "folke/trouble.nvim",
+      dependencies = { "nvim-tree/nvim-web-devicons" },
+      config = function()
+        require("trouble").setup({})
+
+        vim.keymap.set("n", "<leader>xx", function()
+          require("trouble").toggle()
+        end)
+        vim.keymap.set("n", "<leader>xw", function()
+          require("trouble").toggle("workspace_diagnostics")
+        end)
+        vim.keymap.set("n", "<leader>xd", function()
+          require("trouble").toggle("document_diagnostics")
+        end)
+        vim.keymap.set("n", "<leader>xq", function()
+          require("trouble").toggle("quickfix")
+        end)
+        vim.keymap.set("n", "<leader>xl", function()
+          require("trouble").toggle("loclist")
+        end)
+        vim.keymap.set("n", "gR", function()
+          require("trouble").toggle("lsp_references")
+        end)
+      end,
+    },
   },
   config = function()
-    -- opens a window that shows you all of the keymaps for the current Telescope picker
-    --  - Insert mode: <c-/>
-    --  - Normal mode: ?
-    --
-    -- See `:help telescope` and `:help telescope.setup()`
+    local trouble = require("trouble.providers.telescope")
+
     require("telescope").setup({
       defaults = {
         sorting_strategy = "ascending",
         layout_config = {
           prompt_position = "top",
+        },
+        mappings = {
+          i = { ["<c-t>"] = trouble.open_with_trouble },
+          n = { ["<c-t>"] = trouble.open_with_trouble },
         },
       },
       extensions = {
