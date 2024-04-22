@@ -46,6 +46,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
 
     require("telescope").setup({
       defaults = {
+        -- layout_strategy = "rp_layout",
         sorting_strategy = "ascending",
         layout_config = {
           prompt_position = "top",
@@ -85,24 +86,6 @@ return { -- Fuzzy Finder (files, lsp, etc)
       ':lua require"telescope.builtin".grep_string({ use_regex = true, search = vim.fn.input("Grep for > ")})<CR>',
       { desc = "[F]ind [R]egex and after live grep" }
     )
-
-    -- Slightly advanced example of overriding default behavior and theme
-    vim.keymap.set("n", "<leader>/", function()
-      -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-      builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
-        winblend = 10,
-        previewer = false,
-      }))
-    end, { desc = "[/] Fuzzily search in current buffer" })
-
-    -- It's also possible to pass additional configuration options.
-    --  See `:help telescope.builtin.live_grep()` for information about particular keys
-    vim.keymap.set("n", "<leader>f/", function()
-      builtin.live_grep({
-        grep_open_files = true,
-        prompt_title = "Live Grep in Open Files",
-      })
-    end, { desc = "[F]ind [/] in Open Files" })
 
     -- Shortcut for searching your Neovim configuration files
     vim.keymap.set("n", "<leader>fp", function()
@@ -165,3 +148,51 @@ return { -- Fuzzy Finder (files, lsp, etc)
     end, { desc = "[I]nspekto [W]ord" })
   end,
 }
+
+-- layout_strategies.rp_layout = make_documented_layout(
+--   "bottom_pane",
+--   vim.tbl_extend("error", shared_options, {
+--     preview_width = { "Change the width of Telescope's preview window", "See |resolver.resolve_width()|" },
+--     preview_cutoff = "When columns are less than this value, the preview will be disabled",
+--   }),
+--   function(self, max_columns, max_lines, layout_config)
+--     local p_window = require "telescope.pickers.window"
+--     local initial_options = p_window.get_initial_window_options(self)
+--     local results = initial_options.results
+--     local prompt = initial_options.prompt
+--     local preview = initial_options.preview
+--
+--     local border_size = 1
+--
+--     -- Height
+--     prompt.height = 1
+--     results.height = 10
+--     preview.height = max_lines - results.height - prompt.height - 4 * border_size
+--
+--     -- Width
+--     prompt.width = max_columns
+--     preview.width = max_columns - 4 * border_size
+--     results.width = max_columns
+--
+--     -- Line
+--     prompt.line = max_lines - results.height - border_size
+--     results.line = prompt.line + prompt.height
+--     preview.line = 2
+--     prompt.border = { 1, 1, 1, 1 }
+--     results.border = { 1, 1, 1, 1 }
+--     preview.border = { 1, 1, 1, 1 }
+--
+--     vim.print("ROIROI max_lines", max_lines)
+--     vim.print("ROIROI prompt.line", prompt.line)
+--     vim.print("ROIROI results.line", results.line)
+--     -- Col
+--     prompt.col = 0 -- centered
+--
+--     return {
+--       preview = preview,
+--       prompt = prompt,
+--       results = results,
+--     }
+--   end
+-- )
+--
