@@ -1,3 +1,5 @@
+local rp_preview = require("rp_preview")
+
 vim.cmd([[
   augroup last_edit_position
     autocmd!
@@ -19,3 +21,5 @@ vim.cmd([[
     au BufWritePre * %s/\s\+$//e
   augroup END
 ]])
+
+rp_preview.setup_quickfix_preview()
