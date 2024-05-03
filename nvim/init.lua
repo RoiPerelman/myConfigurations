@@ -1,8 +1,8 @@
 require("rp/options")
 require("rp/keymappings")
-require("rp/autocommands")
 require("rp/plugin-manager")
 require("rp/mycommands")
+require("rp/autocommands")
 
 -- TODO:
 -- find a way to handle project specific searches
