@@ -4,4 +4,8 @@ fonts
 html
 .netrwhist
 
-nvim/plugin
+# Ignore everything in the emacs directory
+emacs/*
+# But exclude these files from being ignored
+!emacs/init.el
+

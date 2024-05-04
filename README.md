@@ -34,3 +34,8 @@ ln -snf ~/myConfigurations/zsh/zshrc ~/.zshrc
 ```bash
 ln -snf ~/myConfigurations/ideavimrc ~/.ideavimrc
 ```
+
+# emacs
+```bash
+ln -snf ~/myConfigurations/emacs ~/.config/emacs
+```
