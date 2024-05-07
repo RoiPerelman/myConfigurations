@@ -21,6 +21,10 @@
 ;; Set default font
 ;; (set-face-attribute 'default nil :family "FiraCode Nerd Font")
 
+;; adds a counter eg 4/34 to isearch
+(setq isearch-lazy-count t)
+;; change isearch space to not be literal but a non greedy regex
+(setq search-whitespace-regexp "*.?")
 ;;; ─────────────────── 'General-Frame-Management' ──────────────────
 
 ;; make sure we start emacs fullscreen and maximized
@@ -149,44 +153,77 @@
   (which-key-mode)
   (setq which-key-idle-delay 1))
 
-(use-package highlight-indent-guides
-  :ensure t
-  :hook
-  (python-ts-mode . highlight-indent-guides)
-  :config
-  (setq highlight-indent-guides-method 'character))
+;; (use-package highlight-indent-guides
+;;   :ensure t
+;;   :hook
+;;   (python-ts-mode . highlight-indent-guides)
+;;   :config
+;;   (setq highlight-indent-guides-method 'character))
 
 ;;; ────────────────────────── 'Completions' ──────────────────────────
 
+;; Adds out-of-order pattern matching algorithm.
 (use-package orderless
-  :init
-  ;; Configure a custom style dispatcher (see the Consult wiki)
-  ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
-  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-  (setq completion-styles '(orderless basic)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
+  :ensure t
+  :config
+  (setq completion-styles '(orderless basic)))
 
 ;;; ───────────────────── 'Minibuffer-Completions' ────────────────────
 
-;; TODO: is this package already in emacs? can I just do
-;; (savehist-mode 1)
-;; saves history of minibuffer
-(use-package savehist
-  :init (savehist-mode))
-
-;; Mini buffer completions
+;; save minibuffer histories. Vertico uses to put recently selected options at the top.
+(savehist-mode 1)
+;; save recently visited files. Consult uses it to put recent files options at the top.
+(recentf-mode 1)
+;; Minibuffer live ui
 (use-package vertico
-  :init (vertico-mode))
+  :ensure t
+  :config
+  (setq vertico-cycle t)
+  (vertico-mode))
 
-;; Enable rich annotations using the Marginalia package
+;; Adds item annotations
 (use-package marginalia
-  :init (marginalia-mode))
+  :ensure t
+  :config
+  (marginalia-mode))
 
+;; Gives enhanced completion functions we need to bind
+;; Gives previews for current item
+;; binds M-s as opposed to native C-s C-r
+(use-package consult
+  :ensure t
+  :bind (;; A recursive grep
+         ("M-s M-g" . consult-ripgrep)
+         ;; Search for files names recursively
+         ("M-s M-f" . consult-find)
+         ;; Search through the outline (headings) of the file
+         ("M-s M-o" . consult-outline)
+         ;; Search the current buffer
+         ("M-s M-l" . consult-line)
+         ;; Switch to another buffer, or bookmarked file, or recently
+         ;; opened file.
+         ("M-s M-b" . consult-buffer)))
+
+;; adds actions for current item
 (use-package embark
-  :init (embark-mode))
-;; embark
-;; consult
+  :ensure t
+  :bind (("C-." . embark-act)
+         :map minibuffer-local-map
+         ("C-c C-c" . embark-collect)
+         ("C-c C-e" . embark-export)))
+
+;; adds embark actions to consult functions
+(use-package embark-consult
+  :ensure t)
+
+;; edit the results of a grep search  while inside a `grep-mode' buffer.
+;; toggle editable mode, make changes, type C-c C-c to confirm | C-c C-k to abort.
+(use-package wgrep
+  :ensure t
+  :bind ( :map grep-mode-map
+          ("e" . wgrep-change-to-wgrep-mode)
+          ("C-x C-q" . wgrep-change-to-wgrep-mode)
+          ("C-c C-c" . wgrep-finish-edit)))
 
 ;; ───────────────────── 'In-Buffer-Completions' ─────────────────────
 
@@ -220,3 +257,10 @@
 (use-package magit
   :ensure t
   :bind ("C-x g" . magit-status))
+
+;;; ─────────────────────────────── Lua ───────────────────────────────
+
+(use-package lua-mode
+  :ensure t
+  :config
+  (lua-mode))

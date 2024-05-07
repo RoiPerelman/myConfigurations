@@ -137,6 +137,7 @@ return {
           },
         },
       },
+      -- pylsp = {},
       lua_ls = {
         settings = {
           Lua = {
