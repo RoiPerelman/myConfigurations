@@ -2,8 +2,8 @@
 
 ;; Disable startup message
 (setq inhibit-startup-screen t)
-;; annoying noisy bell turned into annoying visible bell
-(setq visible-bell 1)
+;; Disable annoying noisy bell
+(setq ring-bell-function 'ignore)
 ;; Disable visible scrollbar
 (scroll-bar-mode -1)
 ;; Disable the toolbar
@@ -170,6 +170,7 @@
   (which-key-mode)
   (setq which-key-idle-delay 1))
 
+;; (use-package rainbow-delimiters)
 ;; (use-package highlight-indent-guides
 ;;   :ensure t
 ;;   :hook
@@ -289,18 +290,37 @@
 (use-package reformatter
   :ensure t
   :config
-  (defcustom ruff-format-command "ruff"
+  (require 'reformatter)
+  (defcustom ruff-command "ruff"
     "Ruff command to use for formatting."
-    :type 'string
+    :type 'stringnn
+    :group 'ruff-format)
+  (reformatter-define ruff-fix
+    :program ruff-command
+    :args (list "check" "--fix" "--stdin-filename" (or (buffer-file-name) input-file))
+    :lighter " RuffFix"
+    :group 'ruff-format)
+  (reformatter-define ruff-isort
+    :program ruff-command
+    :args (list "check" "--select=I" "--fix" "--stdin-filename" (or (buffer-file-name) input-file))
+    :lighter " RuffIsort"
     :group 'ruff-format)
   (reformatter-define ruff-format
-    :program ruff-format-command
+    :program ruff-command
     :args (list "format" "--stdin-filename" (or (buffer-file-name) input-file))
     :lighter " RuffFmt"
-    :group 'ruff-format))
+    :group 'ruff-format)
+
+  (defun ruff-fix-all-buffer ()
+    "Runs all ruff reformatters: ruff-fix, ruff-isort, and ruff-format."
+    (interactive)
+    (call-interactively 'ruff-fix-buffer)
+    (call-interactively 'ruff-isort-buffer)
+    (call-interactively 'ruff-format-buffer))
+  )
 ;;; ────────────────────────────── 'Git' ──────────────────────────────
 
-(use-package magit
+p(use-package magit
   :ensure t
   :bind ("C-x g" . magit-status))
 
@@ -310,3 +330,12 @@
   :ensure t
   :config
   (lua-mode))
+
+;;; ───────────────────── 'examples of functions' ─────────────────────
+(defun test-me ()
+  (interactive)
+  (if (use-region-p)
+      (let ((start (region-beginning))
+            (end (region-end)))
+        (message "Region start: %d, end: %d" start end))
+    (message "No active region.")))
