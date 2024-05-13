@@ -2,6 +2,8 @@
 
 ;; Disable startup message
 (setq inhibit-startup-screen t)
+;; annoying noisy bell turned into annoying visible bell
+(setq visible-bell 1)
 ;; Disable visible scrollbar
 (scroll-bar-mode -1)
 ;; Disable the toolbar
@@ -18,13 +20,11 @@
 (global-auto-revert-mode t)
 ;; Change all yes/no questions to y/n type
 (fset 'yes-or-no-p 'y-or-n-p)
-;; Set default font
-;; (set-face-attribute 'default nil :family "FiraCode Nerd Font")
-
 ;; adds a counter eg 4/34 to isearch
 (setq isearch-lazy-count t)
 ;; change isearch space to not be literal but a non greedy regex
 (setq search-whitespace-regexp "*.?")
+
 ;;; ─────────────────── 'General-Frame-Management' ──────────────────
 
 ;; make sure we start emacs fullscreen and maximized
@@ -131,20 +131,37 @@
 ;; Ensure all packages are downloaded automatically
 (package-refresh-contents)
 (setq use-package-always-ensure t)
-;;; ──────────────────────────── 'Themes' ───────────────────────────
 
-(use-package spacemacs-theme
-  :config
-  (setq-default spacemacs-theme-comment-italic t)
-  :init (load-theme 'spacemacs-dark))
-
-(use-package dracula-theme)
-;;   :init (load-theme 'dracula))
-
-(use-package doom-themes)
-;;   :init (load-theme 'doom-palenight t))
-
+;;; ────────────────────────────── 'UI' ─────────────────────────────
 (use-package all-the-icons)
+
+(use-package spacemacs-theme)
+(use-package dracula-theme)
+(use-package doom-themes)
+
+;; Set default font
+;; (set-face-attribute 'default nil :family "Iosevka" :weight 'light :height 130)
+(set-face-attribute 'fixed-pitch nil :family "Victor Mono" :weight 'normal :height 120)
+(set-face-attribute 'variable-pitch nil :family "Victor Mono" :weight 'normal :height 120)
+(set-face-attribute 'default nil :family "Victor Mono" :weight 'normal :height 120)
+
+;; to see colors M-x modus-themes-list-colors-current
+;; to see original palette C-h f Modus-vivendi-palette
+(use-package modus-themes
+  :ensure t
+  :init
+  (setq modus-themes-italic-constructs t)
+  (setq modus-themes-bold-constructs t)
+  (setq modus-themes-variable-pitch t)
+  (setq modus-themes-mixed-fonts t)
+  (setq modus-themes-prompts '(bold italic))
+  ;; to override the palette
+  (setq modus-vivendi-palette-overrides
+	'(
+	  ;; (comment red-intense)
+	  ))
+  :config (load-theme 'modus-vivendi))
+
 
 (use-package which-key
   :defer 0
@@ -248,10 +265,39 @@
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
 
-;;; ────────────────────────────── 'LSP' ──────────────────────────────
+;;; ───────────────────────────── 'Code' ────────────────────────────
 
-;; eglot
+;; automatically load elgot when working on certain languages
+(use-package eglot
+  :ensure t
+  :hook ((python-base-mode . eglot-ensure))
+  :config
+  (add-to-list 'eglot-server-programs
+               `(python-base-mode
+                 . ,(eglot-alternatives '(("pyright-langserver" "--stdio"))))))
 
+;; add linting
+(use-package flymake-ruff
+  :ensure t
+  :hook (eglot-managed-mode . flymake-ruff-load))
+
+;; in case I need to work on a python environment
+;; works with venv and workon
+(use-package pyvenv)
+
+;; add formatter wip
+(use-package reformatter
+  :ensure t
+  :config
+  (defcustom ruff-format-command "ruff"
+    "Ruff command to use for formatting."
+    :type 'string
+    :group 'ruff-format)
+  (reformatter-define ruff-format
+    :program ruff-format-command
+    :args (list "format" "--stdin-filename" (or (buffer-file-name) input-file))
+    :lighter " RuffFmt"
+    :group 'ruff-format))
 ;;; ────────────────────────────── 'Git' ──────────────────────────────
 
 (use-package magit
