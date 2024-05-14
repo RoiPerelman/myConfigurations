@@ -116,6 +116,8 @@
 ;; use general function toggle comment on line
 (global-set-key (kbd "C-;") 'toggle-comment-on-line)
 
+(global-set-key (kbd "M-k") 'kill-current-buffer)
+
 ;;; ───────────────────────── 'General-Hooks' ─────────────────────────
 
 ;; Delete whitespace just when a file is saved.
@@ -268,6 +270,28 @@
 
 ;;; ───────────────────────────── 'Code' ────────────────────────────
 
+;; bootstrap strait.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(use-package copilot
+  ;; :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
+  :ensure t
+  :hook (prog-mode-hook . copilot-mode))
+
 ;; automatically load elgot when working on certain languages
 (use-package eglot
   :ensure t
@@ -277,16 +301,25 @@
                `(python-base-mode
                  . ,(eglot-alternatives '(("pyright-langserver" "--stdio"))))))
 
-;; add linting
+;; working with python pyright and ruff
+;; options:
+;; 1. using pyright and ruff globally (preferable)
+;; make sure each project has a pyrightconfig.json and in it we have venvPath and venv
+;; eglot pyright will automatically get the right virtual environment
+;; ruff will get the right config from pyproject.toml
+;; 2. if ruff and pyright are not installed globally but only in a venv
+;; use pyvenv - run M-x pyvenv-activate for venv and pyvenv-workon for virtualenv. after that eglot-reconnect
+
+;; in case I need to work on a python environment - works with venv and workon
+(use-package pyvenv)
+
+;; add ruff linting with flymake
 (use-package flymake-ruff
   :ensure t
   :hook (eglot-managed-mode . flymake-ruff-load))
 
-;; in case I need to work on a python environment
-;; works with venv and workon
-(use-package pyvenv)
-
-;; add formatter wip
+;; add ruff fix, isort and format
+;; TODO: check how I can only add these functions during python-base-mode
 (use-package reformatter
   :ensure t
   :config
