@@ -144,7 +144,7 @@
 ;; Set default font
 ;; (set-face-attribute 'default nil :family "Iosevka" :weight 'light :height 130)
 (set-face-attribute 'fixed-pitch nil :family "Victor Mono" :weight 'normal :height 120)
-(set-face-attribute 'variable-pitch nil :family "Victor Mono" :weight 'normal :height 120)
+(set-face-attribute 'variable-pitch nil :family "Victor Mono" :weight 'semi-bold :height 140)
 (set-face-attribute 'default nil :family "Victor Mono" :weight 'normal :height 120)
 
 ;; to see colors M-x modus-themes-list-colors-current
@@ -222,7 +222,16 @@
          ("M-s M-l" . consult-line)
          ;; Switch to another buffer, or bookmarked file, or recently
          ;; opened file.
-         ("M-s M-b" . consult-buffer)))
+         ("M-s M-b" . consult-buffer))
+  :config
+  ;; Use `consult-completion-in-region' if Vertico is enabled.
+  ;; Otherwise use the default `completion--in-region' function.
+  (setq completion-in-region-function
+	(lambda (&rest args)
+	  (apply (if vertico-mode
+		     #'consult-completion-in-region
+		   #'completion--in-region)
+		 args))))
 
 ;; adds actions for current item
 (use-package embark
@@ -247,17 +256,10 @@
 
 ;; ───────────────────── 'In-Buffer-Completions' ─────────────────────
 
-;; corfu
-;; capt
+;; corfu popup buffer with choice options.
+;; ATM done with vertico and consult consult-completion-in-region instead of completion--in-region
 
-;; temporary - should be changed to corfu and capt
-(use-package company
-  :bind (:map company-active-map
-         ("C-n" . company-select-next)
-         ("C-p" . company-select-previous))
-  :config
-  (setq company-idle-delay 0.3)
-  (global-company-mode t))
+;; cape adds capf sources (files, abbrev, etc)
 
 ;;; ────────────────────────── 'Treesitter' ─────────────────────────
 
@@ -288,8 +290,10 @@
   (load bootstrap-file nil 'nomessage))
 
 (use-package copilot
-  ;; :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
+  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
   :ensure t
+  :bind (("<tab>" . copilot-accept-completion)
+	 ("TAB" . copilot-accept-completion))
   :hook (prog-mode-hook . copilot-mode))
 
 ;; automatically load elgot when working on certain languages
