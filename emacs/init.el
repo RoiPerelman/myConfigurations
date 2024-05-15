@@ -149,6 +149,7 @@
 
 ;; to see colors M-x modus-themes-list-colors-current
 ;; to see original palette C-h f Modus-vivendi-palette
+;; to see character info under the point - M-x describe-char
 (use-package modus-themes
   :ensure t
   :init
@@ -176,9 +177,9 @@
 ;; (use-package highlight-indent-guides
 ;;   :ensure t
 ;;   :hook
-;;   (python-ts-mode . highlight-indent-guides)
-;;   :config
-;;   (setq highlight-indent-guides-method 'character))
+;;   (python-ts-mode . highlight-indent-guides))
+;; (use-package highlight-indentation
+;;   :ensure t)
 
 ;;; ────────────────────────── 'Completions' ──────────────────────────
 
@@ -292,7 +293,8 @@
 (use-package copilot
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
   :ensure t
-  :bind (("<tab>" . copilot-accept-completion)
+  :bind (:map copilot-completion-map
+	 ("<tab>" . copilot-accept-completion)
 	 ("TAB" . copilot-accept-completion))
   :hook (prog-mode-hook . copilot-mode))
 
@@ -357,7 +359,7 @@
   )
 ;;; ────────────────────────────── 'Git' ──────────────────────────────
 
-p(use-package magit
+(use-package magit
   :ensure t
   :bind ("C-x g" . magit-status))
 
@@ -375,4 +377,7 @@ p(use-package magit
       (let ((start (region-beginning))
             (end (region-end)))
         (message "Region start: %d, end: %d" start end))
-    (message "No active region.")))
+    (message "We are %d characters into this buffer after first word."
+                   (- (point)
+                      (save-excursion
+                        (goto-char (point-min)) (forward-word) (point))))))
