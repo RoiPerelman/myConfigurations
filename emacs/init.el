@@ -1,5 +1,4 @@
 ;;; ──────────────────────────── 'General' ────────────────────────────
-
 ;; Disable startup message
 (setq inhibit-startup-screen t)
 ;; Disable annoying noisy bell
@@ -135,11 +134,11 @@
 (setq use-package-always-ensure t)
 
 ;;; ────────────────────────────── 'UI' ─────────────────────────────
-(use-package all-the-icons)
+(use-package all-the-icons :ensure t)
 
-(use-package spacemacs-theme)
-(use-package dracula-theme)
-(use-package doom-themes)
+(use-package spacemacs-theme :ensure t)
+(use-package dracula-theme :ensure t)
+(use-package doom-themes :ensure t)
 
 ;; Set default font
 ;; (set-face-attribute 'default nil :family "Iosevka" :weight 'light :height 130)
@@ -248,7 +247,9 @@
 
 ;; adds embark actions to consult functions
 (use-package embark-consult
-  :ensure t)
+  :ensure t ; only need to install it, embark loads it after consult if found
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 ;; edit the results of a grep search  while inside a `grep-mode' buffer.
 ;; toggle editable mode, make changes, type C-c C-c to confirm | C-c C-k to abort.
@@ -268,12 +269,57 @@
 
 ;;; ────────────────────────── 'Treesitter' ─────────────────────────
 
-(use-package treesit-auto
-  :custom
-  (treesit-auto-install 'prompt)
+(use-package treesit
+  :ensure nil
   :config
-  (treesit-auto-add-to-auto-mode-alist 'all)
-  (global-treesit-auto-mode))
+  (setq treesit-language-source-alist
+	'(
+	  (python . ("https://github.com/tree-sitter/tree-sitter-python"))
+          (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+	  (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+	  (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+          (html . ("https://github.com/tree-sitter/tree-sitter-html"))
+          (css . ("https://github.com/tree-sitter/tree-sitter-css"))
+          (elisp . ("https://github.com/Wilfred/tree-sitter-elisp"))
+	  (bash . ("https://github.com/tree-sitter/tree-sitter-bash"))
+          (make . ("https://github.com/alemuller/tree-sitter-make"))
+	  (dockerfile . ("https://github.com/camdencheek/tree-sitter-dockerfile" "main" "src"))
+          (json . ("https://github.com/tree-sitter/tree-sitter-json"))
+	  (toml . ("https://github.com/tree-sitter/tree-sitter-toml"))
+	  (yaml . ("https://github.com/ikatyang/tree-sitter-yaml"))
+	  (markdown . ("https://github.com/ikatyang/tree-sitter-markdown"))
+          (cmake . ("https://github.com/uyha/tree-sitter-cmake"))
+	  ))
+  (dolist (source treesit-language-source-alist)
+  (unless (treesit-ready-p (car source))
+    (treesit-install-language-grammar (car source))))
+  (setq treesit-font-lock-level 4)
+  ;; (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+  ;; (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+  (add-to-list 'auto-mode-alist
+	       '(
+		 ;; ("\\.md\\'" . markdown-ts-mode)
+		 ("\\.Dockerfile\\'" . dockerfile-ts-mode)
+		 ))
+  ;; files that would normally open in python-mode should open in python-ts-mode
+  (add-to-list 'major-mode-remap-alist
+	     '(
+	       (python-mode . python-ts-mode)
+               (js2-mode . js-ts-mode)
+               (typescript-mode . typescript-ts-mode)
+               (css-mode . css-ts-mode)
+	       (bash-mode . bash-ts-mode)
+               (json-mode . json-ts-mode)
+	       (yaml-mode . yaml-ts-mode)
+	       ))
+  (defun python-ts-mode-setup ()
+    (treesit-font-lock-recompute-features '(function variable) '(definition))))
+
+;; tmp markdown-mode
+(use-package markdown-mode
+  :ensure t
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "multimarkdown"))
 
 ;;; ───────────────────────────── 'Code' ────────────────────────────
 
@@ -361,6 +407,7 @@
     (call-interactively 'ruff-isort-buffer)
     (call-interactively 'ruff-format-buffer))
   )
+
 ;;; ────────────────────────────── 'Git' ──────────────────────────────
 
 (use-package magit
