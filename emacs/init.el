@@ -173,6 +173,7 @@
   (which-key-mode)
   (setq which-key-idle-delay 1))
 
+(use-package rainbow-mode)
 ;; (use-package rainbow-delimiters)
 ;; (use-package highlight-indent-guides
 ;;   :ensure t
@@ -180,6 +181,9 @@
 ;;   (python-ts-mode . highlight-indent-guides))
 ;; (use-package highlight-indentation
 ;;   :ensure t)
+
+;; (load-file "/Users/roiperelman/.config/emacs/rp-theme.el")
+;; (load-theme 'rp t)
 
 ;;; ────────────────────────── 'Completions' ──────────────────────────
 
