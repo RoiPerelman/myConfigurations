@@ -141,10 +141,12 @@
 (use-package doom-themes :ensure t)
 
 ;; Set default font
-;; (set-face-attribute 'default nil :family "Iosevka" :weight 'light :height 130)
-(set-face-attribute 'fixed-pitch nil :family "Victor Mono" :weight 'normal :height 120)
-(set-face-attribute 'variable-pitch nil :family "Victor Mono" :weight 'semi-bold :height 140)
-(set-face-attribute 'default nil :family "Victor Mono" :weight 'normal :height 120)
+;; (set-face-attribute 'default nil :family "Iosevka" :weight 'light :height 120)
+;; (set-face-attribute 'default nil :family "Cartograph CF" :weight 'normal :height 110)
+;; (set-face-attribute 'default nil :family "SauceCodePro NF" :weight 'normal :height 100)
+(set-face-attribute 'variable-pitch nil :family "FiraCode Nerd Font" :weight 'semi-bold :height 140)
+(set-face-attribute 'fixed-pitch nil :family "FiraCode Nerd Font" :weight 'normal :height 110)
+(set-face-attribute 'default nil :family "FiraCode Nerd Font" :weight 'normal :height 110)
 
 ;; to see colors M-x modus-themes-list-colors-current
 ;; to see original palette C-h f Modus-vivendi-palette
@@ -294,13 +296,11 @@
   (unless (treesit-ready-p (car source))
     (treesit-install-language-grammar (car source))))
   (setq treesit-font-lock-level 4)
+  (add-to-list 'auto-mode-alist '("\\.Dockerfile\\'" . dockerfile-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-ts-mode))
   ;; (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
   ;; (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
-  (add-to-list 'auto-mode-alist
-	       '(
-		 ;; ("\\.md\\'" . markdown-ts-mode)
-		 ("\\.Dockerfile\\'" . dockerfile-ts-mode)
-		 ))
+  ;; (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-ts-mode))
   ;; files that would normally open in python-mode should open in python-ts-mode
   (add-to-list 'major-mode-remap-alist
 	     '(
