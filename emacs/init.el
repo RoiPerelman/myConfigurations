@@ -12,7 +12,7 @@
 ;; Disable the menu bar
 (menu-bar-mode -1)
 ;; Add some space to lines
-(set-fringe-mode 10)
+(set-fringe-mode 5)
 ;; Highlight current line
 (global-hl-line-mode t)
 ;; Automatically update buffers if file content on the disk has changed.
@@ -44,11 +44,13 @@
 ;; Show column as well as line number in bottom line
 (column-number-mode 1)
 ;; Disable line numbers for some modes
-(dolist (mode '(org-mode-hook
+(dolist (mode '(
+		org-mode-hook
                 term-mode-hook
                 shell-mode-hook
-                treemacs-mode-hook
-                eshell-mode-hook))
+                eshell-mode-hook
+		vterm-mode-hook
+		))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;;; ────────────────────────── 'General-Mac' ──────────────────────────
@@ -141,7 +143,7 @@
 (use-package doom-themes :ensure t)
 
 ;; Set default font
-;; (set-face-attribute 'default nil :family "Iosevka" :weight 'light :height 120)
+(set-face-attribute 'default nil :family "Iosevka" :weight 'normal :height 150)
 ;; (set-face-attribute 'default nil :family "Cartograph CF" :weight 'normal :height 110)
 ;; (set-face-attribute 'default nil :family "SauceCodePro NF" :weight 'normal :height 100)
 (set-face-attribute 'variable-pitch nil :family "FiraCode Nerd Font" :weight 'semi-bold :height 140)
@@ -367,7 +369,13 @@
 ;; use pyvenv - run M-x pyvenv-activate for venv and pyvenv-workon for virtualenv. after that eglot-reconnect
 
 ;; in case I need to work on a python environment - works with venv and workon
-(use-package pyvenv)
+(use-package pyvenv
+  :config
+  (setq pyvenv-mode-line-indicator '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
+  (add-hook 'pyvenv-post-activate-hooks
+            #'(lambda ()
+                (call-interactively #'eglot-reconnect)))
+  (pyvenv-mode +1))
 
 ;; add ruff linting with flymake
 (use-package flymake-ruff
@@ -414,14 +422,60 @@
   :ensure t
   :bind ("C-x g" . magit-status))
 
-;;; ─────────────────────────────── Lua ───────────────────────────────
+(use-package git-gutter
+  :ensure t
+  :hook (prog-mode . git-gutter-mode)
+  :config
+  (setq git-gutter:update-interval 0.05))
+
+(use-package git-gutter-fringe
+  :ensure t
+  :if (display-graphic-p)
+  :config
+  (fringe-helper-define 'git-gutter-fr:added '(center repeated) ".")
+  (fringe-helper-define 'git-gutter-fr:modified '(center repeated) ".")
+  (fringe-helper-define 'git-gutter-fr:deleted 'bottom "."))
+
+;; ediff
+(use-package ediff
+  :ensure nil
+  :commands (ediff-buffers ediff-files ediff-buffers3 ediff-files3)
+  :init
+  (setq ediff-split-window-function 'split-window-horizontally)
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  :config
+  (setq ediff-keep-variants nil)
+  (setq ediff-make-buffers-readonly-at-startup nil)
+  (setq ediff-merge-revisions-with-ancestor t)
+  (setq ediff-show-clashes-only t)
+  ;; add an option to copy both a and b to c. from https://stackoverflow.com/a/29757750/864684
+  (defun ediff-copy-both-to-C ()
+    (interactive)
+    (ediff-copy-diff ediff-current-difference nil 'C nil
+		     (concat
+		      (ediff-get-region-contents ediff-current-difference 'A ediff-control-buffer)
+		      (ediff-get-region-contents ediff-current-difference 'B ediff-control-buffer))))
+  (defun add-d-to-ediff-mode-map () (define-key ediff-mode-map "d" 'ediff-copy-both-to-C))
+  (add-hook 'ediff-keymap-setup-hook 'add-d-to-ediff-mode-map))
+;; (setq ediff-diff-options "")
+;; (setq ediff-custom-diff-options "-u")
+;; (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+;; (setq ediff-split-window-function 'split-window-vertically)
+
+;;; ─────────────────────────────── 'Lua' ───────────────────────────────
 
 (use-package lua-mode
   :ensure t
   :config
   (lua-mode))
 
-;;; ───────────────────── 'examples of functions' ─────────────────────
+;;; ─────────────────────────── 'Terminal' ──────────────────────────
+(use-package vterm
+  :ensure t
+  :bind (:map vterm-mode-map
+	      ("C-c C-c" . vterm--self-insert)))
+
+;;; ───────────────────── 'examples-of-functions' ─────────────────────
 (defun test-me ()
   (interactive)
   (if (use-region-p)
