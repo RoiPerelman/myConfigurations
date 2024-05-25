@@ -420,11 +420,27 @@
 
 (use-package magit
   :ensure t
-  :bind ("C-x g" . magit-status))
+  :bind (
+	 ("C-x g" . magit-status)
+	 ("C-c g g" . magit-status)
+	 ("C-c g B" . magit-blame-addition)
+	 ))
 
+;; adds gutter add, change, revert indication
+;; adds hunk controls
+;; 1. go to next prev hunk
+;; 2. show hunk diff
+;; 3. stage, revert hunk (no unstage hunk)
 (use-package git-gutter
   :ensure t
   :hook (prog-mode . git-gutter-mode)
+  :bind (
+	 ("M-] h" . git-gutter:next-hunk)
+	 ("M-[ h" . git-gutter:previous-hunk)
+	 ("C-c g h s" . git-gutter:stage-hunk)
+	 ("C-c g h r" . git-gutter:revert-hunk)
+	 ("C-c g h p" . git-gutter:popup-hunk)
+	 )
   :config
   (setq git-gutter:update-interval 0.05))
 
@@ -435,6 +451,21 @@
   (fringe-helper-define 'git-gutter-fr:added '(center repeated) ".")
   (fringe-helper-define 'git-gutter-fr:modified '(center repeated) ".")
   (fringe-helper-define 'git-gutter-fr:deleted 'bottom "."))
+
+;; for git blame there is
+;; 1. magit-blame-addition (fast and adds lines on buffer) (C-c g B)
+;; 2. vc-annotate (creates a new buffer with git blame on each line (C-x v g)
+;; 3. blamer-mode which is a git line blame
+(use-package blamer
+  :ensure t
+  :bind (("C-c g b" . blamer-mode))
+  :config
+  (setq blamer-idle-time 0.05)
+  (setq blamer-author-formatter "%s ")
+  (setq blamer-datetime-formatter "[%s]")
+  (setq blamer-commit-formatter ": %s")
+  (setq blamer-max-commit-message-length 100)
+  (setq blamer-min-offset 70))
 
 ;; ediff
 (use-package ediff
@@ -486,3 +517,12 @@
                    (- (point)
                       (save-excursion
                         (goto-char (point-min)) (forward-word) (point))))))
+
+;; check hl-todo
+;; (use-package hl-todo
+;;   :custom-face
+;;   (hl-todo                        ((t (:inverse-video nil :italic t :bold nil))))
+;;   :config
+;;   (add-to-list 'hl-todo-keyword-faces '("DOING" . "#94bff3"))
+;;   (add-to-list 'hl-todo-keyword-faces '("WHY" . "#7cb8bb"))
+;;   (global-hl-todo-mode +1))
