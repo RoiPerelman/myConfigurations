@@ -45,6 +45,12 @@ zinit cdreplay -q
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+# Keybindings fix for Ctrl+arrow keys
+bindkey '^[[1;5C' forward-word        # Ctrl+Right Arrow
+bindkey '^[[1;5D' backward-word       # Ctrl+Left Arrow
+bindkey '^[[1;5A' up-line-or-history  # Ctrl+Up Arrow
+bindkey '^[[1;5B' down-line-or-history # Ctrl+Down Arrow
+
 # Keybindings
 bindkey -e
 bindkey '^p' history-search-backward

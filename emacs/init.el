@@ -67,6 +67,16 @@
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file 'noerror)
 
+; set backup directory (Use copying to avoid symlinks)
+(setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
+(setq backup-by-copying t)
+
+;; ;; Optional: Additional backup-related settings
+;; (setq delete-old-versions t
+;;       kept-new-versions 6
+;;       kept-old-versions 2
+;;       version-control t) ; Use version numbers for backups
+
 ;;; ─────────────────────── 'General-Functions' ───────────────────────
 
 (defun toggle-comment-on-line ()
