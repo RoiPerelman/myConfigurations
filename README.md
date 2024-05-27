@@ -32,6 +32,7 @@ ln -snf ~/myConfigurations/nvim ~/.config/nvim
 ``` bash
 mv ~/.zshrc ~/.zshrc_bk
 ln -snf ~/myConfigurations/.zshrc ~/.zshrc
+mkdir -p ~/.config && ln -snf ~/myConfigurations/.config/starship.toml ~/.config/starship.toml
 ```
 
 # ideavimrc
