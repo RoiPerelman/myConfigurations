@@ -67,7 +67,7 @@
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file 'noerror)
 
-; set backup directory (Use copying to avoid symlinks)
+;; set backup directory (Use copying to avoid symlinks)
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
 (setq backup-by-copying t)
 
@@ -112,7 +112,7 @@
         (insert comment)
         (when (> comment-length 0) (insert " "))
         (dotimes (_ (if (= (% comment-length 2) 0)
-                      (- space-on-each-side 1)
+			(- space-on-each-side 1)
                       space-on-each-side))
           (insert comment-char))))))
 
@@ -305,8 +305,8 @@
           (cmake . ("https://github.com/uyha/tree-sitter-cmake"))
 	  ))
   (dolist (source treesit-language-source-alist)
-  (unless (treesit-ready-p (car source))
-    (treesit-install-language-grammar (car source))))
+    (unless (treesit-ready-p (car source))
+      (treesit-install-language-grammar (car source))))
   (setq treesit-font-lock-level 4)
   (add-to-list 'auto-mode-alist '("\\.Dockerfile\\'" . dockerfile-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-ts-mode))
@@ -315,15 +315,15 @@
   ;; (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-ts-mode))
   ;; files that would normally open in python-mode should open in python-ts-mode
   (add-to-list 'major-mode-remap-alist
-	     '(
-	       (python-mode . python-ts-mode)
-               (js2-mode . js-ts-mode)
-               (typescript-mode . typescript-ts-mode)
-               (css-mode . css-ts-mode)
-	       (bash-mode . bash-ts-mode)
-               (json-mode . json-ts-mode)
-	       (yaml-mode . yaml-ts-mode)
-	       ))
+	       '(
+		 (python-mode . python-ts-mode)
+		 (js2-mode . js-ts-mode)
+		 (typescript-mode . typescript-ts-mode)
+		 (css-mode . css-ts-mode)
+		 (bash-mode . bash-ts-mode)
+		 (json-mode . json-ts-mode)
+		 (yaml-mode . yaml-ts-mode)
+		 ))
   (defun python-ts-mode-setup ()
     (treesit-font-lock-recompute-features '(function variable) '(definition))))
 
@@ -356,8 +356,8 @@
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
   :ensure t
   :bind (:map copilot-completion-map
-	 ("<tab>" . copilot-accept-completion)
-	 ("TAB" . copilot-accept-completion))
+	      ("<tab>" . copilot-accept-completion)
+	      ("TAB" . copilot-accept-completion))
   :hook (prog-mode-hook . copilot-mode))
 
 ;; automatically load elgot when working on certain languages
@@ -524,9 +524,9 @@
             (end (region-end)))
         (message "Region start: %d, end: %d" start end))
     (message "We are %d characters into this buffer after first word."
-                   (- (point)
-                      (save-excursion
-                        (goto-char (point-min)) (forward-word) (point))))))
+             (- (point)
+                (save-excursion
+                  (goto-char (point-min)) (forward-word) (point))))))
 
 ;; check hl-todo
 ;; (use-package hl-todo
