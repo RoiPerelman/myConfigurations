@@ -65,6 +65,21 @@ setopt hist_save_no_dups
 setopt hist_ignore_dups
 setopt hist_find_no_dups
 
+# Set LS_COLORS if not already defined
+if [[ -z "$LS_COLORS" ]]; then
+  if command -v dircolors >/dev/null 2>&1; then
+    # dracula theme installs https://draculatheme.com/gnome-terminal
+    if [ -f ~/.dir_colors/dircolors ]; then
+      eval `dircolors ~/.dir_colors/dircolors`
+    else
+      eval "$(dircolors -b)"
+    fi
+  else
+    # Default LS_COLORS settings
+    export LS_COLORS="di=1;34:ln=36:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43"
+  fi
+fi
+
 # Completion styling
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' 'm:{[:lower:][:upper:]-_}={[:upper:][:lower:]_-}' 'r:|=*' 'l:|=* r:|=*'
 zstyle ':completion:*' menu select
