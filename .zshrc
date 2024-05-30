@@ -15,6 +15,17 @@ fi
 # Source/Load zinit
 source "${ZINIT_HOME}/zinit.zsh"
 
+# https://gist.github.com/ketsuban/651e24c2d59506922d928c65c163d79c
+# add easy keys for keybind. use like this "$key[Up]"
+key=(
+    Up         "${terminfo[kcuu1]}"
+    Down       "${terminfo[kcud1]}"
+    Left       "${terminfo[kcub1]}"
+    Right      "${terminfo[kcuf1]}"
+    CtrlRight  "${terminfo[kRIT5]}"
+    CtrlLeft   "${terminfo[kLFT5]}"
+)
+
 # Load starship theme
 # line 1: `starship` binary as command, from github release
 # line 2: starship setup at clone(create init.zsh, completion)
@@ -35,22 +46,17 @@ zinit snippet OMZP::sudo
 zinit snippet OMZP::aws
 zinit snippet OMZP::command-not-found
 
-# Load completions
-autoload -Uz compinit && compinit
+# Load the necessary key bindings
+autoload -U history-beginning-search-backward
+autoload -U history-beginning-search-forward
 
-zinit cdreplay -q
+# Bind the up and down arrows to search history entries starting with the current prefix
+bindkey "${key[Up]}" history-beginning-search-backward
+bindkey "${key[Down]}" history-beginning-search-forward
 
 # Keybindings fix for Ctrl+arrow keys
-bindkey '^[[1;5C' forward-word        # Ctrl+Right Arrow
-bindkey '^[[1;5D' backward-word       # Ctrl+Left Arrow
-bindkey '^[[1;5A' up-line-or-history  # Ctrl+Up Arrow
-bindkey '^[[1;5B' down-line-or-history # Ctrl+Down Arrow
-
-# Keybindings
-bindkey -e
-bindkey '^p' history-search-backward
-bindkey '^n' history-search-forward
-bindkey '^[w' kill-region
+bindkey "${key[CtrlRight]}" forward-word        # Ctrl+Right Arrow
+bindkey "${key[CtrlLeft]}"  backward-word       # Ctrl+Left Arrow
 
 # History
 HISTSIZE=10000
@@ -64,6 +70,11 @@ setopt hist_ignore_all_dups
 setopt hist_save_no_dups
 setopt hist_ignore_dups
 setopt hist_find_no_dups
+
+# Load completions
+autoload -Uz compinit && compinit
+
+zinit cdreplay -q
 
 # Set LS_COLORS if not already defined
 if [[ -z "$LS_COLORS" ]]; then
@@ -91,12 +102,16 @@ zstyle ':completion:*' special-dirs true
 
 # Aliases
 alias ls='ls --color'
+alias ll='ls -lah'
 alias vi='nvim'
 alias vim='nvim'
 alias c='clear'
 
 # env variables
 export PATH=~/.local/bin:$PATH
+export EDITOR="nvim"
+export VISUAL="nvim"
+export MANPAGER='nvim +Man!'
 
 if [[ "$(uname)" == "Linux" ]]; then
   # set caps-lock to ctrl
