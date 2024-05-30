@@ -47,12 +47,14 @@ zinit snippet OMZP::aws
 zinit snippet OMZP::command-not-found
 
 # Load the necessary key bindings
-autoload -U history-beginning-search-backward
-autoload -U history-beginning-search-forward
 
-# Bind the up and down arrows to search history entries starting with the current prefix
-bindkey "${key[Up]}" history-beginning-search-backward
-bindkey "${key[Down]}" history-beginning-search-forward
+# keybinding for omz history search
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "$key[Up]" up-line-or-beginning-search
+bindkey "$key[Down]" down-line-or-beginning-search
 
 # Keybindings fix for Ctrl+arrow keys
 bindkey "${key[CtrlRight]}" forward-word        # Ctrl+Right Arrow
@@ -102,7 +104,7 @@ zstyle ':completion:*' special-dirs true
 
 # Aliases
 alias ls='ls --color'
-alias ll='ls -lah'
+alias ll='ls -lh'
 alias vi='nvim'
 alias vim='nvim'
 alias c='clear'
