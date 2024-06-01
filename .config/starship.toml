@@ -1,8 +1,38 @@
+# find all unicode symbols here https://symbl.cc/en/unicode-table/#miscellaneous-symbols
 add_newline = false
+
+[username]
+style_user = 'bold black'
+# style_root = 'black bold'
+format = '[roip::]($style)'
+# disabled = false
+show_always = true
+# aliases = { "corpuser034g" = "matchai" }
 
 [character]
 success_symbol = '[➜](bold green)'
+error_symbol = '[✗](bold red)'
 
 [line_break]
 disabled = true
 
+[directory]
+truncation_length = 5
+# truncation_symbol = '…/'
+truncate_to_repo = false
+
+[git_branch]
+format = '[$symbol$branch(:$remote_branch)]($style) '
+[git_status]
+style = 'bold italic fg:183'
+
+[git_metrics]
+disabled = false
+
+[python]
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+
+[nodejs]
+format = '[$symbol($version )]($style)'
+style = 'yellow bold'
+symbol= ' '

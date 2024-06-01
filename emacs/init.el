@@ -158,7 +158,7 @@
 ;; (set-face-attribute 'default nil :family "SauceCodePro NF" :weight 'normal :height 100)
 (set-face-attribute 'variable-pitch nil :family "FiraCode Nerd Font" :weight 'semi-bold :height 140)
 (set-face-attribute 'fixed-pitch nil :family "FiraCode Nerd Font" :weight 'normal :height 110)
-(set-face-attribute 'default nil :family "FiraCode Nerd Font" :weight 'normal :height 110)
+(set-face-attribute 'default nil :family "Cascadia Code NF" :weight 'normal :height 130)
 
 ;; to see colors M-x modus-themes-list-colors-current
 ;; to see original palette C-h f Modus-vivendi-palette
@@ -240,7 +240,10 @@
          ("M-s M-l" . consult-line)
          ;; Switch to another buffer, or bookmarked file, or recently
          ;; opened file.
-         ("M-s M-b" . consult-buffer))
+         ("M-s M-b" . consult-buffer)
+	 ;; search on imenu
+	 ("M-s M-i" . consult-imenu)
+	 )
   :config
   ;; Use `consult-completion-in-region' if Vertico is enabled.
   ;; Otherwise use the default `completion--in-region' function.
@@ -323,9 +326,7 @@
 		 (bash-mode . bash-ts-mode)
 		 (json-mode . json-ts-mode)
 		 (yaml-mode . yaml-ts-mode)
-		 ))
-  (defun python-ts-mode-setup ()
-    (treesit-font-lock-recompute-features '(function variable) '(definition))))
+		 )))
 
 ;; tmp markdown-mode
 (use-package markdown-mode
@@ -367,7 +368,19 @@
   :config
   (add-to-list 'eglot-server-programs
                `(python-base-mode
-                 . ,(eglot-alternatives '(("pyright-langserver" "--stdio"))))))
+                 . ,(eglot-alternatives '(("pyright-langserver" "--stdio")))))
+  ;; add mode line indication for as [eglot: language-server-name]
+  ;; (setq-default mode-line-format
+  ;;             (append mode-line-format
+  ;;                     '((:eval (when eglot--managed-mode
+  ;;                                (let* ((server (eglot-current-server))
+  ;;                                       (command (and server (process-command (jsonrpc--process server))))
+  ;;                                       (name (and command (file-name-nondirectory (car command)))))
+  ;;                                  (when name
+  ;;                                    (format "[eglot: %s]"
+  ;;                                            (replace-regexp-in-string
+  ;;                                             "-\\(langserver\\|language-server\\)$" "" name)))))))))
+  )
 
 ;; working with python pyright and ruff
 ;; options:
@@ -536,3 +549,7 @@
 ;;   (add-to-list 'hl-todo-keyword-faces '("DOING" . "#94bff3"))
 ;;   (add-to-list 'hl-todo-keyword-faces '("WHY" . "#7cb8bb"))
 ;;   (global-hl-todo-mode +1))
+
+;; check outline minor mode
+;; understand imenu
+;; add imenu list

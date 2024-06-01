@@ -137,3 +137,8 @@ eval "$(zoxide init --cmd j zsh)"
 if [ -f ~/.tinyrc ]; then
     source ~/.tinyrc
 fi
+
+if command -v virtualenvwrapper.sh &> /dev/null
+then
+    source virtualenvwrapper.sh
+fi
