@@ -286,53 +286,79 @@
 
 ;;; ────────────────────────── 'Treesitter' ─────────────────────────
 
+;; tmp markdown-mode
+(use-package markdown-mode
+  :ensure t
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "multimarkdown"))
+
 (use-package treesit
   :ensure nil
   :config
-  (setq treesit-language-source-alist
-	'(
-	  (python . ("https://github.com/tree-sitter/tree-sitter-python"))
-          (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
-	  (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
-	  (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
-          (html . ("https://github.com/tree-sitter/tree-sitter-html"))
-          (css . ("https://github.com/tree-sitter/tree-sitter-css"))
-          (elisp . ("https://github.com/Wilfred/tree-sitter-elisp"))
-	  (bash . ("https://github.com/tree-sitter/tree-sitter-bash"))
-          (make . ("https://github.com/alemuller/tree-sitter-make"))
-	  (dockerfile . ("https://github.com/camdencheek/tree-sitter-dockerfile" "main" "src"))
-          (json . ("https://github.com/tree-sitter/tree-sitter-json"))
-	  (toml . ("https://github.com/tree-sitter/tree-sitter-toml"))
-	  (yaml . ("https://github.com/ikatyang/tree-sitter-yaml"))
-	  (markdown . ("https://github.com/ikatyang/tree-sitter-markdown"))
-          (cmake . ("https://github.com/uyha/tree-sitter-cmake"))
-	  ))
+  (add-to-list 'treesit-language-source-alist
+               '(python "https://github.com/tree-sitter/tree-sitter-python"))
+  (add-to-list 'treesit-language-source-alist
+               '(javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+  (add-to-list 'treesit-language-source-alist
+               '(typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+  (add-to-list 'treesit-language-source-alist
+               '(tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+  (add-to-list 'treesit-language-source-alist
+               '(html "https://github.com/tree-sitter/tree-sitter-html"))
+  (add-to-list 'treesit-language-source-alist
+               '(css "https://github.com/tree-sitter/tree-sitter-css"))
+  (add-to-list 'treesit-language-source-alist
+               '(elisp "https://github.com/Wilfred/tree-sitter-elisp"))
+  (add-to-list 'treesit-language-source-alist
+               '(bash "https://github.com/tree-sitter/tree-sitter-bash"))
+  (add-to-list 'treesit-language-source-alist
+               '(make "https://github.com/alemuller/tree-sitter-make"))
+  (add-to-list 'treesit-language-source-alist
+               '(dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile" "main" "src"))
+  (add-to-list 'treesit-language-source-alist
+               '(json "https://github.com/tree-sitter/tree-sitter-json"))
+  (add-to-list 'treesit-language-source-alist
+               '(toml "https://github.com/tree-sitter/tree-sitter-toml"))
+  (add-to-list 'treesit-language-source-alist
+               '(yaml "https://github.com/ikatyang/tree-sitter-yaml"))
+  (add-to-list 'treesit-language-source-alist
+               '(cmake "https://github.com/uyha/tree-sitter-cmake"))
+  (use-package markdown-ts-mode
+    :mode (
+	   ("\\.md\\'" . markdown-ts-mode)
+	   )
+    :defer 't
+    :config
+    (add-to-list 'treesit-language-source-alist
+		 '(markdown
+		   "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
+		   "split_parser"
+		   "tree-sitter-markdown/src"))
+    (add-to-list 'treesit-language-source-alist
+		 '(markdown-inline
+		   "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
+		   "split_parser"
+		   "tree-sitter-markdown-inline/src"))
+    )
+
   (dolist (source treesit-language-source-alist)
     (unless (treesit-ready-p (car source))
       (treesit-install-language-grammar (car source))))
   (setq treesit-font-lock-level 4)
   (add-to-list 'auto-mode-alist '("\\.Dockerfile\\'" . dockerfile-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-ts-mode))
-  ;; (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
-  ;; (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
-  ;; (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
   ;; files that would normally open in python-mode should open in python-ts-mode
   (add-to-list 'major-mode-remap-alist
-	       '(
-		 (python-mode . python-ts-mode)
-		 (js2-mode . js-ts-mode)
-		 (typescript-mode . typescript-ts-mode)
-		 (css-mode . css-ts-mode)
-		 (bash-mode . bash-ts-mode)
-		 (json-mode . json-ts-mode)
-		 (yaml-mode . yaml-ts-mode)
-		 )))
-
-;; tmp markdown-mode
-(use-package markdown-mode
-  :ensure t
-  :mode ("README\\.md\\'" . gfm-mode)
-  :init (setq markdown-command "multimarkdown"))
+               '(python-mode . python-ts-mode))
+  (add-to-list 'major-mode-remap-alist
+               '(bash-mode . bash-ts-mode))
+  (add-to-list 'major-mode-remap-alist
+               '(json-mode . json-ts-mode))
+  (add-to-list 'major-mode-remap-alist
+               '(markdown-mode . markdown-ts-mode))
+  )
 
 ;;; ───────────────────────────── 'Code' ────────────────────────────
 
@@ -364,22 +390,23 @@
 ;; automatically load elgot when working on certain languages
 (use-package eglot
   :ensure t
-  :hook ((python-base-mode . eglot-ensure))
+  :hook (
+	 (python-base-mode . eglot-ensure)
+	 (typescript-ts-base-mode . eglot-ensure)
+	 )
   :config
-  (add-to-list 'eglot-server-programs
-               `(python-base-mode
-                 . ,(eglot-alternatives '(("pyright-langserver" "--stdio")))))
   ;; add mode line indication for as [eglot: language-server-name]
-  ;; (setq-default mode-line-format
-  ;;             (append mode-line-format
-  ;;                     '((:eval (when eglot--managed-mode
-  ;;                                (let* ((server (eglot-current-server))
-  ;;                                       (command (and server (process-command (jsonrpc--process server))))
-  ;;                                       (name (and command (file-name-nondirectory (car command)))))
-  ;;                                  (when name
-  ;;                                    (format "[eglot: %s]"
-  ;;                                            (replace-regexp-in-string
-  ;;                                             "-\\(langserver\\|language-server\\)$" "" name)))))))))
+  ;; has an issue atm - I can see double the [eglot: language-server-name]
+  (setq-default mode-line-format
+              (append mode-line-format
+                      '((:eval (when eglot--managed-mode
+                                 (let* ((server (eglot-current-server))
+                                        (command (and server (process-command (jsonrpc--process server))))
+                                        (name (and command (file-name-nondirectory (car command)))))
+                                   (when name
+                                     (format "[eglot: %s]"
+                                             (replace-regexp-in-string
+                                              "-\\(langserver\\|language-server\\)$" "" name)))))))))
   )
 
 ;; working with python pyright and ruff
