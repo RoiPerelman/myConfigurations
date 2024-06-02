@@ -2,7 +2,7 @@
 add_newline = false
 
 [username]
-style_user = 'bold black'
+style_user = 'bold #EFA554'
 # style_root = 'black bold'
 format = '[roip::]($style)'
 # disabled = false
