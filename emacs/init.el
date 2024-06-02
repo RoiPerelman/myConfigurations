@@ -362,26 +362,19 @@
 
 ;;; ───────────────────────────── 'Code' ────────────────────────────
 
-;; bootstrap strait.el
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name
-        "straight/repos/straight.el/bootstrap.el"
-        (or (bound-and-true-p straight-base-dir)
-            user-emacs-directory)))
-      (bootstrap-version 7))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-
+;; copilot installation including prerequisites
+;; mkdir ~/.config/manual-packages
+;; git clone https://github.com/copilot-emacs/copilot.el
+(use-package dash
+  :ensure t)
+(use-package s
+  :ensure t)
+(use-package editorconfig
+  :ensure t)
+(use-package f
+  :ensure t)
 (use-package copilot
-  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
-  :ensure t
+  :load-path "manual-packages/copilot.el"
   :bind (:map copilot-completion-map
 	      ("<tab>" . copilot-accept-completion)
 	      ("TAB" . copilot-accept-completion))
