@@ -156,9 +156,9 @@
 (set-face-attribute 'default nil :family "Iosevka" :weight 'normal :height 150)
 ;; (set-face-attribute 'default nil :family "Cartograph CF" :weight 'normal :height 110)
 ;; (set-face-attribute 'default nil :family "SauceCodePro NF" :weight 'normal :height 100)
-(set-face-attribute 'variable-pitch nil :family "FiraCode Nerd Font" :weight 'semi-bold :height 140)
-(set-face-attribute 'fixed-pitch nil :family "FiraCode Nerd Font" :weight 'normal :height 110)
-(set-face-attribute 'default nil :family "Cascadia Code NF" :weight 'normal :height 130)
+(set-face-attribute 'variable-pitch nil :family "FiraCode Nerd Font" :weight 'semi-bold :height 120)
+(set-face-attribute 'fixed-pitch nil :family "FiraCode Nerd Font" :weight 'normal :height 100)
+(set-face-attribute 'default nil :family "Cascadia Code NF" :weight 'normal :height 110)
 
 ;; to see colors M-x modus-themes-list-colors-current
 ;; to see original palette C-h f Modus-vivendi-palette
@@ -363,9 +363,10 @@
 ;;; ───────────────────────────── 'Code' ────────────────────────────
 
 ;; copilot installation including prerequisites
-;; mkdir ~/.config/manual-packages
+;; mkdir ~/.config/emacs/manual-packages && cd ~/.config/emacs/manual-packages
 ;; git clone https://github.com/copilot-emacs/copilot.el
 ;; M-x copilot-install-server
+;; M-x copilot-login
 (use-package dash
   :ensure t)
 (use-package s
@@ -379,7 +380,11 @@
   :bind (:map copilot-completion-map
 	      ("<tab>" . copilot-accept-completion)
 	      ("TAB" . copilot-accept-completion))
-  :hook (prog-mode . copilot-mode))
+  :hook (prog-mode . copilot-mode)
+  :config
+  (setq copilot-max-char -1)
+  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode . 2))
+  )
 
 ;; automatically load elgot when working on certain languages
 (use-package eglot
@@ -388,19 +393,19 @@
 	 (python-base-mode . eglot-ensure)
 	 (typescript-ts-base-mode . eglot-ensure)
 	 )
-  :config
+  ;; :config
   ;; add mode line indication for as [eglot: language-server-name]
   ;; has an issue atm - I can see double the [eglot: language-server-name]
-  (setq-default mode-line-format
-              (append mode-line-format
-                      '((:eval (when eglot--managed-mode
-                                 (let* ((server (eglot-current-server))
-                                        (command (and server (process-command (jsonrpc--process server))))
-                                        (name (and command (file-name-nondirectory (car command)))))
-                                   (when name
-                                     (format "[eglot: %s]"
-                                             (replace-regexp-in-string
-                                              "-\\(langserver\\|language-server\\)$" "" name)))))))))
+  ;; (setq-default mode-line-format
+  ;;             (append mode-line-format
+  ;;                     '((:eval (when eglot--managed-mode
+  ;;                                (let* ((server (eglot-current-server))
+  ;;                                       (command (and server (process-command (jsonrpc--process server))))
+  ;;                                       (name (and command (file-name-nondirectory (car command)))))
+  ;;                                  (when name
+  ;;                                    (format "[eglot: %s]"
+  ;;                                            (replace-regexp-in-string
+  ;;                                             "-\\(langserver\\|language-server\\)$" "" name)))))))))
   )
 
 ;; working with python pyright and ruff
@@ -486,15 +491,21 @@
 	 ("C-c g h p" . git-gutter:popup-hunk)
 	 )
   :config
-  (setq git-gutter:update-interval 0.05))
+  (setq git-gutter:update-interval 0.05)
+  (custom-set-variables
+   '(git-gutter:window-width 1)
+   '(git-gutter:modified-sign " ") ;; two space
+   '(git-gutter:added-sign " ")    ;; multiple character is OK
+   '(git-gutter:deleted-sign " "))
+  )
 
 (use-package git-gutter-fringe
   :ensure t
-  :if (display-graphic-p)
   :config
   (fringe-helper-define 'git-gutter-fr:added '(center repeated) ".")
   (fringe-helper-define 'git-gutter-fr:modified '(center repeated) ".")
-  (fringe-helper-define 'git-gutter-fr:deleted 'bottom "."))
+  (fringe-helper-define 'git-gutter-fr:deleted 'bottom ".")
+  )
 
 ;; for git blame there is
 ;; 1. magit-blame-addition (fast and adds lines on buffer) (C-c g B)
