@@ -365,6 +365,7 @@
 ;; copilot installation including prerequisites
 ;; mkdir ~/.config/manual-packages
 ;; git clone https://github.com/copilot-emacs/copilot.el
+;; M-x copilot-install-server
 (use-package dash
   :ensure t)
 (use-package s
@@ -378,7 +379,7 @@
   :bind (:map copilot-completion-map
 	      ("<tab>" . copilot-accept-completion)
 	      ("TAB" . copilot-accept-completion))
-  :hook (prog-mode-hook . copilot-mode))
+  :hook (prog-mode . copilot-mode))
 
 ;; automatically load elgot when working on certain languages
 (use-package eglot
