@@ -7,8 +7,7 @@ return {
     "WhoIsSethDaniel/mason-tool-installer.nvim", -- help automatically install servers
 
     { "j-hui/fidget.nvim", opts = {} }, -- Useful status updates for LSP.
-
-    { "folke/neodev.nvim", opts = {} }, -- configures Lua LSP for neovim config
+    { "folke/neodev.nvim", enabled = false, opts = {} }, -- configures Lua LSP for neovim config
   },
   config = function()
     -- This function gets run when an LSP attaches to a particular buffer.
@@ -39,6 +38,9 @@ return {
 
         -- To know server capabilities, use (for example):
         -- :lua =vim.lsp.get_active_clients()[1].server_capabilities
+        if client == nil then
+          return
+        end
         if client.name == "tsserver" then
           -- remove format so eslint can do it
           client.server_capabilities.documentFormattingProvider = false
@@ -97,16 +99,16 @@ return {
         -- The following two autocommands are used to highlight references of the
         -- word under your cursor when your cursor rests there for a little while.
         -- When you move your cursor, the highlights will be cleared (the second autocommand).
-        -- if client and client.server_capabilities.documentHighlightProvider then
-        -- 	vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-        -- 		buffer = event.buf,
-        -- 		callback = vim.lsp.buf.document_highlight,
-        -- 	})
-        -- 	vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-        -- 		buffer = event.buf,
-        -- 		callback = vim.lsp.buf.clear_references,
-        -- 	})
-        -- end
+        if client and client.server_capabilities.documentHighlightProvider then
+          vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+            buffer = event.buf,
+            callback = vim.lsp.buf.document_highlight,
+          })
+          vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+            buffer = event.buf,
+            callback = vim.lsp.buf.clear_references,
+          })
+        end
       end,
     })
 

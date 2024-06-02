@@ -3,6 +3,12 @@ return {
   "nvim-lua/plenary.nvim",
   -- icons that many plugins use
   "kyazdani42/nvim-web-devicons",
+  {
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    opts = { enable = true },
+  },
+  { "Bilal2453/luvit-meta", lazy = true }, -- optional `vim.uv` typings
   -- Text manipulation
   -- Surround
   -- cs"' - change surrounding "" to ''
