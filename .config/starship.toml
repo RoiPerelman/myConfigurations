@@ -3,11 +3,8 @@ add_newline = false
 
 [username]
 style_user = 'bold #EFA554'
-# style_root = 'black bold'
 format = '[roip::]($style)'
-# disabled = false
 show_always = true
-# aliases = { "corpuser034g" = "matchai" }
 
 [character]
 success_symbol = '[➜](bold green)'
@@ -29,6 +26,9 @@ style = 'bold italic fg:183'
 [git_metrics]
 disabled = false
 
+[cmd_duration]
+style = 'bold #EFA554'
+format = '⏳[$duration]($style) '
 [python]
 format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
 
