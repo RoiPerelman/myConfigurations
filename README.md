@@ -42,7 +42,9 @@ ln -snf ~/myConfigurations/ideavimrc ~/.ideavimrc
 
 # emacs
 ```bash
-mkdir ~/Applications && cd ~/Applications
+sudo apt update && sudo apt install libmagickwand-dev libwebkit2gtk-4.0-dev
+mkdir ~/Applications
+cd ~/Applications
 git clone https://git.savannah.gnu.org/git/emacs.git
 cd emacs
 git checkout emacs-29.3
@@ -61,16 +63,23 @@ sudo apt build-dep emacs
             --with-lcms2 \
             --with-xwidgets \
             --with-sound=alsa
+make
+make install
 ln -snf ~/myConfigurations/emacs ~/.config/emacs
 # to map caps lock to ctrl in debian
 ```
 
 # fonts
-```
+```bash
 mkdir ~/.local/share/fonts
 cd ~/.local/share/fonts
 wget https://rubjo.github.io/victor-mono/VictorMonoAll.zip
 uzip VictorMonoAll.zip
 rm VicrorMonoAll.zip
+wget https://github.com/microsoft/cascadia-code/releases/download/v2404.23/CascadiaCode-2404.23.zip
+mkdir cascadia
+unzip CascadiaCode-2404.23.zip -d cascadia
+mv cascadia/ttf/*.ttf .
+rm -rf CascadiaCode-2404.23.zip cascadia
 fc-cache -fv
 ```
