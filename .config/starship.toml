@@ -2,8 +2,8 @@
 add_newline = false
 
 [username]
-style_user = 'bold #EFA554'
-format = '[roip::]($style)'
+style_user = 'bold blue'
+format = '[$user::]($style)'
 show_always = true
 
 [character]
