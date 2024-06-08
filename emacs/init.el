@@ -17,28 +17,16 @@
 (global-hl-line-mode t)
 ;; Automatically update buffers if file content on the disk has changed.
 (global-auto-revert-mode t)
-;; Change all yes/no questions to y/n type
-(fset 'yes-or-no-p 'y-or-n-p)
+;; automatically delete selected text without backspace
+(delete-selection-mode 1)
+;; Change all yes/no questions to y/n type (fset 'yes-or-no-p 'y-or-n-p)
+(setq use-short-answers t)
 ;; adds a counter eg 4/34 to isearch
 (setq isearch-lazy-count t)
 ;; change isearch space to not be literal but a non greedy regex
 (setq search-whitespace-regexp "*.?")
 
-;;; ─────────────────── 'General-Frame-Management' ──────────────────
-
-;; make sure we start emacs fullscreen and maximized
-;; sets initial frame
-(set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-;; sets next frames
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
-
-;; Set frame transparency
-;; (defvar rp/frame-transparency '(100 . 90))
-;; (set-frame-parameter (selected-frame) 'alpha rp/frame-transparency)
-;; (add-to-list 'default-frame-alist `(alpha . ,rp/frame-transparency))
-
 ;;; ───────────────────── 'General-Line-Numbers' ────────────────────
-
 ;; Show line numbers
 (global-display-line-numbers-mode 1)
 ;; Show column as well as line number in bottom line
@@ -54,31 +42,79 @@
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;;; ────────────────────────── 'General-Mac' ──────────────────────────
-
 ;; Change meta from option to command key
 (setq mac-option-key-is-meta nil
       mac-command-key-is-meta t
       mac-command-modifier 'meta
       mac-option-modifier 'none)
 
-;;; ──────────────────── 'General-File-Management' ────────────────────
+;;; ─────────────────── 'General-Frame-Management' ──────────────────
+;; make sure we start emacs fullscreen and maximized
+;; sets initial frame
+(set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+;; sets next frames
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
+;;; ───────────────────────── 'General-Fonts' ─────────────────────────
+;; Set default font
+;; (set-face-attribute 'default nil :family "Iosevka" :weight 'normal :height 150)
+;; (set-face-attribute 'default nil :family "Cartograph CF" :weight 'normal :height 110)
+;; (set-face-attribute 'default nil :family "SauceCodePro NF" :weight 'normal :height 100)
+(set-face-attribute 'variable-pitch nil
+		    :family "Cartograph CF"
+		    :weight 'semi-bold
+		    :height 120)
+(set-face-attribute 'fixed-pitch nil
+		    :family "FiraCode Nerd Font"
+		    :weight 'normal
+		    :height 100)
+(set-face-attribute 'default nil
+		    :family "Cascadia Code NF"
+		    :weight 'normal
+		    :height 110)
+;; (add-to-list 'default-frame-alist '(font . "JetBrains Mono 14"))
+(set-face-attribute 'font-lock-comment-face nil :slant 'italic)
+(set-face-attribute 'font-lock-function-name-face nil :slant 'italic)
+(set-face-attribute 'font-lock-variable-name-face nil :slant 'italic)
+(set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
+
+;;; ──────────────────── 'General-File-Management' ────────────────────
+;;; ───────────────────────── 'No-littering' ────────────────────────
 ;; set custom file - so things wont be added in this file
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file 'noerror)
 
 ;; set backup directory (Use copying to avoid symlinks)
-(setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
-(setq backup-by-copying t)
+(setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
+      backup-by-copying t
+      delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t)
+(setq auto-save-file-name-transforms
+      `((".*" ,(concat user-emacs-directory "saves") t)))
 
-;; ;; Optional: Additional backup-related settings
-;; (setq delete-old-versions t
-;;       kept-new-versions 6
-;;       kept-old-versions 2
-;;       version-control t) ; Use version numbers for backups
+;;; ─────────────────────── 'General-packages' ──────────────────────
+;; add mepla as package archive
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; (package-initialize)
+;; install use package if necessary
+(unless (package-installed-p 'use-package) (package-install 'use-package))
+;; Ensure all packages are downloaded automatically
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
+(require 'use-package)
+;; to make sure we are up to date (package-refresh-contents)
+
+;; can be removed in emacs 30+
+;; we package-vc-install to install a github package that helps
+;; install packages from github using use-pacakge easily
+(unless (package-installed-p 'vc-use-package)
+  (package-vc-install "https://github.com/slotThe/vc-use-package"))
+(require 'vc-use-package)
 
 ;;; ─────────────────────── 'General-Functions' ───────────────────────
-
 (defun toggle-comment-on-line ()
   "Comment or uncomment current line."
   (interactive)
@@ -116,8 +152,20 @@
                       space-on-each-side))
           (insert comment-char))))))
 
-;;; ─────────────────────── 'General-Keybinding' ──────────────────────
+;; TODO: doesn't work - make me work
+;; (defun kill-other-buffers ()
+;;   "Keep only the current buffer, scratch, and dashboard buffers, kill all others."
+;;   (interactive)
+;;   (let ((buffers-to-keep '("*scratch*" "*dashboard*"))
+;;         (current-buffer-name (buffer-name)))
+;;     (mapc (lambda (buffer)
+;;             (unless (or (member (buffer-name buffer) buffers-to-keep)
+;;                         (equal (buffer-name buffer) current-buffer-name))
+;;               (kill-buffer buffer)))
+;;           (buffer-list)))
+;;   (message "Killed other buffers"))
 
+;;; ─────────────────────── 'General-Keybinding' ──────────────────────
 ;; Make esc work like C-g
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
@@ -130,41 +178,68 @@
 (global-set-key (kbd "M-k") 'kill-current-buffer)
 
 ;;; ───────────────────────── 'General-Hooks' ─────────────────────────
-
 ;; Delete whitespace just when a file is saved.
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-;;; ─────────────────────────── 'Packages' ──────────────────────────
+;;; ───────────────────────── 'flow-packages' ─────────────────────────
+;; make us go (or delete) forward and backwards better
+(use-package syntax-subword
+  :config (global-syntax-subword-mode))
 
-;; add mepla as package archive
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
+(use-package undo-tree
+  :init
+  (global-undo-tree-mode)
+  :config
+  (setq undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "undo")))))
 
-;; Ensure all packages are downloaded automatically
-(package-refresh-contents)
-(setq use-package-always-ensure t)
+;; TODO: do I want anzu?
+;; show search & replace on buffer
+;; missing feature M-n doesn't work to get thing at point, need to use anzu-query-replace-at-point[-thing]
+;; (use-package anzu
+;;   :config
+;;   (global-set-key [remap query-replace] 'anzu-query-replace)
+;;   (global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
+;;   (global-anzu-mode +1))
+
+;; TODO: need something like this
+;; automatically insert corresponding closing parenthesis
+;; (use-package elec-pair
+;;   :config
+;;   (electric-pair-mode 1))
+
+;;; ──────────────────────── 'helper-packages' ────────────────────────
+;; adds a menu that shows possible key presses
+(use-package which-key
+  :defer 0
+  :diminish which-key-mode
+  :config
+  (which-key-mode)
+  (setq which-key-idle-delay 1))
+
+;; adds colors to delimiters
+(use-package rainbow-delimiters
+  :hook
+  (prog-mode . rainbow-delimiters-mode)
+  :config
+  (rainbow-delimiters-mode 1))
+;; adds colors to color indications e.g #fff000
+(use-package rainbow-mode)
 
 ;;; ────────────────────────────── 'UI' ─────────────────────────────
-(use-package all-the-icons :ensure t)
+;; icons
+(use-package all-the-icons)
+(use-package all-the-icons-completion)
+(use-package all-the-icons-dired)
 
-(use-package spacemacs-theme :ensure t)
-(use-package dracula-theme :ensure t)
-(use-package doom-themes :ensure t)
-
-;; Set default font
-(set-face-attribute 'default nil :family "Iosevka" :weight 'normal :height 150)
-;; (set-face-attribute 'default nil :family "Cartograph CF" :weight 'normal :height 110)
-;; (set-face-attribute 'default nil :family "SauceCodePro NF" :weight 'normal :height 100)
-(set-face-attribute 'variable-pitch nil :family "FiraCode Nerd Font" :weight 'semi-bold :height 120)
-(set-face-attribute 'fixed-pitch nil :family "FiraCode Nerd Font" :weight 'normal :height 100)
-(set-face-attribute 'default nil :family "Cascadia Code NF" :weight 'normal :height 110)
+;; themes
+(use-package spacemacs-theme)
+(use-package dracula-theme)
+(use-package atom-one-dark-theme)
 
 ;; to see colors M-x modus-themes-list-colors-current
 ;; to see original palette C-h f Modus-vivendi-palette
 ;; to see character info under the point - M-x describe-char
 (use-package modus-themes
-  :ensure t
   :init
   (setq modus-themes-italic-constructs t)
   (setq modus-themes-bold-constructs t)
@@ -179,119 +254,12 @@
   :config (load-theme 'modus-vivendi))
 
 
-(use-package which-key
-  :defer 0
-  :diminish which-key-mode
-  :config
-  (which-key-mode)
-  (setq which-key-idle-delay 1))
-
-(use-package rainbow-mode)
-;; (use-package rainbow-delimiters)
-;; (use-package highlight-indent-guides
-;;   :ensure t
-;;   :hook
-;;   (python-ts-mode . highlight-indent-guides))
-;; (use-package highlight-indentation
-;;   :ensure t)
 
 ;; (load-file "/Users/roiperelman/.config/emacs/rp-theme.el")
 ;; (load-theme 'rp t)
 
-;;; ────────────────────────── 'Completions' ──────────────────────────
-
-;; Adds out-of-order pattern matching algorithm.
-(use-package orderless
-  :ensure t
-  :config
-  (setq completion-styles '(orderless basic)))
-
-;;; ───────────────────── 'Minibuffer-Completions' ────────────────────
-
-;; save minibuffer histories. Vertico uses to put recently selected options at the top.
-(savehist-mode 1)
-;; save recently visited files. Consult uses it to put recent files options at the top.
-(recentf-mode 1)
-;; Minibuffer live ui
-(use-package vertico
-  :ensure t
-  :config
-  (setq vertico-cycle t)
-  (vertico-mode))
-
-;; Adds item annotations
-(use-package marginalia
-  :ensure t
-  :config
-  (marginalia-mode))
-
-;; Gives enhanced completion functions we need to bind
-;; Gives previews for current item
-;; binds M-s as opposed to native C-s C-r
-(use-package consult
-  :ensure t
-  :bind (;; A recursive grep
-         ("M-s M-g" . consult-ripgrep)
-         ;; Search for files names recursively
-         ("M-s M-f" . consult-find)
-         ;; Search through the outline (headings) of the file
-         ("M-s M-o" . consult-outline)
-         ;; Search the current buffer
-         ("M-s M-l" . consult-line)
-         ;; Switch to another buffer, or bookmarked file, or recently
-         ;; opened file.
-         ("M-s M-b" . consult-buffer)
-	 ;; search on imenu
-	 ("M-s M-i" . consult-imenu)
-	 )
-  :config
-  ;; Use `consult-completion-in-region' if Vertico is enabled.
-  ;; Otherwise use the default `completion--in-region' function.
-  (setq completion-in-region-function
-	(lambda (&rest args)
-	  (apply (if vertico-mode
-		     #'consult-completion-in-region
-		   #'completion--in-region)
-		 args))))
-
-;; adds actions for current item
-(use-package embark
-  :ensure t
-  :bind (("C-." . embark-act)
-         :map minibuffer-local-map
-         ("C-c C-c" . embark-collect)
-         ("C-c C-e" . embark-export)))
-
-;; adds embark actions to consult functions
-(use-package embark-consult
-  :ensure t ; only need to install it, embark loads it after consult if found
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
-
-;; edit the results of a grep search  while inside a `grep-mode' buffer.
-;; toggle editable mode, make changes, type C-c C-c to confirm | C-c C-k to abort.
-(use-package wgrep
-  :ensure t
-  :bind ( :map grep-mode-map
-          ("e" . wgrep-change-to-wgrep-mode)
-          ("C-x C-q" . wgrep-change-to-wgrep-mode)
-          ("C-c C-c" . wgrep-finish-edit)))
-
-;; ───────────────────── 'In-Buffer-Completions' ─────────────────────
-
-;; corfu popup buffer with choice options.
-;; ATM done with vertico and consult consult-completion-in-region instead of completion--in-region
-
-;; cape adds capf sources (files, abbrev, etc)
-
 ;;; ────────────────────────── 'Treesitter' ─────────────────────────
-
-;; tmp markdown-mode
-(use-package markdown-mode
-  :ensure t
-  :mode ("README\\.md\\'" . gfm-mode)
-  :init (setq markdown-command "multimarkdown"))
-
+;; better way to parse code
 (use-package treesit
   :ensure nil
   :config
@@ -338,12 +306,7 @@
 		 '(markdown-inline
 		   "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
 		   "split_parser"
-		   "tree-sitter-markdown-inline/src"))
-    )
-
-  (dolist (source treesit-language-source-alist)
-    (unless (treesit-ready-p (car source))
-      (treesit-install-language-grammar (car source))))
+		   "tree-sitter-markdown-inline/src")))
   (setq treesit-font-lock-level 4)
   (add-to-list 'auto-mode-alist '("\\.Dockerfile\\'" . dockerfile-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-ts-mode))
@@ -358,25 +321,127 @@
                '(json-mode . json-ts-mode))
   (add-to-list 'major-mode-remap-alist
                '(markdown-mode . markdown-ts-mode))
-  )
+  (dolist (source treesit-language-source-alist)
+    (unless (treesit-ready-p (car source))
+      (treesit-install-language-grammar (car source)))))
+
+;;; ────────────────────────── 'Completions' ──────────────────────────
+
+;; Adds out-of-order pattern matching algorithm.
+(use-package orderless
+  :config
+  (setq completion-styles '(orderless basic)))
+;; (use-package orderless
+;;   :custom
+;;   (completion-styles '(orderless basic))
+;;   (completion-category-defaults nil)
+;;   (orderless-matching-styles
+;;    '(orderless-literal
+;;      orderless-prefixes
+;;      orderless-initialism
+;;      orderless-regexp
+;;      )))
+;;; ───────────────────── 'Minibuffer-Completions' ────────────────────
+
+;; save minibuffer histories. Vertico uses to put recently selected options at the top.
+(savehist-mode 1)
+;; save recently visited files. Consult uses it to put recent files options at the top.
+(recentf-mode 1)
+;; Minibuffer live ui
+(use-package vertico
+  :config
+  (setq vertico-cycle t)
+  (vertico-mode))
+
+;; Adds item annotations
+(use-package marginalia
+  :after vertico
+  :hook
+  (marginalia-mode . all-the-icons-completion-marginalia-setup)
+  :config
+  ;; (setq marginalia-align 'right)
+  (marginalia-mode))
+
+;; Gives enhanced completion functions we need to bind
+;; Gives previews for current item
+;; binds M-s as opposed to native C-s C-r
+(use-package consult
+    :bind (;; A recursive grep
+         ("M-s M-g" . consult-ripgrep)
+         ;; Search for files names recursively
+         ("M-s M-f" . consult-find)
+         ;; Search through the outline (headings) of the file
+         ("M-s M-o" . consult-outline)
+         ;; Search the current buffer
+         ("M-s M-l" . consult-line)
+         ;; Switch to another buffer, or bookmarked file, or recently
+         ;; opened file.
+         ("M-s M-b" . consult-buffer)
+	 ;; search on imenu
+	 ("M-s M-i" . consult-imenu)
+	 )
+  :config
+  ;; Use `consult-completion-in-region' if Vertico is enabled.
+  ;; Otherwise use the default `completion--in-region' function.
+  (setq completion-in-region-function
+	(lambda (&rest args)
+	  (apply (if vertico-mode
+		     #'consult-completion-in-region
+		   #'completion--in-region)
+		 args))))
+
+;; adds actions for current item
+(use-package embark
+  :bind (("C-." . embark-act)
+         :map minibuffer-local-map
+         ("C-c C-c" . embark-collect)
+         ("C-c C-e" . embark-export)))
+
+;; adds embark actions to consult functions
+(use-package embark-consult
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
+
+;; edit the results of a grep search  while inside a `grep-mode' buffer.
+;; toggle editable mode, make changes, type C-c C-c to confirm | C-c C-k to abort.
+(use-package wgrep
+  :bind ( :map grep-mode-map
+          ("e" . wgrep-change-to-wgrep-mode)
+          ("C-x C-q" . wgrep-change-to-wgrep-mode)
+          ("C-c C-c" . wgrep-finish-edit)))
+
+;; ───────────────────── 'In-Buffer-Completions' ─────────────────────
+
+;; corfu popup buffer with choice options.
+;; ATM done with vertico and consult consult-completion-in-region instead of completion--in-region
+
+;; (use-package corfu
+;;   :config
+;;   (setq corfu-auto t)
+;;   (setq corfu-auto-delay 0)
+;;   (setq corfu-auto-prefix 0)
+;;   (setq corfu-quit-no-match t)
+;;   :init
+;;   (global-corfu-mode))
+;; cape adds capf sources (files, abbrev, etc)
 
 ;;; ───────────────────────────── 'Code' ────────────────────────────
 
-;; copilot installation including prerequisites
+;; new way - using vc option in use-package
+;; old way instead of :vc we put but we need to download copilot manualy
+;; :load-path "manual-packages/copilot.el"
 ;; mkdir ~/.config/emacs/manual-packages && cd ~/.config/emacs/manual-packages
 ;; git clone https://github.com/copilot-emacs/copilot.el
 ;; M-x copilot-install-server
 ;; M-x copilot-login
-(use-package dash
-  :ensure t)
-(use-package s
-  :ensure t)
-(use-package editorconfig
-  :ensure t)
-(use-package f
-  :ensure t)
 (use-package copilot
-  :load-path "manual-packages/copilot.el"
+  :vc (copilot :url "https://github.com/copilot-emacs/copilot.el"
+               :branch "main")
+  :init
+  ;; prerequisites
+  (use-package dash)
+  (use-package s)
+  (use-package editorconfig)
+  (use-package f)
   :bind (:map copilot-completion-map
 	      ("<tab>" . copilot-accept-completion)
 	      ("TAB" . copilot-accept-completion))
@@ -388,7 +453,6 @@
 
 ;; automatically load elgot when working on certain languages
 (use-package eglot
-  :ensure t
   :hook (
 	 (python-base-mode . eglot-ensure)
 	 (typescript-ts-base-mode . eglot-ensure)
@@ -428,13 +492,11 @@
 
 ;; add ruff linting with flymake
 (use-package flymake-ruff
-  :ensure t
   :hook (eglot-managed-mode . flymake-ruff-load))
 
 ;; add ruff fix, isort and format
 ;; TODO: check how I can only add these functions during python-base-mode
 (use-package reformatter
-  :ensure t
   :config
   (require 'reformatter)
   (defcustom ruff-command "ruff"
@@ -468,7 +530,6 @@
 ;;; ────────────────────────────── 'Git' ──────────────────────────────
 
 (use-package magit
-  :ensure t
   :bind (
 	 ("C-x g" . magit-status)
 	 ("C-c g g" . magit-status)
@@ -481,7 +542,6 @@
 ;; 2. show hunk diff
 ;; 3. stage, revert hunk (no unstage hunk)
 (use-package git-gutter
-  :ensure t
   :hook (prog-mode . git-gutter-mode)
   :bind (
 	 ("M-] h" . git-gutter:next-hunk)
@@ -500,7 +560,6 @@
   )
 
 (use-package git-gutter-fringe
-  :ensure t
   :config
   (fringe-helper-define 'git-gutter-fr:added '(center repeated) ".")
   (fringe-helper-define 'git-gutter-fr:modified '(center repeated) ".")
@@ -512,7 +571,6 @@
 ;; 2. vc-annotate (creates a new buffer with git blame on each line (C-x v g)
 ;; 3. blamer-mode which is a git line blame
 (use-package blamer
-  :ensure t
   :bind (("C-c g b" . blamer-mode))
   :config
   (setq blamer-idle-time 0.05)
@@ -524,7 +582,6 @@
 
 ;; ediff
 (use-package ediff
-  :ensure nil
   :commands (ediff-buffers ediff-files ediff-buffers3 ediff-files3)
   :init
   (setq ediff-split-window-function 'split-window-horizontally)
@@ -548,18 +605,26 @@
 ;; (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 ;; (setq ediff-split-window-function 'split-window-vertically)
 
-;;; ─────────────────────────────── 'Lua' ───────────────────────────────
-
-(use-package lua-mode
-  :ensure t
-  :config
-  (lua-mode))
-
 ;;; ─────────────────────────── 'Terminal' ──────────────────────────
 (use-package vterm
-  :ensure t
   :bind (:map vterm-mode-map
 	      ("C-c C-c" . vterm--self-insert)))
+
+;; ;; TODO: check me out
+;; (use-package vterm-toggle
+;;   :requires vterm
+;;   :config
+;;   (setq vterm-min-window-width 30)
+;;   (setq vterm-toggle-fullscreen-p nil)
+;;   (add-to-list 'display-buffer-alist
+;;              '((lambda (buffer-or-name _)
+;;                    (let ((buffer (get-buffer buffer-or-name)))
+;;                      (with-current-buffer buffer
+;;                        (or (equal major-mode 'vterm-mode)
+;;                            (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+;;                 (display-buffer-reuse-window display-buffer-at-bottom)
+;;                 (reusable-frames . visible)
+;;                 (window-height . 0.35))))
 
 ;;; ───────────────────── 'examples-of-functions' ─────────────────────
 (defun test-me ()
@@ -585,3 +650,49 @@
 ;; check outline minor mode
 ;; understand imenu
 ;; add imenu list
+
+;;; ──────────────────────────── 'windows' ────────────────────────────
+;; (use-package window
+;;   :ensure nil
+;;   :init
+;;   (setq display-buffer-alist
+;;         '(;; top window
+;;           ("\\*Messages.*"
+;;            (display-buffer-in-side-window)
+;;            (window-height . 0.25)
+;;            (side . right)
+;;            (slot . 1))
+;;           ("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\)\\*"
+;;            (display-buffer-in-side-window)
+;;            (window-height . 0.25)
+;;            (side . top)
+;;            (slot . 2))
+;;           ;; bottom window
+;;           ("^\\(\\*e?shell\\|vterm\\).*" ;; You don't use eshell. get rid of it
+;;            (display-buffer-in-side-window)
+;;            (window-width . 0.40)
+;;            (side . bottom)
+;;            (slot . 1))
+;;           ;; left side window
+;;           ("\\*Help.*"
+;;            (display-buffer-in-side-window)
+;;            (window-width . 0.35)       ; See the :hook
+;;            (side . right)
+;;            (slot . 0))
+;;           ;; right window
+;;           ("\\*Faces\\*"
+;;            (display-buffer-in-side-window)
+;;            (window-width . 0.35)
+;;            (side . right)
+;;            (slot . 0)
+;;            (window-parameters . ((mode-line-format . (" " mode-line-buffer-identification)))))
+;;           ("\\*Custom.*"
+;;            (display-buffer-in-side-window)
+;;            (window-width . 0.35)
+;;            (side . right)
+;;            (slot . 1))
+;;           )))
+
+;;   (setq window-combination-resize t)
+;;   (setq even-window-sizes 'height-only)
+;;   (setq window-sides-vertical nil)
