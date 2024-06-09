@@ -24,7 +24,8 @@
 ;; adds a counter eg 4/34 to isearch
 (setq isearch-lazy-count t)
 ;; change isearch space to not be literal but a non greedy regex
-(setq search-whitespace-regexp "*.?")
+;; this acts weird, doesn't mark the whole area
+;; (setq search-whitespace-regexp "*.?")
 
 ;;; ───────────────────── 'General-Line-Numbers' ────────────────────
 ;; Show line numbers
@@ -152,6 +153,52 @@
                       space-on-each-side))
           (insert comment-char))))))
 
+(use-package isearch
+  :ensure nil
+  :defer t
+  :config
+  ;; use selection to search (https://www.reddit.com/r/emacs/comments/2amn1v/comment/cixq7zx/)
+  (defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
+    (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+        (progn
+          (isearch-update-ring (buffer-substring-no-properties (mark) (point)))
+          (deactivate-mark)
+          ad-do-it
+          (if (not forward)
+              (isearch-repeat-backward)
+            (goto-char (mark))
+            (isearch-repeat-forward)))
+      ad-do-it))
+  ;; push isearch search to porject-find-regexp (C-x p g)
+  (defun isearch-rp-project ()
+    (interactive)
+    (let ((query (if isearch-regexp
+		     isearch-string
+		   (regexp-quote isearch-string))))
+      (isearch-update-ring isearch-string isearch-regexp)
+      (let (search-nonincremental-instead)
+        (ignore-errors (isearch-done t t)))
+      (project-find-regexp query)))
+  (defun isearch-rp-consult-line ()
+    "Invoke `consult-line' from isearch."
+    (interactive)
+    (let ((query (if isearch-regexp
+		     isearch-string
+		   (regexp-quote isearch-string))))
+      (isearch-update-ring isearch-string isearch-regexp)
+      (let (search-nonincremental-instead)
+        (ignore-errors (isearch-done t t)))
+      (consult-line query)))
+  :bind
+  (:map isearch-mode-map
+	("M-o" . isearch-occur)
+        ("M-p" . isearch-rp-project)
+	("M-." . isearch-forward-thing-at-point)
+	("M-l" . isearch-rp-consult-line)
+	;; ("C-j" . avy-isearch)
+	)
+  )
+
 ;; TODO: doesn't work - make me work
 ;; (defun kill-other-buffers ()
 ;;   "Keep only the current buffer, scratch, and dashboard buffers, kill all others."
@@ -192,14 +239,15 @@
   :config
   (setq undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "undo")))))
 
-;; TODO: do I want anzu?
 ;; show search & replace on buffer
+(use-package anzu
+  :bind (:map isearch-mode-map
+   ([remap isearch-query-replace]        . anzu-isearch-query-replace)
+   ([remap isearch-query-replace-regexp] . anzu-isearch-query-replace-regexp)))
 ;; missing feature M-n doesn't work to get thing at point, need to use anzu-query-replace-at-point[-thing]
-;; (use-package anzu
 ;;   :config
 ;;   (global-set-key [remap query-replace] 'anzu-query-replace)
 ;;   (global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
-;;   (global-anzu-mode +1))
 
 ;; TODO: need something like this
 ;; automatically insert corresponding closing parenthesis
@@ -472,6 +520,7 @@
   ;;                                             "-\\(langserver\\|language-server\\)$" "" name)))))))))
   )
 
+;; TODO: doesn't work - why?
 ;; working with python pyright and ruff
 ;; options:
 ;; 1. using pyright and ruff globally (preferable)
@@ -546,9 +595,9 @@
   :bind (
 	 ("M-] h" . git-gutter:next-hunk)
 	 ("M-[ h" . git-gutter:previous-hunk)
-	 ("C-c g h s" . git-gutter:stage-hunk)
-	 ("C-c g h r" . git-gutter:revert-hunk)
-	 ("C-c g h p" . git-gutter:popup-hunk)
+	 ("C-c h s" . git-gutter:stage-hunk)
+	 ("C-c h r" . git-gutter:revert-hunk)
+	 ("C-c h p" . git-gutter:popup-hunk)
 	 )
   :config
   (setq git-gutter:update-interval 0.05)
@@ -626,18 +675,7 @@
 ;;                 (reusable-frames . visible)
 ;;                 (window-height . 0.35))))
 
-;;; ───────────────────── 'examples-of-functions' ─────────────────────
-(defun test-me ()
-  (interactive)
-  (if (use-region-p)
-      (let ((start (region-beginning))
-            (end (region-end)))
-        (message "Region start: %d, end: %d" start end))
-    (message "We are %d characters into this buffer after first word."
-             (- (point)
-                (save-excursion
-                  (goto-char (point-min)) (forward-word) (point))))))
-
+;;; ─────────────────────────── 'check-me' ──────────────────────────
 ;; check hl-todo
 ;; (use-package hl-todo
 ;;   :custom-face
@@ -650,49 +688,3 @@
 ;; check outline minor mode
 ;; understand imenu
 ;; add imenu list
-
-;;; ──────────────────────────── 'windows' ────────────────────────────
-;; (use-package window
-;;   :ensure nil
-;;   :init
-;;   (setq display-buffer-alist
-;;         '(;; top window
-;;           ("\\*Messages.*"
-;;            (display-buffer-in-side-window)
-;;            (window-height . 0.25)
-;;            (side . right)
-;;            (slot . 1))
-;;           ("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\)\\*"
-;;            (display-buffer-in-side-window)
-;;            (window-height . 0.25)
-;;            (side . top)
-;;            (slot . 2))
-;;           ;; bottom window
-;;           ("^\\(\\*e?shell\\|vterm\\).*" ;; You don't use eshell. get rid of it
-;;            (display-buffer-in-side-window)
-;;            (window-width . 0.40)
-;;            (side . bottom)
-;;            (slot . 1))
-;;           ;; left side window
-;;           ("\\*Help.*"
-;;            (display-buffer-in-side-window)
-;;            (window-width . 0.35)       ; See the :hook
-;;            (side . right)
-;;            (slot . 0))
-;;           ;; right window
-;;           ("\\*Faces\\*"
-;;            (display-buffer-in-side-window)
-;;            (window-width . 0.35)
-;;            (side . right)
-;;            (slot . 0)
-;;            (window-parameters . ((mode-line-format . (" " mode-line-buffer-identification)))))
-;;           ("\\*Custom.*"
-;;            (display-buffer-in-side-window)
-;;            (window-width . 0.35)
-;;            (side . right)
-;;            (slot . 1))
-;;           )))
-
-;;   (setq window-combination-resize t)
-;;   (setq even-window-sizes 'height-only)
-;;   (setq window-sides-vertical nil)
