@@ -21,11 +21,6 @@
 (delete-selection-mode 1)
 ;; Change all yes/no questions to y/n type (fset 'yes-or-no-p 'y-or-n-p)
 (setq use-short-answers t)
-;; adds a counter eg 4/34 to isearch
-(setq isearch-lazy-count t)
-;; change isearch space to not be literal but a non greedy regex
-;; this acts weird, doesn't mark the whole area
-;; (setq search-whitespace-regexp "*.?")
 
 ;;; ───────────────────── 'General-Line-Numbers' ────────────────────
 ;; Show line numbers
@@ -153,10 +148,59 @@
                       space-on-each-side))
           (insert comment-char))))))
 
+;;; ─────────────────────── 'General-Keybinding' ──────────────────────
+;; Make esc work like C-g
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+;; `C-x o' is a 2 step key binding. `M-o' is much easier.
+(global-set-key (kbd "M-o") 'other-window)
+
+;; use general function toggle comment on line
+(global-set-key (kbd "C-;") 'toggle-comment-on-line)
+
+(global-set-key (kbd "M-k") 'kill-current-buffer)
+
+;;; ───────────────────────── 'General-Hooks' ─────────────────────────
+;; Delete whitespace just when a file is saved.
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;;; ───────────────────────── 'flow-packages' ─────────────────────────
+;; make us go (or delete) forward and backwards better
+(use-package syntax-subword
+  :config (global-syntax-subword-mode))
+
+(use-package undo-tree
+  :init
+  (global-undo-tree-mode)
+  :config
+  (setq undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "undo")))))
+
+;; show search & replace on buffer
+(use-package anzu
+  :bind (:map isearch-mode-map
+   ([remap isearch-query-replace]        . anzu-isearch-query-replace)
+   ([remap isearch-query-replace-regexp] . anzu-isearch-query-replace-regexp)))
+;; missing feature M-n doesn't work to get thing at point, need to use anzu-query-replace-at-point[-thing]
+;;   :config
+;;   (global-set-key [remap query-replace] 'anzu-query-replace)
+;;   (global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
+
+;; automatically insert corresponding closing parenthesis
+(use-package elec-pair
+  :ensure nil
+  :config
+  (electric-pair-mode 1))
+
+;; update isearch functionality
 (use-package isearch
   :ensure nil
   :defer t
   :config
+  ;; adds a counter eg 4/34 to isearch
+  (setq isearch-lazy-count t)
+  ;; change isearch space literal to non greedy regex (this acts weird, doesn't mark the whole area)
+  ;; (setq search-whitespace-regexp "*.?")
+
   ;; use selection to search (https://www.reddit.com/r/emacs/comments/2amn1v/comment/cixq7zx/)
   (defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
     (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
@@ -198,62 +242,6 @@
 	;; ("C-j" . avy-isearch)
 	)
   )
-
-;; TODO: doesn't work - make me work
-;; (defun kill-other-buffers ()
-;;   "Keep only the current buffer, scratch, and dashboard buffers, kill all others."
-;;   (interactive)
-;;   (let ((buffers-to-keep '("*scratch*" "*dashboard*"))
-;;         (current-buffer-name (buffer-name)))
-;;     (mapc (lambda (buffer)
-;;             (unless (or (member (buffer-name buffer) buffers-to-keep)
-;;                         (equal (buffer-name buffer) current-buffer-name))
-;;               (kill-buffer buffer)))
-;;           (buffer-list)))
-;;   (message "Killed other buffers"))
-
-;;; ─────────────────────── 'General-Keybinding' ──────────────────────
-;; Make esc work like C-g
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-;; `C-x o' is a 2 step key binding. `M-o' is much easier.
-(global-set-key (kbd "M-o") 'other-window)
-
-;; use general function toggle comment on line
-(global-set-key (kbd "C-;") 'toggle-comment-on-line)
-
-(global-set-key (kbd "M-k") 'kill-current-buffer)
-
-;;; ───────────────────────── 'General-Hooks' ─────────────────────────
-;; Delete whitespace just when a file is saved.
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;;; ───────────────────────── 'flow-packages' ─────────────────────────
-;; make us go (or delete) forward and backwards better
-(use-package syntax-subword
-  :config (global-syntax-subword-mode))
-
-(use-package undo-tree
-  :init
-  (global-undo-tree-mode)
-  :config
-  (setq undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "undo")))))
-
-;; show search & replace on buffer
-(use-package anzu
-  :bind (:map isearch-mode-map
-   ([remap isearch-query-replace]        . anzu-isearch-query-replace)
-   ([remap isearch-query-replace-regexp] . anzu-isearch-query-replace-regexp)))
-;; missing feature M-n doesn't work to get thing at point, need to use anzu-query-replace-at-point[-thing]
-;;   :config
-;;   (global-set-key [remap query-replace] 'anzu-query-replace)
-;;   (global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
-
-;; TODO: need something like this
-;; automatically insert corresponding closing parenthesis
-;; (use-package elec-pair
-;;   :config
-;;   (electric-pair-mode 1))
 
 ;;; ──────────────────────── 'helper-packages' ────────────────────────
 ;; adds a menu that shows possible key presses
@@ -414,19 +402,26 @@
 ;; Gives previews for current item
 ;; binds M-s as opposed to native C-s C-r
 (use-package consult
-    :bind (;; A recursive grep
+  :bind (;; A recursive grep
          ("M-s M-g" . consult-ripgrep)
+	 ("M-s M-G" . consult-grep)
          ;; Search for files names recursively
-         ("M-s M-f" . consult-find)
+         ("M-s M-f" . consult-fd)
+	 ("M-s M-F" . consult-find)
          ;; Search through the outline (headings) of the file
          ("M-s M-o" . consult-outline)
          ;; Search the current buffer
          ("M-s M-l" . consult-line)
-         ;; Switch to another buffer, or bookmarked file, or recently
-         ;; opened file.
+         ;; Switch to another buffer/bookmarked/recent file.
          ("M-s M-b" . consult-buffer)
 	 ;; search on imenu
 	 ("M-s M-i" . consult-imenu)
+	 ;; change theme
+	 ("M-s M-t" . consult-theme)
+	 ;; search mark
+	 ("M-s M-m" . consult-mark)
+	 ;; search help info
+	 ("M-s M-h" . consult-info)
 	 )
   :config
   ;; Use `consult-completion-in-region' if Vertico is enabled.
@@ -436,7 +431,28 @@
 	  (apply (if vertico-mode
 		     #'consult-completion-in-region
 		   #'completion--in-region)
-		 args))))
+		 args)))
+
+  (defvar consult-rp-project-files-source
+    (list :name     "Project Files"
+          :category 'file
+          :narrow   ?p
+          :face     'consult-file
+          :history  'file-name-history
+          :state    #'consult--file-state
+	  ;; :action   ,(lambda (file)
+	  ;; 	       (consult--file-action
+	  ;; 		(expand-file-name file (project-root (project-current)))))
+          :items
+	  ;; TODO: shorten the name and color me different
+	  (lambda ()
+	    (when-let* ((project (project-current))
+			(root (project-root project)))
+	      ;; (mapcar (lambda (file) (file-relative-name file root))
+		      (project-files project)))))
+
+  (add-to-list 'consult-buffer-sources 'consult-rp-project-files-source 'append)
+  )
 
 ;; adds actions for current item
 (use-package embark
