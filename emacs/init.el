@@ -22,6 +22,8 @@
 ;; Change all yes/no questions to y/n type (fset 'yes-or-no-p 'y-or-n-p)
 (setq use-short-answers t)
 
+;; for dired
+(setq dired-dwim-target t)
 ;;; ───────────────────── 'General-Line-Numbers' ────────────────────
 ;; Show line numbers
 (global-display-line-numbers-mode 1)

@@ -35,4 +35,4 @@ format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
 [nodejs]
 format = '[$symbol($version )]($style)'
 style = 'yellow bold'
-symbol= ' '
+# symbol= ' '
