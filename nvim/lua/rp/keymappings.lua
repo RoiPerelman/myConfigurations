@@ -28,16 +28,6 @@ vim.keymap.set("i", "<A-k>", "<Esc>:m .-2<CR>==gi", { silent = true })
 vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { silent = true })
 vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { silent = true })
 
--- next prev key bindings
--- buffers
-vim.keymap.set("n", "]b", ":bnext<CR>")
-vim.keymap.set("n", "[b", ":bprevious<CR>")
--- quickfix and locallist
-vim.keymap.set("n", "]q", ":cnext<CR>")
-vim.keymap.set("n", "[q", ":cprev<CR>")
-vim.keymap.set("n", "]l", ":lnext<CR>")
-vim.keymap.set("n", "[l", ":lprev<CR>")
-
 -- better window navigation See `:help wincmd`
 vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" }) -- :wincmd h<CR>
 vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" }) -- :wincmd l<CR>
@@ -56,3 +46,50 @@ vim.keymap.set("n", "C", '"_C')
 vim.keymap.set("v", "c", '"_c')
 vim.keymap.set("v", "C", '"_C')
 vim.keymap.set("x", "p", [["_dP"]])
+
+-- next prev key bindings
+-- buffers
+vim.keymap.set("n", "]b", ":bnext<CR>")
+vim.keymap.set("n", "[b", ":bprevious<CR>")
+-- quickfix and locallist
+vim.keymap.set("n", "]q", ":cnext<CR>")
+vim.keymap.set("n", "[q", ":cprev<CR>")
+vim.keymap.set("n", "]l", ":lnext<CR>")
+vim.keymap.set("n", "[l", ":lprev<CR>")
+
+-- Function to toggle the specified window (quickfix or location list)
+local function toggle_window(window_type)
+  local window_exists = false
+  for _, win in ipairs(vim.fn.getwininfo()) do
+    if (window_type == "quickfix" and win.quickfix == 1) or (window_type == "loclist" and win.loclist == 1) then
+      window_exists = true
+      break
+    end
+  end
+  if window_exists then
+    vim.cmd(window_type == "quickfix" and "cclose" or "lclose")
+  else
+    if window_type == "quickfix" then
+      vim.cmd("copen")
+    elseif window_type == "loclist" then
+      local success, _ = pcall(vim.cmd, "lopen")
+      if not success then
+        print("No location list")
+      end
+    end
+  end
+end
+
+-- Create user commands to toggle the quickfix and location list windows
+vim.api.nvim_create_user_command("ToggleQuickfix", function()
+  toggle_window("quickfix")
+end, {})
+vim.api.nvim_create_user_command("ToggleLoclist", function()
+  toggle_window("loclist")
+end, {})
+
+-- Map <leader>q to toggle the quickfix window
+vim.api.nvim_set_keymap("n", "<leader>q", ":ToggleQuickfix<CR>", { noremap = true, silent = true })
+
+-- Map <leader>l to toggle the location list window
+vim.api.nvim_set_keymap("n", "<leader>l", ":ToggleLoclist<CR>", { noremap = true, silent = true })

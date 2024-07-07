@@ -13,37 +13,11 @@ return { -- Fuzzy Finder (files, lsp, etc)
       end,
     },
     { "nvim-telescope/telescope-ui-select.nvim" },
+    { "nvim-telescope/telescope-smart-history.nvim" },
     { "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
-    {
-      "folke/trouble.nvim",
-      dependencies = { "nvim-tree/nvim-web-devicons" },
-      config = function()
-        require("trouble").setup({})
-
-        vim.keymap.set("n", "<leader>xx", function()
-          require("trouble").toggle()
-        end)
-        vim.keymap.set("n", "<leader>xw", function()
-          require("trouble").toggle("workspace_diagnostics")
-        end)
-        vim.keymap.set("n", "<leader>xd", function()
-          require("trouble").toggle("document_diagnostics")
-        end)
-        vim.keymap.set("n", "<leader>xq", function()
-          require("trouble").toggle("quickfix")
-        end)
-        vim.keymap.set("n", "<leader>xl", function()
-          require("trouble").toggle("loclist")
-        end)
-        vim.keymap.set("n", "gR", function()
-          require("trouble").toggle("lsp_references")
-        end)
-      end,
-    },
   },
   config = function()
-    local trouble = require("trouble.providers.telescope")
-
+    local data = assert(vim.fn.stdpath("data")) --[[@as string]]
     require("telescope").setup({
       defaults = {
         -- layout_strategy = "rp_layout",
@@ -51,12 +25,14 @@ return { -- Fuzzy Finder (files, lsp, etc)
         layout_config = {
           prompt_position = "top",
         },
-        mappings = {
-          i = { ["<c-t>"] = trouble.open_with_trouble },
-          n = { ["<c-t>"] = trouble.open_with_trouble },
-        },
       },
       extensions = {
+        wrap_results = true,
+        fzf = {},
+        history = {
+          path = vim.fs.joinpath(data, "telescope_history.sqlite3"),
+          limit = 100,
+        },
         ["ui-select"] = {
           require("telescope.themes").get_dropdown(),
         },
@@ -66,14 +42,14 @@ return { -- Fuzzy Finder (files, lsp, etc)
     -- Enable Telescope extensions if they are installed
     pcall(require("telescope").load_extension, "fzf")
     pcall(require("telescope").load_extension, "ui-select")
+    pcall(require("telescope").load_extension, "smart_history")
 
     -- See `:help telescope.builtin`
     local builtin = require("telescope.builtin")
     vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "[F]ind [H]elp" })
-    vim.keymap.set("n", "<leader>fk", builtin.keymaps, { desc = "[F]ind [K]eymaps" })
     vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "[F]ind [F]iles" })
-    vim.keymap.set("n", "<leader>fw", builtin.grep_string, { desc = "[F]ind current [W]ord" })
-    vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "[F]ind using [G]rep" })
+    vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "[F]ind live [G]rep" })
+    vim.keymap.set("n", "<leader>fw", builtin.grep_string, { desc = "[F]ind current [W]ord and after live grep" })
     vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "[F]ind [D]iagnostics" })
     vim.keymap.set("n", "<leader>fe", builtin.oldfiles, { desc = "[F]ind Recent [E]dited Files" })
     vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "[F]ind [B]uffers" })
@@ -92,10 +68,16 @@ return { -- Fuzzy Finder (files, lsp, etc)
       builtin.find_files({ cwd = vim.fn.stdpath("config") })
     end, { desc = "[F]ind files in [P]rivate config" })
 
+    -- shortcut for searching all Neovim plugins
+    vim.keymap.set("n", "<space>fa", function()
+      ---@diagnostic disable-next-line: param-type-mismatch
+      builtin.find_files({ cwd = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy") })
+    end, { desc = "[F]ind files in [A]ll plugins" })
+
     -- TODO: move to a different file
-    --
     local inspekto_filepaths = {
       "~/tiny_inspektor/cicd/tinybox",
+      "~/tiny_inspektor/cicd/meta-inspekto",
       "~/tiny_inspektor/sw/fixi",
       "~/tiny_inspektor/sw/fixi_client",
       "~/tiny_inspektor/sw/tiny_database",
@@ -107,6 +89,20 @@ return { -- Fuzzy Finder (files, lsp, etc)
       "~/tiny_inspektor/sw/integration_managers",
       "~/tiny_inspektor/sw/profile_center",
       "~/tiny_inspektor/sw/inspekto_agent",
+
+      "~/inspekto/tinybox",
+      "~/inspekto/meta-inspekto",
+      "~/inspekto/fixi",
+      "~/inspekto/fixi_client",
+      "~/inspekto/tiny_database",
+      "~/inspekto/tier2/tiny_std",
+      "~/inspekto/tier2/common_std",
+      "~/inspekto/data_coordinator",
+      "~/inspekto/connectivity",
+      "~/inspekto/inspekto_agent",
+      "~/inspekto/integration_managers",
+      "~/inspekto/profile_center",
+      "~/inspekto/inspekto_agent",
     }
     local inspekto_path_display = function(_, path)
       -- Define the subpath to start displaying from
@@ -125,6 +121,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
       -- If the specific subpath isn't found, return the whole path
       return path
     end
+
     vim.keymap.set("n", "<leader>if", function()
       builtin.find_files({
         search_dirs = inspekto_filepaths,
@@ -148,51 +145,3 @@ return { -- Fuzzy Finder (files, lsp, etc)
     end, { desc = "[I]nspekto [W]ord" })
   end,
 }
-
--- layout_strategies.rp_layout = make_documented_layout(
---   "bottom_pane",
---   vim.tbl_extend("error", shared_options, {
---     preview_width = { "Change the width of Telescope's preview window", "See |resolver.resolve_width()|" },
---     preview_cutoff = "When columns are less than this value, the preview will be disabled",
---   }),
---   function(self, max_columns, max_lines, layout_config)
---     local p_window = require "telescope.pickers.window"
---     local initial_options = p_window.get_initial_window_options(self)
---     local results = initial_options.results
---     local prompt = initial_options.prompt
---     local preview = initial_options.preview
---
---     local border_size = 1
---
---     -- Height
---     prompt.height = 1
---     results.height = 10
---     preview.height = max_lines - results.height - prompt.height - 4 * border_size
---
---     -- Width
---     prompt.width = max_columns
---     preview.width = max_columns - 4 * border_size
---     results.width = max_columns
---
---     -- Line
---     prompt.line = max_lines - results.height - border_size
---     results.line = prompt.line + prompt.height
---     preview.line = 2
---     prompt.border = { 1, 1, 1, 1 }
---     results.border = { 1, 1, 1, 1 }
---     preview.border = { 1, 1, 1, 1 }
---
---     vim.print("ROIROI max_lines", max_lines)
---     vim.print("ROIROI prompt.line", prompt.line)
---     vim.print("ROIROI results.line", results.line)
---     -- Col
---     prompt.col = 0 -- centered
---
---     return {
---       preview = preview,
---       prompt = prompt,
---       results = results,
---     }
---   end
--- )
---

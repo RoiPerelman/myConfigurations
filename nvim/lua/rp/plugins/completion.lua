@@ -3,12 +3,20 @@ return {
   -- github copilot suggests completions as you type
   -- it shows text as virtual text in the editor
   -- to complete the suggestion, press <Tab>
-  "github/copilot.vim",
+  -- "github/copilot.vim",
   -- nvim-cmp is the engine.
   -- It has sources it asks for completion options and handles client completions
   {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
+    -- this part is for lazydev in base-plugins
+    opts = function(_, opts)
+      opts.sources = opts.sources or {}
+      table.insert(opts.sources, {
+        name = "lazydev",
+        group_index = 0, -- set group index to 0 to skip loading LuaLS completions
+      })
+    end,
     dependencies = {
       -- this one adds formatting information about kind and menu
       -- "onsails/lspkind.nvim",

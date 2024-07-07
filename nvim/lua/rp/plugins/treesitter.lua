@@ -15,6 +15,7 @@ return {
         "html",
         "lua",
         "markdown",
+        "markdown_inline",
         "vim",
         "vimdoc",
         "javascript",
@@ -23,6 +24,7 @@ return {
         "dockerfile",
         "json",
         "jsonc",
+        "regex",
       },
       auto_install = true,
       highlight = {
