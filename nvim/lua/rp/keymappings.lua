@@ -19,14 +19,13 @@ vim.keymap.set("n", "<C-s>", ":w<CR>")
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
--- TODO: this doesn't work
 -- move lines up and down
-vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { silent = true })
-vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { silent = true })
-vim.keymap.set("i", "<A-j>", "<Esc>:m .+1<CR>==gi", { silent = true })
-vim.keymap.set("i", "<A-k>", "<Esc>:m .-2<CR>==gi", { silent = true })
-vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { silent = true })
-vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { silent = true })
+vim.keymap.map("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move Down" })
+vim.keymap.map("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move Up" })
+vim.keymap.map("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move Down" })
+vim.keymap.map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move Up" })
+vim.keymap.map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move Down" })
+vim.keymap.map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move Up" })
 
 -- better window navigation See `:help wincmd`
 vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" }) -- :wincmd h<CR>
@@ -35,10 +34,10 @@ vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower win
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" }) -- :wincmd k<CR>
 
 -- resize windows
-vim.cmd([[nnoremap <C-Down> :resize -2<CR>]])
-vim.cmd([[nnoremap <C-Up> :resize +2<CR>]])
-vim.cmd([[nnoremap <C-Right> :vertical resize -2<CR>]])
-vim.cmd([[nnoremap <C-Left> :vertical resize +2<CR>]])
+vim.keymap.map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase Window Height" })
+vim.keymap.map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease Window Height" })
+vim.keymap.map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease Window Width" })
+vim.keymap.map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase Window Width" })
 
 -- cut does so to black hole register!!!
 vim.keymap.set("n", "c", '"_c')
