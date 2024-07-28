@@ -89,6 +89,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
       "~/tiny_inspektor/sw/integration_managers",
       "~/tiny_inspektor/sw/profile_center",
       "~/tiny_inspektor/sw/inspekto_agent",
+      "~/tiny_inspektor/sw/cv/agc",
 
       "~/inspekto/tinybox",
       "~/inspekto/meta-inspekto",
@@ -103,6 +104,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
       "~/inspekto/integration_managers",
       "~/inspekto/profile_center",
       "~/inspekto/inspekto_agent",
+      "~/inspekto/agc",
     }
     local inspekto_path_display = function(_, path)
       -- Define the subpath to start displaying from
