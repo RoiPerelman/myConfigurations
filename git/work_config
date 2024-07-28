@@ -1,6 +1,6 @@
 [user]
-  name = roip
-  email = roip@inspekto.com
+	name = Perelman Roi (DI FA)
+	email = roi-perelman@siemens.com
 
 [core]
   editor = nvim
@@ -16,3 +16,21 @@
   # Thanks r00k, this creates a pretty graph view of the log
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
 
+[diff]
+	algorithm = patience
+	compactionHeuristic = true
+	tool = nvimdiff
+[difftool "nvimdiff"]
+	cmd = nvim -d \"$LOCAL\" \"$REMOTE\" -c \"wincmd w\" -c \"wincmd L\"
+
+[merge]
+	tool = nvimdiff4
+	prompt = false
+[mergetool "nvimdiff4"]
+  cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+  trustExitCode = true
+  # cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+
+[commit]
+	template = ~/myConfigurations/git/commit_template
+	verbose = true
