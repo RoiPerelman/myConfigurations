@@ -80,7 +80,7 @@ return {
       desc = "[S]earch rege[x] and after live grep",
     },
     {
-      "<leader>fp",
+      "<leader>fP",
       function()
         require("telescope.builtin").find_files({
           cwd = require("lazy.core.config").options.root,
