@@ -10,7 +10,7 @@ local inspekto_filepaths = {
   "~/tiny_inspektor/sw/connectivity",
   "~/tiny_inspektor/sw/inspekto_agent",
   "~/tiny_inspektor/sw/integration_managers",
-  "~/tiny_inspektor/sw/agc",
+  "~/tiny_inspektor/sw/cv/agc",
   "~/tiny_inspektor/sw/profile_center",
   "~/tiny_inspektor/sw/inspekto_agent",
 
