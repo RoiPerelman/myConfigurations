@@ -48,13 +48,11 @@ zinit snippet OMZP::command-not-found
 
 # Load the necessary key bindings
 
-# keybinding for omz history search
-autoload -U up-line-or-beginning-search
-autoload -U down-line-or-beginning-search
-zle -N up-line-or-beginning-search
-zle -N down-line-or-beginning-search
-bindkey "$key[Up]" up-line-or-beginning-search
-bindkey "$key[Down]" down-line-or-beginning-search
+# completion using arrow keys (based on history)
+bindkey "$key[Up]" history-search-backward
+bindkey "$key[Down]" history-search-forward
+bindkey '^[[A' history-search-backward
+bindkey '^[[B' history-search-forward
 
 # Keybindings fix for Ctrl+arrow keys
 bindkey "${key[CtrlRight]}" forward-word        # Ctrl+Right Arrow

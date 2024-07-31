@@ -26,6 +26,14 @@ git checkout v0.10.0
 make CMAKE_BUILD_TYPE=RelWithDebInfo
 sudo make install
 ln -snf ~/myConfigurations/nvim ~/.config/nvim
+
+# for mac requirements
+brew install ripgrep fd lazygit wget luarocks node
+python3 -m pip install -U pip pynvim
+npm install -g tree-sitter-cli
+# not necessary but recommended
+npm install -g n
+brew install tmux
 ```
 
 # zsh
