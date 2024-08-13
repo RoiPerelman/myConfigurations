@@ -1,7 +1,30 @@
-# If applied, this commit will…
+# <type>[optional scope]: <description>
+
+# [optional body]
+
+# [optional footer(s)]
 
 
-# Explain why this change is being made
+# tips for commit
+# type: fix, feat, perf, docs, refactor, style, chore, merge, test, build, ci, logs
+# add ! for breaking change or BREAKING CHANGE: at the footer
+# scope: should be specific parts of the code you touched like fixi_state or client
+# body: start with a verb, imperative present tense. No "." at the end. No capitalizaiton
+# think of following the sentence "this commit should/will"
+# footer types: Fixes/Closes/Resolves, Relates-to/References/See-also, Co-authored-by, Reviewed-by, Signed-off-by
 
+# to know more about conventionalcommits
+# https://www.conventionalcommits.org/en/v1.0.0/
 
-# Provide links to any relevant tickets, articles or other resources
+# example
+#
+# fix(INS-0000 algo)!: remove code that caused infinite loop
+#
+# Fix issue in setup screen with a polygon the shape of a lion, when pressing next - we get stuck.
+#
+# BREAKING CHANGE: by removing the infinite loop I had to change the api slightly
+# instead of /loopi which is now removed, we should go to /loopahhh
+#
+# Co-authored-by: DonaldT
+# Relates-to: INS-0002
+# Resolves: INS-0000

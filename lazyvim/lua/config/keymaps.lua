@@ -13,3 +13,12 @@ vim.keymap.set("i", "jj", "<ESC>")
 vim.keymap.set("i", "kk", "<ESC>")
 vim.keymap.set("i", "jk", "<ESC>")
 vim.keymap.set("i", "kj", "<ESC>")
+
+-- cut does so to black hole register!!!
+vim.keymap.set("n", "c", '"_c')
+vim.keymap.set("n", "C", '"_C')
+vim.keymap.set("v", "c", '"_c')
+vim.keymap.set("v", "C", '"_C')
+-- this one does not work because of Yanky plugin which overrides it
+-- so this one has been set as well in yanky-extension.lua
+vim.keymap.set("x", "p", [["_dP"]])
