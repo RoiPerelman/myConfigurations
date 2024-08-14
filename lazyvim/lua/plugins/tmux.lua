@@ -7,7 +7,5 @@ return {
     { "<C-k>", "<Cmd>NvimTmuxNavigateUp<CR>", desc = "Go to Upper Window" },
     { "<C-l>", "<Cmd>NvimTmuxNavigateRight<CR>", desc = "Go to Right Window" },
   },
-  config = function()
-    require("nvim-tmux-navigation").setup({})
-  end,
+  opts = {},
 }
