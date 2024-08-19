@@ -13,7 +13,7 @@ return {
     -- require("oil.util").run_after_load(0, function()
     --   require("oil").open_preview()
     -- end)
-    vim.keymap.set("n", "<Leader>e", ":Oil<CR>", { desc = "File [E]xplorer" })
+    vim.keymap.set("n", "<Leader>e", ":Oil<CR>", { desc = "[E]xplorer (file)" })
   end,
   -- TODO: DECIDE if I want to remove
   -- nvim-tree as backup

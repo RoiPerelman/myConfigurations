@@ -136,5 +136,13 @@ return {
       sorting_strategy = "ascending",
       winblend = 0,
     },
+    pickers = {
+      marks = {
+        attach_mappings = function(_, map)
+          map({"i", "n"}, "<C-m>", require("telescope.actions").delete_mark)
+          return true
+        end,
+      },
+    },
   },
 }
