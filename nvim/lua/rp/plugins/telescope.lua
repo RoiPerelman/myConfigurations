@@ -1,5 +1,6 @@
 local inspekto_filepaths = {
   "~/tiny_inspektor/cicd/tinybox",
+  "~/tiny_inspektor/cicd/ispekto-os",
   "~/tiny_inspektor/cicd/meta-inspekto",
   "~/tiny_inspektor/sw/fixi",
   "~/tiny_inspektor/sw/fixi_client",
@@ -15,6 +16,7 @@ local inspekto_filepaths = {
   "~/tiny_inspektor/sw/inspekto_agent",
 
   "~/inspekto/tinybox",
+  "~/inspekto/inspekto-os",
   "~/inspekto/meta-inspekto",
   "~/inspekto/fixi",
   "~/inspekto/fixi_client",

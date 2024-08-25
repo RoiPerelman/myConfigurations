@@ -40,9 +40,12 @@ zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
 
+# add vi mode to zsh
+zinit ice depth=1
+zinit light jeffreytse/zsh-vi-mode
+
 # Add in snippets
 zinit snippet OMZP::git
-zinit snippet OMZP::sudo
 zinit snippet OMZP::aws
 zinit snippet OMZP::command-not-found
 
@@ -136,7 +139,21 @@ if [ -f ~/.tinyrc ]; then
     source ~/.tinyrc
 fi
 
+# virtualenvwrapper
 if command -v virtualenvwrapper.sh &> /dev/null
 then
     source virtualenvwrapper.sh
 fi
+
+# pyenv
+if command -v pyenv > /dev/null; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+  eval "$(pyenv init -)"
+fi
+
+
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
