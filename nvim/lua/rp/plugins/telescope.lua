@@ -77,17 +77,18 @@ return { -- Fuzzy Finder (files, lsp, etc)
         n = {
           ["q"] = require("telescope.actions").close,
         },
-    },
-    pickers = {
-      find_files = {
-        hidden = true,
       },
-      -- add marks delete mark
-      marks = {
-        attach_mappings = function(_, map)
-          map({ "i", "n" }, "<C-m>", require("telescope.actions").delete_mark)
-          return true
-        end,
+      pickers = {
+        find_files = {
+          hidden = true,
+        },
+        -- add marks delete mark
+        marks = {
+          attach_mappings = function(_, map)
+            map({ "i", "n" }, "<C-m>", require("telescope.actions").delete_mark)
+            return true
+          end,
+        },
       },
     },
   },
