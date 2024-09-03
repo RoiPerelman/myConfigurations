@@ -6,6 +6,10 @@ vim.keymap.set("n", "<right>", '<cmd>echo "Use l to move!!"<CR>')
 vim.keymap.set("n", "<up>", '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set("n", "<down>", '<cmd>echo "Use j to move!!"<CR>')
 
+-- substitue ruins things. Use cl instead
+vim.keymap.set("n", "s", "<Nop>", { noremap = true, silent = true })
+vim.keymap.set("x", "s", "<Nop>", { noremap = true, silent = true })
+
 -- TODO: understand this line
 -- better up/down
 vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })

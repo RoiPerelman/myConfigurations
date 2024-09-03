@@ -99,7 +99,15 @@ return { -- Fuzzy Finder (files, lsp, etc)
   end,
   keys = {
     -- find
-    { "<leader>ff", require("telescope.builtin").find_files, desc = "[F]ind [F]iles (Root Dir)" },
+    {
+      "<leader>ff",
+      function()
+        require("telescope.builtin").find_files({
+          find_command = { "rg", "--files", "--color", "never", "-g", "!.git", "--hidden" },
+        })
+      end,
+      desc = "[F]ind [F]iles (cwd)",
+    },
     { "<leader>fr", require("telescope.builtin").oldfiles, desc = "[F]ind [R]ecent files" },
     { "<leader>fb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "[F]ind [B]uffers" },
     {
@@ -109,7 +117,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
           cwd = vim.fn.stdpath("config"),
         })
       end,
-      desc = "[F]ind files in private [C]onfig",
+      desc = "[F]ind [C]onfig files",
     },
     {
       "<leader>fp",
@@ -122,11 +130,12 @@ return { -- Fuzzy Finder (files, lsp, etc)
     },
     -- search
     { "<leader>sg", require("telescope.builtin").live_grep, desc = "[S]earch [G]rep" },
-    { "<leader>sw", require("telescope.builtin").grep_string, desc = "Word (Root Dir)" },
+    { "<leader>sw", require("telescope.builtin").grep_string, desc = "[S]earch [W]ord under cursor" },
+    { "<leader>sw", require("telescope.builtin").grep_string, mode = "v", desc = "[S]earch [W]ord under cursor" },
     {
       "<leader>sx",
       ':lua require"telescope.builtin".grep_string({ use_regex = true, search = vim.fn.input("Grep for > ")})<CR>',
-      desc = "[F]ind rege[X] and after live grep",
+      desc = "[S]earch rege[X] and after live grep",
     },
     { "<leader>sh", require("telescope.builtin").help_tags, desc = "[S]earch [H]elp" },
     { "<leader>sd", require("telescope.builtin").diagnostics, desc = "[S]earch [D]iagnostics" },
