@@ -12,7 +12,10 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-  spec = { import = "rp/plugins" },
+  spec = {
+    { import = "rp/plugins" },
+    { import = "rp/plugins/languages" }
+  },
   -- automatically check for plugin updates
   checker = {
     enabled = true,

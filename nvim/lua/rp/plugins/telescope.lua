@@ -67,6 +67,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
         return vim.fn.executable("make") == 1
       end,
     },
+    { "nvim-telescope/telescope-ui-select.nvim" },
   },
   opts = {
     defaults = {
@@ -80,7 +81,14 @@ return { -- Fuzzy Finder (files, lsp, etc)
       },
       pickers = {
         find_files = {
+          file_ignore_patterns = { "node_modules", ".git", ".venv" },
           hidden = true,
+        },
+        live_grep = {
+          file_ignore_patterns = { "node_modules", ".git", ".venv" },
+          additional_args = function(_)
+            return { "--hidden" }
+          end,
         },
         -- add marks delete mark
         marks = {
@@ -90,12 +98,18 @@ return { -- Fuzzy Finder (files, lsp, etc)
           end,
         },
       },
+      extensions = {
+        ["ui-select"] = {
+          require("telescope.themes").get_dropdown(),
+        },
+      },
     },
   },
   config = function(_, opts)
     require("telescope").setup(opts)
-    -- Enable Telescope fzf extension
+    -- Enable Telescope extensions
     pcall(require("telescope").load_extension, "fzf")
+    pcall(require("telescope").load_extension, "ui-select")
   end,
   keys = {
     -- find
@@ -107,6 +121,17 @@ return { -- Fuzzy Finder (files, lsp, etc)
         })
       end,
       desc = "[F]ind [F]iles (cwd)",
+    },
+    {
+      "<leader>fF",
+      function()
+        local buf_root = require("rp.utils").find_buf_root()
+        require("telescope.builtin").find_files({
+          find_command = { "rg", "--files", "--color", "never", "-g", "!.git", "--hidden" },
+          cwd = buf_root,
+        })
+      end,
+      desc = "[F]ind [F]iles (buf git root)",
     },
     { "<leader>fr", require("telescope.builtin").oldfiles, desc = "[F]ind [R]ecent files" },
     { "<leader>fb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "[F]ind [B]uffers" },

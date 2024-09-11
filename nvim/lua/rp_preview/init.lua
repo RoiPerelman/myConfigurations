@@ -93,7 +93,6 @@ function M.get_qflist_entry()
   local line = vim.fn.line(".")
   local qf_list = vim.fn.getqflist()
   local entry = qf_list[line]
-  M.print("ROIROI entry", entry)
   return entry
 end
 

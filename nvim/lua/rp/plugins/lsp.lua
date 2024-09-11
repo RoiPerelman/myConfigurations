@@ -1,4 +1,6 @@
--- LSP Configuration & Plugins
+-- LSP Configuration & Plugin
+_G.mason_ensure_installed = {}
+
 return {
   "neovim/nvim-lspconfig", -- add client configurations to start talking to server
   dependencies = {
@@ -9,10 +11,39 @@ return {
     { "j-hui/fidget.nvim", opts = {} }, -- Useful status updates for LSP.
     { "folke/neodev.nvim", enabled = false, opts = {} }, -- configures Lua LSP for neovim config
   },
-  config = function()
-    -- This function gets run when an LSP attaches to a particular buffer.
+  config = function(_, opts)
+    -- LSP servers and clients are able to communicate to each other what features they support.
+    --  By default, Neovim doesn't support everything that is in the LSP specification.
+    --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
+    --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
+
+    local servers = vim.tbl_deep_extend("force", opts.servers, {})
+
+    --  To check the current status of installed tools :Mason
+    require("mason").setup()
+
+    -- Add tools that you want Mason to install automatically for you
+    local ensure_installed = vim.tbl_keys(servers or {})
+    vim.list_extend(ensure_installed, _G.mason_ensure_installed)
+
+    -- Automatically install LSPs and related tools to stdpath for Neovim
+    require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+
+    require("mason-lspconfig").setup({
+      handlers = {
+        function(server_name)
+          local server = servers[server_name] or {}
+          server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+          require("lspconfig")[server_name].setup(server)
+        end,
+      },
+    })
+
     vim.api.nvim_create_autocmd("LspAttach", {
-      group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
+      desc = "this function gets run when an lsp attaches to a particular buffer",
+      group = vim.api.nvim_create_augroup("rp-lsp-attach", { clear = true }),
       callback = function(event)
         local map = function(keys, func, desc)
           vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
@@ -22,9 +53,9 @@ return {
         map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
         map("gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
         map("gs", require("telescope.builtin").lsp_document_symbols, "[G]oto Document [S]ymbols")
-        map("gn", vim.lsp.buf.rename, "[G]et Re[N]ame")
-        map("gc", vim.lsp.buf.code_action, "[G]et [C]ode Action")
         map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+        map("<Leader>cn", vim.lsp.buf.rename, "[C]ode Re[N]ame")
+        map("<Leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
         map("K", vim.lsp.buf.hover, "Hover Do[K]umentation")
 
         -- Diagnostics
@@ -36,66 +67,17 @@ return {
 
         local client = vim.lsp.get_client_by_id(event.data.client_id)
 
-        -- To know server capabilities, use (for example):
-        -- :lua =vim.lsp.get_active_clients()[1].server_capabilities
         if client == nil then
           return
         end
-        if client.name == "tsserver" then
-          -- remove format so eslint can do it
-          client.server_capabilities.documentFormattingProvider = false
-          client.server_capabilities.documentRangeFormattingProvider = false
-        end
-        if client.name == "eslint" then
-          -- add eslint format on save
-          vim.api.nvim_create_autocmd("BufWritePre", {
-            buffer = event.buf,
-            command = "EslintFixAll",
-          })
+
+        vim.print(client.name)
+        -- To know server capabilities, use (for example):
+        -- :lua =vim.lsp.get_active_clients()[1].server_capabilities
+        if opts.setup[client.name] then
+          opts.setup[client.name](client, event)
         end
 
-        if client.name == "pyright" then
-          client.server_capabilities.codeActionProvider = false
-        end
-
-        if client.name == "ruff_lsp" then
-          -- Disable hover in favor of Pyright
-          client.server_capabilities.hoverProvider = false
-          -- Disable auto formatting using a command in my function
-          client.server_capabilities.documentFormattingProvider = false
-
-          local organize_imports_and_fix_all = function()
-            vim.lsp.buf.code_action({
-              context = { only = { "source.organizeImports.ruff" } },
-              apply = true,
-            })
-            -- unfortunately, code_action is async, so we need to wait for it to finish
-            vim.wait(100)
-            vim.lsp.buf.code_action({
-              context = { only = { "source.fixAll.ruff" } },
-              apply = true,
-            })
-            vim.wait(100)
-            vim.lsp.buf.execute_command({
-              command = "ruff.applyFormat",
-              arguments = {
-                { uri = vim.uri_from_bufnr(0) },
-              },
-            })
-          end
-          vim.keymap.set(
-            "n",
-            "g=",
-            organize_imports_and_fix_all,
-            { buffer = event.buf, desc = "[G]et [=]format + organize + fix" }
-          )
-          -- vim.api.nvim_create_autocmd("BufWritePre", {
-          --   buffer = event.buf,
-          --   callback = organize_imports_and_fix_all,
-          -- })
-        end
-
-        -- TODO: Do I want this?
         -- The following two autocommands are used to highlight references of the
         -- word under your cursor when your cursor rests there for a little while.
         -- When you move your cursor, the highlights will be cleared (the second autocommand).
@@ -110,69 +92,6 @@ return {
           })
         end
       end,
-    })
-
-    -- LSP servers and clients are able to communicate to each other what features they support.
-    --  By default, Neovim doesn't support everything that is in the LSP specification.
-    --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
-    --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
-
-    --  Add any additional override configuration in the following tables. Available keys are:
-    --  - cmd (table): Override the default command used to start the server
-    --  - filetypes (table): Override the default list of associated filetypes for the server
-    --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
-    --  - settings (table): Override the default settings passed when initializing the server.
-    local servers = {
-      -- TODO: check https://github.com/pmizio/typescript-tools.nvim
-      tsserver = {},
-      pyright = {
-        settings = {
-          pyright = {
-            disableOrganizeImports = true, -- Use Ruff's import organizer
-          },
-          python = {
-            analysis = {
-              typeCheckingMode = "off",
-            },
-          },
-        },
-      },
-      -- pylsp = {},
-      lua_ls = {
-        settings = {
-          Lua = {
-            completion = {
-              callSnippet = "Replace",
-            },
-            diagnostics = { disable = { "missing-fields" } },
-          },
-        },
-      },
-    }
-
-    --  To check the current status of installed tools :Mason
-    require("mason").setup()
-
-    -- Add other tools that you want Mason to install automatically for you
-    local ensure_installed = vim.tbl_keys(servers or {})
-    vim.list_extend(ensure_installed, {
-      "eslint-lsp", -- used to lint and format along tsserver
-      "stylua", -- Used to format Lua code
-      ruff_lsp = {}, -- python linter and formatter
-    })
-    -- Automatically install LSPs and related tools to stdpath for Neovim
-    require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
-
-    require("mason-lspconfig").setup({
-      handlers = {
-        function(server_name)
-          local server = servers[server_name] or {}
-          server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-          require("lspconfig")[server_name].setup(server)
-        end,
-      },
     })
   end,
 }
