@@ -71,7 +71,6 @@ return {
           return
         end
 
-        vim.print(client.name)
         -- To know server capabilities, use (for example):
         -- :lua =vim.lsp.get_active_clients()[1].server_capabilities
         if opts.setup[client.name] then

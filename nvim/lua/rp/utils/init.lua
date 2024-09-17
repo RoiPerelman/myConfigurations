@@ -29,7 +29,6 @@ function M.find_buf_root()
 
   if not M.cache[buf] then
     local root = M.find_git_root()
-    print('ROIROI root', root)
     M.cache[buf] = root
   end
 
