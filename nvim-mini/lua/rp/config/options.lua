@@ -43,3 +43,6 @@ vim.opt.undofile = true -- Save undo history
 
 -- TODO: fix how to set option from lua vim api and not vim.cmd
 vim.cmd("set iskeyword+=-") -- treat dash separated words as a word text object
+
+-- show full path in statusline
+vim.opt.statusline:append('%F')

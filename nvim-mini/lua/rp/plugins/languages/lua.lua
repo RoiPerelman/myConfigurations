@@ -26,3 +26,13 @@ _G.lsp_config_servers.lua_ls = {
     },
   },
 }
+
+_G.lsp_config_clients_callbacks.lua_ls = function(client, event)
+  print('ROIROI im here')
+  vim.api.nvim_create_autocmd("BufWritePre", {
+    buffer = event.buf,
+    callback = function()
+      vim.lsp.buf.format()
+    end,
+  })
+end

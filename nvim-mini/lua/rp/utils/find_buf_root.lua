@@ -4,11 +4,16 @@ M = {}
 M.cache = {}
 
 function M.find_git_root()
-  -- Get the current buffer number
-  local buf = vim.api.nvim_get_current_buf()
-
   local patterns = { ".git" }
-  local path = vim.api.nvim_buf_get_name(buf) or vim.fn.getcwd()
+
+  -- get the full path using current buffer name
+  local buf = vim.api.nvim_get_current_buf()
+  local buf_name = vim.api.nvim_buf_get_name(buf)
+  if buf_name == '' then
+    -- Get the full path using vim.fn.expand('%:p') - can catch more cases
+    buf_name = vim.fn.expand('%:p')
+  end
+  local path = (buf_name ~= '' and buf_name) or vim.fn.getcwd()
   local pattern = vim.fs.find(function(name)
     for _, p in ipairs(patterns) do
       if name == p then
