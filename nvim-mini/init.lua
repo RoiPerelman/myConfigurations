@@ -2,12 +2,14 @@
 require("rp/config/options")
 require("rp/config/keymappings")
 require("rp/config/autocommands")
--- plugins!
+-- Add plugins!
 require("rp/plugin-manager")
 require("rp/plugins/pre")
 require("rp/plugins/navigation")
 require("rp/plugins/treesitter")
 require("rp/plugins/telescope")
+-- mini plugins!
+require("rp/plugins/mini/hipatterns")
 -- language support tools
 -- initialize global variable for automatic language tools install
 _G.mason_ensure_installed = {}

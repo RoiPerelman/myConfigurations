@@ -98,34 +98,35 @@ vim.keymap.set("n", "<leader>fC", function()
     find_command = { "rg", "--files", "--color", "never", "-g", "!.git", "--hidden" },
     cwd = MiniDeps.config.path.package,
   })
-end, { desc = "[F]ind [C]onfig plugin files" })
+end, { desc = "[F]ind [C]onfig's plugin files" })
 
-vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "[F]ind [H]elp" })
-vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "[F]ind live [G]rep" })
-vim.keymap.set("n", "<leader>fw", builtin.grep_string, { desc = "[F]ind current [W]ord and after live grep" })
-vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "[F]ind [D]iagnostics" })
-vim.keymap.set("n", "<leader>fe", builtin.oldfiles, { desc = "[F]ind Recent [E]dited Files" })
-vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "[F]ind [B]uffers" })
-vim.keymap.set("n", "<leader>fq", builtin.quickfix, { desc = "[F]ind [Q]uickfix" })
-vim.keymap.set("n", "<Leader>fm", builtin.marks, { desc = "[F]ind [M]arks" })
-vim.keymap.set("n", "<Leader>fj", ":Telescope jumplist<CR>", { desc = "[F]ind [J]umplist" })
-vim.keymap.set(
-  "n",
-  "<Leader>fr",
-  ':lua require"telescope.builtin".grep_string({ use_regex = true, search = vim.fn.input("Grep for > ")})<CR>',
-  { desc = "[F]ind [R]egex and after live grep" }
-)
+vim.keymap.set("n", "<leader>fr", require("telescope.builtin").oldfiles, { desc = "[F]ind [R]ecent files" })
+vim.keymap.set("n", "<leader>fb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>",
+  { desc = "[F]ind [B]uffers" })
 
--- Shortcut for searching your Neovim configuration files
-vim.keymap.set("n", "<leader>fp", function()
-  builtin.find_files({ cwd = vim.fn.stdpath("config") })
-end, { desc = "[F]ind files in [P]rivate config" })
+vim.keymap.set("n", "<leader>sg", require("telescope.builtin").live_grep, { desc = "[S]earch [G]rep" })
+vim.keymap.set("n", "<leader>sw", require("telescope.builtin").grep_string, { desc = "[S]earch [W]ord under cursor" })
+vim.keymap.set("n", "<leader>sx", function()
+  require "telescope.builtin".grep_string({
+    use_regex = true,
+    search = vim.fn.input("Grep for > ")
+  })
+end, { desc = "[S]earch rege[X] and after live grep" })
 
--- shortcut for searching all Neovim plugins
-vim.keymap.set("n", "<space>fa", function()
-  ---@diagnostic disable-next-line: param-type-mismatch
-  builtin.find_files({ cwd = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy") })
-end, { desc = "[F]ind files in [A]ll plugins" })
+vim.keymap.set("n", "<leader>sh", require("telescope.builtin").help_tags, { desc = "[S]earch [H]elp" })
+vim.keymap.set("n", "<leader>sH", require("telescope.builtin").highlights, { desc = "[S]earch [H]ighlights" })
+vim.keymap.set("n", "<leader>sd", require("telescope.builtin").diagnostics, { desc = "[S]earch [D]iagnostics" })
+vim.keymap.set("n", "<leader>sq", require("telescope.builtin").quickfix, { desc = "[S]earch [Q]uickfix" })
+vim.keymap.set("n", "<leader>sm", require("telescope.builtin").marks, { desc = "[S]earch [M]ark" })
+vim.keymap.set("n", "<leader>sr", require("telescope.builtin").resume, { desc = "[S]earch [R]esume" })
+vim.keymap.set("n", "<leader>sk", require("telescope.builtin").keymaps, { desc = "[S]earch [K]eymaps" })
+vim.keymap.set("n", "<leader>sj", require("telescope.builtin").jumplist, { desc = "[S]earch [J]umplist" })
+vim.keymap.set("n", "<leader>sb", require("telescope.builtin").current_buffer_fuzzy_find, { desc = "[S]earch [B]uffer" })
+vim.keymap.set("n", "<leader>sc", require("telescope.builtin").command_history, { desc = "[S]earch [C]command history" })
+vim.keymap.set("n", "<leader>sC", require("telescope.builtin").commands, { desc = "[S]earch [C]commands" })
+vim.keymap.set("n", "<leader>so", require("telescope.builtin").vim_options, { desc = "[S]earch vim [O]ptions" })
+
+-- inspekto
 
 local inspekto_filepaths = {
   "~/tiny_inspektor/cicd/tinybox",
@@ -183,3 +184,34 @@ local inspekto_path_display = function(_, path)
   -- If the specific subpath isn't found, return the whole path
   return path
 end
+
+vim.keymap.set("n", "<leader>if", function()
+  require("telescope.builtin").find_files({
+    find_command = { "rg", "--files", "--color", "never", "-g", "!.git", "--hidden" },
+    search_dirs = inspekto_filepaths,
+    path_display = inspekto_path_display,
+  })
+end, { desc = "[I]inspekto [F]iles" })
+
+vim.keymap.set("n", "<leader>ig", function()
+  require("telescope.builtin").live_grep({
+    search_dirs = inspekto_filepaths,
+    path_display = inspekto_path_display,
+  })
+end, { desc = "[I]inspekto [G]rep" })
+
+vim.keymap.set("n", "<leader>iw", function()
+  require("telescope.builtin").grep_string({
+    search_dirs = inspekto_filepaths,
+    path_display = inspekto_path_display,
+  })
+end, { desc = "[I]inspekto [W]ord under cursor" })
+
+vim.keymap.set("n", "<leader>ix", function()
+  require "telescope.builtin".grep_string({
+    use_regex = true,
+    search = vim.fn.input("Grep for > "),
+    search_dirs = inspekto_filepaths,
+    path_display = inspekto_path_display,
+  })
+end, { desc = "[S]earch rege[X] and after live grep" })

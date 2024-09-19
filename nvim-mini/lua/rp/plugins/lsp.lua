@@ -57,7 +57,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
 
 
-    vim.print(client.name)
     -- To know server capabilities, use (for example):
     -- :lua =vim.lsp.get_active_clients()[1].server_capabilities
     if _G.lsp_config_clients_callbacks[client.name] then
