@@ -144,6 +144,8 @@ local inspekto_filepaths = {
   "~/tiny_inspektor/sw/cv/agc",
   "~/tiny_inspektor/sw/profile_center",
   "~/tiny_inspektor/sw/inspekto_agent",
+  "~/tiny_inspektor/sw/deep/defect_predictor",
+  "~/tiny_inspektor/sw/deep/defect_detector",
 
   "~/inspekto/tinybox",
   "~/inspekto/inspekto-os",
@@ -160,6 +162,8 @@ local inspekto_filepaths = {
   "~/inspekto/agc",
   "~/inspekto/profile_center",
   "~/inspekto/inspekto_agent",
+  "~/inspekto/defect_predictor",
+  "~/inspekto/defect_detector",
 }
 
 local inspekto_path_display = function(_, path)

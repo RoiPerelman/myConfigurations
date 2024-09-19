@@ -8,6 +8,7 @@ require("rp/plugins/pre")
 require("rp/plugins/navigation")
 require("rp/plugins/treesitter")
 require("rp/plugins/telescope")
+require("rp/plugins/git")
 -- mini plugins!
 require("rp/plugins/mini/hipatterns")
 -- language support tools

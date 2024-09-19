@@ -1,5 +1,12 @@
 # PREREQUISITES
 
+## git ssh command
+
+```bash
+ssh-add -K ~/.ssh/id_ed25519_roiperelman_github
+GIT_SSH_COMMAND='ssh -i ~/.ssh/id_ed25519_roiperelman_github' git push
+```
+
 ## tmux
 
 ``` bash
@@ -32,13 +39,39 @@ npm install -g n
 brew install tmux
 ```
 
+## wezterm
+
+```bash
+# install wezterm
+curl -LO https://github.com/wez/wezterm/releases/download/20240203-110809-5046fc22/wezterm-20240203-110809-5046fc22.Ubuntu22.04.deb
+sudo dpkg -i ./wezterm-20240203-110809-5046fc22.Ubuntu22.04.deb
+rm ./wezterm-20240203-110809-5046fc22.Ubuntu22.04.deb
+
+mkdir -p ~/.config/wezterm
+ln -snf ~/myConfigurations/.config/wezterm/wezterm.lua ~/.config/wezterm/wezterm.lua
+```
+
 ## zsh
 
 ``` bash
+# install zsh, omz and change shell to it
+sudo apt update && sudo apt install zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+sudo chsh -s $(which zsh)
+# plugins
+export ZSH=$HOME/.oh-my-zsh
+curl -sS https://starship.rs/install.sh | sh
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH/custom/plugins/zsh-syntax-highlighting
+git clone https://github.com/zsh-users/zsh-completions.git $ZSH/custom/plugins/zsh-completions
+git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH/custom/plugins/zsh-autosuggestions
+git clone https://github.com/jeffreytse/zsh-vi-mode.git $ZSH/custom/plugins/zsh-vi-mode
+# extra tools
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
+curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+
 mv ~/.zshrc ~/.zshrc_bk
 ln -snf ~/myConfigurations/.zshrc ~/.zshrc
 mkdir -p ~/.config && ln -snf ~/myConfigurations/.config/starship.toml ~/.config/starship.toml
-
 ```
 
 ## git
@@ -66,6 +99,10 @@ fc-cache -fv
 ## utilities
 
 ```bash
+# set caps-lock to ctrl on linux
+if [[ "$(uname)" == "Linux" ]]; then
+  setxkbmap -option ctrl:nocaps
+fi
 # to remove caps lock
 python3 -c 'from ctypes import *; \
 X11 = cdll.LoadLibrary("libX11.so.6"); \
