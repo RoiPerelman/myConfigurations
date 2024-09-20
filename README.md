@@ -4,6 +4,9 @@
 
 ```bash
 ssh-add -K ~/.ssh/id_ed25519_roiperelman_github
+# add special ssh key to repo
+git config core.sshCommand 'ssh -i ~/.ssh/id_ed25519_roiperelman_github'
+# use special ssh key in repo
 GIT_SSH_COMMAND='ssh -i ~/.ssh/id_ed25519_roiperelman_github' git push
 ```
 
@@ -28,7 +31,7 @@ cd neovim
 git checkout v0.10.0
 make CMAKE_BUILD_TYPE=RelWithDebInfo
 sudo make install
-ln -snf ~/myConfigurations/nvim ~/.config/nvim
+ln -snf ~/myConfigurations/.config/nvim ~/.config/nvim
 
 # for mac requirements
 brew install ripgrep fd lazygit wget luarocks node
