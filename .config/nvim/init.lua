@@ -4,6 +4,7 @@ require("rp/config/keymappings")
 require("rp/config/autocommands")
 -- Add plugins!
 require("rp/plugin-manager")
+require("rp/colorscheme")
 require("rp/plugins/pre")
 require("rp/plugins/navigation")
 require("rp/plugins/treesitter")
