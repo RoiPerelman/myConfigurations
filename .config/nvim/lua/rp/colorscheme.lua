@@ -1,7 +1,8 @@
 local add = MiniDeps.add
 
-add({ source = "0xstepit/flow.nvim" })
+add({ source = "folke/tokyonight.nvim" })
 
-require("flow").setup {}
-
-vim.cmd("colorscheme flow")
+require("tokyonight").setup({
+  style = "night", -- moon is also good
+})
+vim.cmd.colorscheme("tokyonight")
