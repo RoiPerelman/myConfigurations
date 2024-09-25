@@ -29,7 +29,7 @@ vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
 -- better window navigation See `:help wincmd`
-vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move focus to the left window" }) -- :wincmd h<CR>
+vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move focus to the left window" })  -- :wincmd h<CR>
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move focus to the right window" }) -- :wincmd l<CR>
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move focus to the lower window" }) -- :wincmd j<CR>
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move focus to the upper window" }) -- :wincmd k<CR>
@@ -57,7 +57,10 @@ vim.keymap.set("x", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev Se
 vim.keymap.set("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev Search Result" })
 
 -- new empty buffer
-vim.keymap.set("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
+vim.keymap.set("n", "<leader>nb", "<cmd>enew<cr>", { desc = "[N]ew [B]uffer" })
+
+-- keep only current buffer
+vim.keymap.set("n", "<leader>o", "<cmd>only<cr>", { desc = "New File" })
 
 -- cut does so to black hole register!!!
 vim.keymap.set("n", "x", '"_x')

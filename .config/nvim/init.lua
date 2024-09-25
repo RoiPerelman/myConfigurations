@@ -12,6 +12,9 @@ require("rp/plugins/telescope")
 require("rp/plugins/git")
 -- mini plugins!
 require("rp/plugins/mini/hipatterns")
+require("rp/plugins/mini/surround")
+require("rp/plugins/mini/notify")
+require("rp/plugins/mini/diff")
 -- language support tools
 -- initialize global variable for automatic language tools install
 _G.mason_ensure_installed = {}
