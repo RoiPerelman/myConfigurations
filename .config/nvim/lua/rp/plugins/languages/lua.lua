@@ -1,4 +1,4 @@
-vim.list_extend(_G.mason_ensure_installed, { "lua-language-server", "stylua" })
+vim.list_extend(_G.mason_ensure_installed, { "lua-language-server" })
 
 _G.lsp_config_servers.lua_ls = {
   settings = {

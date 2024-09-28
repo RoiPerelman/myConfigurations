@@ -15,6 +15,7 @@ require("rp/plugins/mini/hipatterns")
 require("rp/plugins/mini/surround")
 require("rp/plugins/mini/notify")
 require("rp/plugins/mini/diff")
+require("rp/plugins/mini/completion")
 -- language support tools
 -- initialize global variable for automatic language tools install
 _G.mason_ensure_installed = {}

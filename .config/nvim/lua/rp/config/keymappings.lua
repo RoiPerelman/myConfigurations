@@ -60,7 +60,7 @@ vim.keymap.set("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev Se
 vim.keymap.set("n", "<leader>nb", "<cmd>enew<cr>", { desc = "[N]ew [B]uffer" })
 
 -- keep only current buffer
-vim.keymap.set("n", "<leader>o", "<cmd>only<cr>", { desc = "New File" })
+vim.keymap.set("n", "<leader>o", "<cmd>only<cr>", { desc = "[O]nly" })
 
 -- cut does so to black hole register!!!
 vim.keymap.set("n", "x", '"_x')
