@@ -1,7 +1,3 @@
-local add = MiniDeps.add
-add({ source = "windwp/nvim-ts-autotag" })
-add({ source = "nvim-treesitter/nvim-treesitter" })
-
 -- There are additional nvim-treesitter modules that you can use to interact
 -- with nvim-treesitter. You should go explore a few and see what interests you:
 --
@@ -62,3 +58,5 @@ require("nvim-treesitter.configs").setup({
   --   },
   -- },
 })
+
+require('nvim-ts-autotag').setup({})

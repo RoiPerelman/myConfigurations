@@ -1,35 +1,3 @@
-local add = MiniDeps.add
-
-add({
-  source = "nvim-telescope/telescope-fzf-native.nvim",
-  hooks = {
-    post_install = function(args)
-      -- Check if "make" is executable
-      if vim.fn.executable("make") == 1 then
-        -- Run "make" in the plugin's directory
-        -- vim.cmd("silent !cd " .. args.path .. " && make")
-        -- Use vim.fn.system to run "make" in the plugin directory
-        local result = vim.fn.system({ 'make', '-C', args.path })
-
-        -- Optionally handle errors
-        if vim.v.shell_error ~= 0 then
-          print("telescope-fzf-native post_install error: " .. result)
-        else
-          print("telescope-fzf-native post_install success")
-        end
-      else
-        print("telescope-fzf-native post_install make error - missing executable")
-      end
-    end,
-  },
-})
-add({
-  source = "nvim-telescope/telescope-ui-select.nvim",
-})
-add({
-  source = "nvim-telescope/telescope.nvim",
-})
-
 require("telescope").setup({
   defaults = {
     layout_config = { prompt_position = "top" },

@@ -2,20 +2,24 @@
 require("rp/config/options")
 require("rp/config/keymappings")
 require("rp/config/autocommands")
--- Add plugins!
+-- Add plugins - download git repos
 require("rp/plugin-manager")
-require("rp/colorscheme")
-require("rp/plugins/pre")
-require("rp/plugins/navigation")
-require("rp/plugins/treesitter")
-require("rp/plugins/telescope")
-require("rp/plugins/git")
+
+-- Configure plugins
+local now, later = MiniDeps.now, MiniDeps.later
+now(function() require("rp/colorscheme") end)
+now(function() require("rp/plugins/tmux") end)
+later(function() require("rp/plugins/treesitter") end)
+later(function() require("ts-comments").setup() end)
+later(function() require("rp/plugins/telescope") end)
+later(function() require("rp/plugins/git") end)
 -- mini plugins!
-require("rp/plugins/mini/hipatterns")
-require("rp/plugins/mini/surround")
-require("rp/plugins/mini/notify")
-require("rp/plugins/mini/diff")
-require("rp/plugins/mini/completion")
+later(function() require("rp/plugins/mini/hipatterns") end)
+later(function() require("rp/plugins/mini/surround") end)
+later(function() require("rp/plugins/mini/notify") end)
+later(function() require("rp/plugins/mini/diff") end)
+later(function() require("rp/plugins/mini/completion") end)
+later(function() require("rp/plugins/mini/comment") end)
 -- language support tools
 -- initialize global variable for automatic language tools install
 _G.mason_ensure_installed = {}
@@ -25,16 +29,17 @@ _G.conform_formatters = {}
 _G.conform_formatters_by_ft = {}
 _G.conform_formatters_by_ft = {}
 _G.lint_linters_by_ft = {}
-require("rp/plugins/languages/lua")
-require("rp/plugins/languages/python")
-require("rp/plugins/languages/typescript")
-require("rp/plugins/languages/markdown")
-require("rp/plugins/languages/bash")
-require("rp/plugins/languages/docker")
-require("rp/plugins/languages/json")
-require("rp/plugins/languages/yaml")
-require("rp/plugins/languages/toml")
-require("rp/plugins/mason")
-require("rp/plugins/lsp")
-require("rp/plugins/format")
-require("rp/plugins/lint")
+now(function() require("rp/plugins/languages/lua") end)
+now(function() require("rp/plugins/languages/python") end)
+now(function() require("rp/plugins/languages/typescript") end)
+now(function() require("rp/plugins/languages/markdown") end)
+now(function() require("rp/plugins/languages/bash") end)
+now(function() require("rp/plugins/languages/docker") end)
+now(function() require("rp/plugins/languages/json") end)
+now(function() require("rp/plugins/languages/yaml") end)
+now(function() require("rp/plugins/languages/toml") end)
+now(function() require("rp/plugins/mason") end)
+now(function() require("rp/plugins/lsp") end)
+later(function() require("rp/plugins/format") end)
+later(function() require("rp/plugins/lint") end)
+later(function() require("rp/plugins/lint") end)

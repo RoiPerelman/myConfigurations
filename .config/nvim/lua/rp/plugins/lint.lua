@@ -1,7 +1,3 @@
-local add = MiniDeps.add
-
-add({ source = "mfussenegger/nvim-lint" })
-
 local M = {}
 
 local lint = require("lint")

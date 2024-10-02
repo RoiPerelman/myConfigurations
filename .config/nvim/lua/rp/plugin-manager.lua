@@ -17,3 +17,58 @@ end
 
 -- Set up 'mini.deps' (customize to your liking)
 require("mini.deps").setup({ path = { package = path_package } })
+
+-- Plugins
+local add = MiniDeps.add
+
+-- colorscheme
+add({ source = "folke/tokyonight.nvim" })
+-- pre (other plugins use them)
+add({ source = "nvim-lua/plenary.nvim" })
+add({ source = "MunifTanjim/nui.nvim" })
+-- tmux
+add({ source = "alexghergh/nvim-tmux-navigation" })
+-- treesitter
+add({ source = "windwp/nvim-ts-autotag" })
+add({ source = "nvim-treesitter/nvim-treesitter" })
+add({ source = "folke/ts-comments.nvim" })
+-- git
+add({ source = "tpope/vim-fugitive" })
+add({ source = "sindrets/diffview.nvim" })
+-- telescope
+add({
+  source = "nvim-telescope/telescope-fzf-native.nvim",
+  hooks = {
+    post_install = function(args)
+      -- Check if "make" is executable
+      if vim.fn.executable("make") == 1 then
+        -- Run "make" in the plugin's directory
+        -- vim.cmd("silent !cd " .. args.path .. " && make")
+        -- Use vim.fn.system to run "make" in the plugin directory
+        local result = vim.fn.system({ 'make', '-C', args.path })
+
+        -- Optionally handle errors
+        if vim.v.shell_error ~= 0 then
+          print("telescope-fzf-native post_install error: " .. result)
+        else
+          print("telescope-fzf-native post_install success")
+        end
+      else
+        print("telescope-fzf-native post_install make error - missing executable")
+      end
+    end,
+  },
+})
+add({
+  source = "nvim-telescope/telescope-ui-select.nvim",
+})
+add({
+  source = "nvim-telescope/telescope.nvim",
+})
+-- language server tools
+add({ source = "williamboman/mason.nvim" })
+add({ source = "WhoIsSethDaniel/mason-tool-installer.nvim" })
+add({ source = "neovim/nvim-lspconfig" })
+add({ source = "williamboman/mason-lspconfig.nvim" })
+add({ source = "mfussenegger/nvim-lint" })
+add({ source = "stevearc/conform.nvim" })

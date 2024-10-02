@@ -1,7 +1,3 @@
-local add = MiniDeps.add
-
-add({ source = "stevearc/conform.nvim" })
-
 local format_on_save_opts = {
   -- lsp_fallback = true,
   async = false,
