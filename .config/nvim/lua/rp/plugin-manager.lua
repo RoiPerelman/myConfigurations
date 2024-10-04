@@ -26,6 +26,9 @@ add({ source = "folke/tokyonight.nvim" })
 -- pre (other plugins use them)
 add({ source = "nvim-lua/plenary.nvim" })
 add({ source = "MunifTanjim/nui.nvim" })
+-- lua dev
+add({ source = "folke/lazydev.nvim" })
+add({ source = "Bilal2453/luvit-meta" })
 -- tmux
 add({ source = "alexghergh/nvim-tmux-navigation" })
 -- treesitter
