@@ -25,7 +25,7 @@ later(function() require("rp/plugins/mini/pick") end)
 later(function() require("rp/plugins/mini/completion") end)
 later(function() require("rp/plugins/mini/hipatterns") end)
 later(function() require("rp/plugins/mini/diff") end)
-later(function() require("rp/plugins/mini/files") end)
+-- later(function() require("rp/plugins/mini/files") end)
 -- language support tools
 -- initialize global variable for automatic language tools install
 _G.mason_ensure_installed = {}

@@ -7,6 +7,7 @@
 
 # tips for commit. for more info - https://www.conventionalcommits.org/en/v1.0.0/
 # type: fix, feat, perf, docs, refactor, style, chore, merge, test, build, ci, logs
+# description: correct, resolve, adjust, update, add, implement, remove, refactor, optimize
 # add ! for breaking change and/or BREAKING CHANGE: at the footer
 # scope: should be specific parts of the code you touched like fixi_state or client
 # body: start with a verb, imperative present tense. No "." at the end. No capitalizaiton

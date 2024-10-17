@@ -93,3 +93,7 @@ if [ -f ~/.tinyrc ]; then
     source ~/.tinyrc
 fi
 
+# inspektoconfig
+if [ -f ~/.inspektoconfig ]; then
+    source ~/.inspektoconfig
+fi

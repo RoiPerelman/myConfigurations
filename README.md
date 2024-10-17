@@ -22,7 +22,10 @@ ln -snf ~/myConfigurations/tmux/tmux.conf ~/.tmux.conf
 ``` bash
 # prereq linux for nvim
 sudo apt update && sudo apt install cmake gettext
-sudo apt update && sudo apt install ripgrep fd-find
+sudo apt update && sudo apt install ripgrep fd-find xclip
+# ruff language server wants
+sudo apt update && sudo apt install python3-venv
+# other language servers need node
 
 mkdir ~/Applications
 cd ~/Applications
@@ -103,6 +106,9 @@ fc-cache -fv
 
 ```bash
 # set caps-lock to ctrl on linux
+# tweaks -> keyboard & mouse -> additional layout options -> ctrl position
+sudo apt install gnome-tweaks
+# or in ~/.profile
 if [[ "$(uname)" == "Linux" ]]; then
   setxkbmap -option ctrl:nocaps
 fi
