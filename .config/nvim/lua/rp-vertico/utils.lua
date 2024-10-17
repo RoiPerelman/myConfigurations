@@ -28,6 +28,7 @@ end
 
 function U.display_buffer(bufnr)
   vim.cmd("botright new")
+  vim.notify('ROIROI in did botright start')
   local new_win = vim.api.nvim_get_current_win()
   vim.api.nvim_win_set_buf(new_win, bufnr)
   -- Make sure it doesn't affect layout by preserving 'winfixwidth'
@@ -35,6 +36,7 @@ function U.display_buffer(bufnr)
   vim.api.nvim_win_set_option(new_win, "wrap", true)
   vim.api.nvim_win_set_height(new_win, 11)
   vim.api.nvim_win_set_cursor(new_win, { 1, 0 })
+  vim.notify('ROIROI in did botright new end')
   return new_win
 end
 
@@ -43,6 +45,7 @@ U.toggle_window_by_name = function(name)
   local windows = vim.fn.win_findbuf(buffer)
   -- Buffer not displayed in any window
   if #windows == 0 then
+    vim.notify('ROIROI in toggle open')
     -- vim.schedule(function()
     U.cache.managed_windows[name].alternate_window = vim.api.nvim_get_current_win()
     U.cache.managed_windows[name].window = U.display_buffer(buffer)
@@ -50,6 +53,7 @@ U.toggle_window_by_name = function(name)
     -- end)
     return true
   else
+    vim.notify('ROIROI in toggle close')
     -- Return focus to the original window without making the new one the alternate window
     if U.cache.managed_windows[name].alternate_window then
       vim.api.nvim_set_current_win(U.cache.managed_windows[name].alternate_window)
