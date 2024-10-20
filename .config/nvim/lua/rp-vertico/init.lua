@@ -11,19 +11,32 @@ M.actions = {
   stop = function()
   end,
   caret_left = function()
-    vim.notify('RP amount of items' .. tostring(#H.cache.query))
-    vim.notify('RP placem of caret' .. tostring(H.cache.caret))
     if H.cache.caret > 1 then
       H.cache.caret = H.cache.caret - 1
     end
   end,
   caret_right = function()
-    vim.notify('RP amount of items' .. tostring(#H.cache.query))
-    vim.notify('RP placem of caret' .. tostring(H.cache.caret))
     if H.cache.caret <= #H.cache.query then
       H.cache.caret = H.cache.caret + 1
     end
-  end
+  end,
+  cursor_down = function()
+    vim.notify('ROIROI' .. tostring(H.cache.cursor_line))
+    vim.notify('ROIROI' .. tostring(#H.cache.items))
+    if H.cache.cursor_line < #H.cache.items - 1 then
+      H.cache.cursor_line = H.cache.cursor_line + 1
+    elseif H.cache.cursor_line == #H.cache.items - 1 then
+      H.cache.cursor_line = 1
+    end
+  end,
+  cursor_up = function()
+    if H.cache.cursor_line > 1 then
+      H.cache.cursor_line = H.cache.cursor_line - 1
+    elseif H.cache.cursor_line == 1 then
+      H.cache.cursor_line = #H.cache.items - 1
+    end
+  end,
+
 }
 
 M.actions_map = {
@@ -44,9 +57,9 @@ M.actions_map = {
   ['<C-x>']     = 'mark',
   ['<C-a>']     = 'mark_all',
 
-  ['<C-n>']     = 'move_down',
+  ['<C-n>']     = M.actions.cursor_down,
   ['<C-g>']     = 'move_start',
-  ['<C-p>']     = 'move_up',
+  ['<C-p>']     = M.actions.cursor_up,
 
   ['<C-r>']     = 'paste',
 
@@ -66,7 +79,7 @@ M.actions_map = {
 }
 
 H.timers = {
-  redraw = vim.loop.new_timer(),
+  draw = vim.loop.new_timer(),
 }
 
 H.bools = {
@@ -77,13 +90,15 @@ H.cache = {
   query = {},
   items = {},
   caret = 1,
-  current_ind = nil,
+  cursor_line = nil,
   guicursor = '',
-
-  -- caret = {}
 }
 
 H.ns_id = vim.api.nvim_create_namespace('RPVertico')
+H.extmarks = {
+  cursor = nil,
+  cursor_line = nil,
+}
 
 function H.create_hl_groups()
   vim.api.nvim_set_hl(0, 'RPVerticoCursor', { link = 'Cursor' })
@@ -102,7 +117,7 @@ function H.set_win_options()
   vim.wo[window].number = false
   vim.wo[window].relativenumber = false
   vim.wo[window].signcolumn = 'no'
-  -- vim.wo[window].cursorline = false
+  vim.wo[window].cursorline = false
 end
 
 function H.replace_termcodes(actions)
@@ -114,45 +129,52 @@ function H.replace_termcodes(actions)
   return replaced_actions
 end
 
-function H.redraw_scheduled()
-  vim.schedule(function()
-    local buffer = Window.cache.managed_windows['rp-vertico'].buffer
-    if buffer == nil then
-      return
-    end
+function H.draw()
+  local buffer = Window.cache.managed_windows['rp-vertico'].buffer
+  if buffer == nil then
+    return
+  end
 
-    local current = H.cache.current_ind and tostring(H.cache.current_ind) or '!'
-    local total = tostring(#H.cache.items)
-    local position = current .. '/' .. total
+  if not H.cache.cursor_line and #H.cache.items > 0 then
+    H.cache.cursor_line = 1
+  end
 
-    local before_caret = table.concat(vim.list_slice(H.cache.query, 1, H.cache.caret - 1), '')
-    local after_caret = table.concat(vim.list_slice(H.cache.query, H.cache.caret, #H.cache.query), '')
+  local query = table.concat(H.cache.query, '')
 
-    vim.notify('ROIROI total' .. tostring(total))
+  local current = H.cache.cursor_line and tostring(H.cache.cursor_line) or '!'
+  local total = tostring(#H.cache.items)
+  local position = current .. '/' .. total
 
-    vim.api.nvim_buf_set_lines(buffer, 0, 1, false,
-      { position .. ' ' .. before_caret .. after_caret .. ' ' })
-    vim.notify('ROIROI 111')
-    vim.api.nvim_buf_set_lines(buffer, 1, -1, false, H.cache.items)
+  local prefix = position .. ' # '
 
-    vim.notify('ROIROI 222')
-    vim.api.nvim_buf_clear_namespace(buffer, -1, 1, 2)
-    vim.notify('ROIROI 333')
-    vim.api.nvim_buf_add_highlight(buffer, H.ns_id, 'RPVerticoCursor', 0, H.cache.caret + 3, H.cache.caret + 4)
-    vim.notify('ROIROI 444')
+  vim.api.nvim_buf_set_lines(buffer, 0, 1, false,
+    { prefix .. query .. ' ' })
+  vim.api.nvim_buf_set_lines(buffer, 1, -1, false, H.cache.items)
 
+  local caret_column = #prefix - 1 + H.cache.caret
 
-    Utils.set_extmark(buffer, H.ns_id, 4, 0, {
+  H.extmarks.cursor = Utils.set_extmark(buffer, H.ns_id, 0, caret_column, {
+    id = H.extmarks.cursor,
+    hl_group = 'RPVerticoCursor',
+    end_row = 0,
+    end_col = caret_column + 1,
+    priority = 300,
+  })
+
+  if H.cache.cursor_line then
+    local cursor_line = H.cache.cursor_line
+
+    H.extmarks.cursor_line = Utils.set_extmark(buffer, H.ns_id, cursor_line, 0, {
+      id = H.extmarks.cursor_line,
       hl_group = 'RPVerticoCursorLine',
-      end_row = 5,
+      end_row = cursor_line + 1,
       end_col = 0,
       hl_eol = true,
       priority = 300,
     })
+  end
 
-    vim.notify('ROIROI 555')
-    vim.cmd('redraw')
-  end)
+  vim.cmd('redraw')
 end
 
 function H.hide_cursor()
@@ -186,11 +208,11 @@ function M.main_loop()
   M.find_files()
 
   for _ = 1, 1000000 do
-    H.timers.redraw:start(0, 1000, H.redraw_scheduled)
+    H.timers.draw:start(0, 1000, vim.schedule_wrap(H.draw))
     H.cache.is_waiting_for_getcharstr = true
     local ok, char = pcall(vim.fn.getcharstr)
     H.cache.is_waiting_for_getcharstr = nil
-    H.timers.redraw:stop()
+    H.timers.draw:stop()
 
     local c = vim.api.nvim_replace_termcodes('<C-z>', true, true, true)
     if type(actions_map[char]) == "function" then
@@ -244,7 +266,7 @@ function M.find_files()
     -- and close the pipe
     stdout:close()
     H.cache.items = items
-    H.redraw_scheduled()
+    vim.schedule_wrap(H.draw)()
   end)
 end
 
