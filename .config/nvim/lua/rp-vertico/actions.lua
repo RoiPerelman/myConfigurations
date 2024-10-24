@@ -2,6 +2,7 @@ local M = {}
 
 M.actions = {
   stop = function(cache)
+    cache.stop = true
   end,
   caret_left = function(cache)
     if cache.caret > 1 then
@@ -27,7 +28,14 @@ M.actions = {
       cache.cursor_line = #cache.items - 1
     end
   end,
-
+  delete_char = function(cache)
+    if cache.caret > 1 then
+      -- Remove the character before the caret
+      table.remove(cache.query, cache.caret - 1)
+      -- Move the caret one step left
+      cache.caret = cache.caret - 1
+    end
+  end
 }
 
 M.actions_map = {
@@ -40,7 +48,7 @@ M.actions_map = {
   ['<C-v>']     = 'choose_in_vsplit',
   ['<M-CR>']    = 'choose_marked',
 
-  ['<BS>']      = 'delete_char',
+  ['<BS>']      = M.actions.delete_char,
   ['<Del>']     = 'delete_char_right',
   ['<C-u>']     = 'delete_left',
   ['<C-w>']     = 'delete_word',
@@ -62,8 +70,7 @@ M.actions_map = {
   ['<C-l>']     = 'scroll_right',
   ['<C-b>']     = 'scroll_up',
 
-  ['<Esc>']     = 'stop',
-  ['<C-z>']     = 'stop',
+  ['<Esc>']     = M.actions.stop,
 
   ['<S-Tab>']   = 'toggle_info',
   ['<Tab>']     = 'toggle_preview',

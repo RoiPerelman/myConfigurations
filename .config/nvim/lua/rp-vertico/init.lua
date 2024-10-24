@@ -41,25 +41,23 @@ function M.main_loop(initial_command, command, filter, sort)
   initial_command(Cache)
 
   for _ = 1, 1000000 do
+    command(Cache)
     H.timers.draw:start(0, 100, vim.schedule_wrap(H.draw))
     -- H.bools.is_waiting_for_getcharstr = true
-    local ok, char = pcall(vim.fn.getcharstr)
+    local ok, char = pcall(vim.fn.getcharstr) -- C-c returns not ok
     -- H.bools.is_waiting_for_getcharstr = nil
     H.timers.draw:stop()
 
+    if not ok then break end
+
     if type(actions_map[char]) == "function" then
+      vim.notify('special function char ' .. char)
       actions_map[char](Cache)
+      if Cache.stop then break end
       goto continue
     elseif actions_map[char] then
       vim.notify('special char ' .. char .. ' ' .. actions_map[char])
       goto continue
-    end
-
-    -- close using C-c
-    if not ok then
-      Window.close_search_window()
-      Utils.unhide_cursor()
-      break
     end
 
     table.insert(Cache.query, Cache.caret, char)
@@ -68,6 +66,10 @@ function M.main_loop(initial_command, command, filter, sort)
 
     ::continue::
   end
+
+  -- close
+  Window.close_search_window()
+  Utils.unhide_cursor()
 end
 
 -- main loop helpers
@@ -105,7 +107,7 @@ H.draw = function()
   local query = table.concat(Cache.query, '')
 
   local current = Cache.cursor_line and tostring(Cache.cursor_line) or '!'
-  local total = tostring(#Cache.items)
+  local total = tostring(#Cache.items) - 1
   local position = current .. '/' .. total
 
   local prefix = position .. ' # '

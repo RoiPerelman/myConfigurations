@@ -33,6 +33,7 @@ function M.display_window(bufnr)
   vim.api.nvim_set_option_value("relativenumber", false, { win = window })
   vim.api.nvim_set_option_value("signcolumn", "no", { win = window })
   vim.api.nvim_set_option_value("cursorline", false, { win = window })
+  vim.api.nvim_set_option_value("colorcolumn", "", { win = window })
   vim.api.nvim_win_set_height(window, 11)
   vim.api.nvim_win_set_cursor(window, { 1, 0 })
   return window

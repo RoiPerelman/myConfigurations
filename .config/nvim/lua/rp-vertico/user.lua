@@ -12,4 +12,5 @@ rp_vertico.setup()
 
 -- vim.api.nvim_create_user_command("RP", commands.find_files, {})
 
-commands.find_files()
+commands.search_grep()
+-- commands.find_files()
