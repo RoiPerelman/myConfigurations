@@ -20,28 +20,28 @@ end
 function M.open(opts)
   local initial_command = opts.initial_command or function() end
   local command = opts.command or function() end
-  local filter = opts.filter or function() end
-  local sort = opts.sort or function() end
+  local fuzzy_command = opts.fuzzy_command or function() end
   local resume = opts.resume or false
   if not resume then
     Cache.restore_defaults()
   end
   Window.open_search_window()
   Utils.hide_cursor()
-  local ok, _ = pcall(M.main_loop, initial_command, command, filter, sort)
+  local ok, _ = pcall(M.main_loop, initial_command, command, fuzzy_command)
   if not ok then
     Window.close_search_window()
     Utils.unhide_cursor()
   end
 end
 
-function M.main_loop(initial_command, command, filter, sort)
+function M.main_loop(initial_command, command, fuzzy_command)
   local actions_map = Utils.replace_termcodes(Actions.actions_map)
 
   initial_command(Cache)
 
   for _ = 1, 1000000 do
     command(Cache)
+    fuzzy_command(Cache)
     H.timers.draw:start(0, 100, vim.schedule_wrap(H.draw))
     -- H.bools.is_waiting_for_getcharstr = true
     local ok, char = pcall(vim.fn.getcharstr) -- C-c returns not ok
@@ -100,21 +100,23 @@ H.draw = function()
     return
   end
 
-  if not Cache.cursor_line and #Cache.items > 0 then
+  local items = #Cache.filtered_sorted_items > 0 and Cache.filtered_sorted_items or Cache.items
+
+  if not Cache.cursor_line and #items > 0 then
     Cache.cursor_line = 1
   end
 
   local query = table.concat(Cache.query, '')
 
   local current = Cache.cursor_line and tostring(Cache.cursor_line) or '!'
-  local total = tostring(#Cache.items) - 1
+  local total = tostring(#items)
   local position = current .. '/' .. total
 
   local prefix = position .. ' # '
 
-  -- set search and items
+  -- set search and filtered_sorted_items
   vim.api.nvim_buf_set_lines(buffer, 0, 1, false, { prefix .. query .. ' ' })
-  vim.api.nvim_buf_set_lines(buffer, 1, -1, false, Cache.items)
+  vim.api.nvim_buf_set_lines(buffer, 1, -1, false, items)
 
   -- set cursor and cursor line
   local caret_column = #prefix - 1 + Cache.caret
