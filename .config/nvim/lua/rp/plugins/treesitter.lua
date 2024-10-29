@@ -36,9 +36,9 @@ require("nvim-treesitter.configs").setup({
   highlight = { enable = true },
   indent = { enable = true },
   -- enable autotagging (w/ nvim-ts-autotag plugin)
-  autotag = {
-    enable = true,
-  },
+  -- autotag = {
+  --   enable = true,
+  -- },
   -- incremental_selection = {
   --   enable = true,
   --   keymaps = {
