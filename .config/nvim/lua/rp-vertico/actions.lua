@@ -35,6 +35,16 @@ M.actions = {
       -- Move the caret one step left
       cache.caret = cache.caret - 1
     end
+  end,
+  choose = function(cache, window)
+    local item = M.items[M.indices[M.cursor_line]]
+    if item.path then
+      local buffer = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_win_set_buf(window.alternate_window, buffer)
+      vim.api.nvim_buf_set_name(buffer, item.path)
+      vim.cmd("edit " .. item.path)
+      cache.stop = true
+    end
   end
 }
 
@@ -42,7 +52,7 @@ M.actions_map = {
   ['<Left>']    = M.actions.caret_left,
   ['<Right>']   = M.actions.caret_right,
 
-  ['<CR>']      = 'choose',
+  ['<CR>']      = M.actions.choose,
   ['<C-s>']     = 'choose_in_split',
   ['<C-t>']     = 'choose_in_tabpage',
   ['<C-v>']     = 'choose_in_vsplit',

@@ -49,7 +49,7 @@ function M.main_loop(command, close_cb)
 
     if type(actions_map[char]) == "function" then
       vim.notify('special function char ' .. char)
-      actions_map[char](Cache)
+      actions_map[char](Cache, Window)
       if Cache.stop then break end
       goto continue
     elseif actions_map[char] then
