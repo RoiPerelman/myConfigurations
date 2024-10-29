@@ -19,10 +19,12 @@ function M.open(opts)
   local close_cb = opts.close_cb or function() end
   local resume = opts.resume or false
   if not resume then
+    Window.close_search_window()
     Cache.restore_defaults()
   end
   Window.open_search_window()
   Utils.hide_cursor()
+  -- set visible range
   local ok, _ = pcall(M.main_loop, command, close_cb)
   if not ok then
     Window.close_search_window()
@@ -32,6 +34,8 @@ end
 
 function M.main_loop(command, close_cb)
   local actions_map = Utils.replace_termcodes(Actions.actions_map)
+
+  Cache.visible_range = { from = 1, to = vim.api.nvim_win_get_height(Window.window) - 1 }
 
   for i = 1, 1000000 do
     command(Cache, i == 1)
@@ -52,12 +56,14 @@ function M.main_loop(command, close_cb)
       vim.notify('special char ' .. char .. ' ' .. actions_map[char])
       goto continue
     else
-      Window.window_start = 1
-      Window.window_end = Window.window_height - 1
     end
 
+    -- query is updated and subsequently caret, cursor_line and visible_range
     table.insert(Cache.query, Cache.caret, char)
     Cache.caret = Cache.caret + 1
+    Cache.cursor_line = 1
+    Cache.visible_range = { from = 1, to = vim.api.nvim_win_get_height(Window.window) - 1 }
+
     vim.print(vim.inspect(Cache.query))
 
     ::continue::
@@ -106,20 +112,20 @@ H.draw = function()
   local cursor_line = Cache.cursor_line
   local caret = Cache.caret
 
-  if cursor_line > Window.window_end then
-    Window.window_end = cursor_line
-    Window.window_start = cursor_line - Window.window_height + 1
+  if cursor_line > Cache.visible_range.to then
+    Cache.visible_range.from = cursor_line - Window.window_height + 1
+    Cache.visible_range.to = cursor_line
   end
 
-  if cursor_line < Window.window_start then
-    Window.window_start = cursor_line
-    Window.window_end = cursor_line + Window.window_height - 1
+  if cursor_line < Cache.visible_range.from then
+    Cache.visible_range.from = cursor_line
+    Cache.visible_range.to = cursor_line + Window.window_height - 1
   end
 
-  local window_start = Window.window_start
-  local window_end = Window.window_end
+  local range_from = Cache.visible_range.from
+  local range_to = Cache.visible_range.to
 
-  for i = window_start, window_end do
+  for i = range_from, range_to do
     local index = Cache.indices[i]
     table.insert(final_items, items[index])
   end
@@ -145,10 +151,10 @@ H.draw = function()
     end_col = caret_column + 1,
     priority = 300,
   })
-  H.extmarks.cursor_line = Utils.set_extmark(buffer, H.extmarks.ns_id, cursor_line - window_start + 1, 0, {
+  H.extmarks.cursor_line = Utils.set_extmark(buffer, H.extmarks.ns_id, cursor_line - range_from + 1, 0, {
     id = H.extmarks.cursor_line,
     hl_group = 'RPVerticoCursorLine',
-    end_row = cursor_line - window_start + 2,
+    end_row = cursor_line - range_from + 2,
     end_col = 0,
     hl_eol = true,
     priority = 300,

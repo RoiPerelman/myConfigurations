@@ -15,15 +15,11 @@ M.actions = {
     end
   end,
   cursor_down = function(cache)
-    vim.notify('ROIROI AAA')
     if cache.cursor_line < #cache.indices - 1 then
-      vim.notify('ROIROI BBB')
       cache.cursor_line = cache.cursor_line + 1
     elseif cache.cursor_line == #cache.indices - 1 then
-      vim.notify('ROIROI CCC')
       cache.cursor_line = 1
     end
-    vim.notify('ROIROI DDD')
   end,
   cursor_up = function(cache)
     if cache.cursor_line > 1 then

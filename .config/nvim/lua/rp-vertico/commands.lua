@@ -96,7 +96,6 @@ M.search_grep = function()
         end
       end
 
-      vim.notify('ROIROI')
       vim.notify(vim.inspect(processed_items))
       -- `results` now holds the list of structured objects you described
 

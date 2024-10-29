@@ -4,10 +4,8 @@ M.buffer = nil
 M.window = nil
 M.alternate_window = nil
 
--- parameters for windowing lines
-M.window_height = nil
-M.window_start = nil
-M.window_end = nil
+-- parameters for visible lines in window
+M.visible_range = { from = -1, to = -1 }
 
 function M.get_scratch_buffer(bufname)
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
@@ -53,9 +51,6 @@ M.open_search_window = function()
     M.buffer = buffer
     M.alternate_window = vim.api.nvim_get_current_win()
     M.window = M.display_window(buffer)
-    M.window_height = vim.api.nvim_win_get_height(M.window) - 1
-    M.window_start = 1
-    M.window_end = M.window_height
     return true
   else
     M.close_search_window()
@@ -64,28 +59,28 @@ M.open_search_window = function()
 end
 
 M.close_search_window = function()
-  local name = 'rp-vertico'
-  local buffer = M.get_scratch_buffer(name)
-  local windows = vim.fn.win_findbuf(buffer)
-  if #windows > 0 or M.window then
-    if M.alternate_window and vim.api.nvim_win_is_valid(M.alternate_window) then
-      vim.api.nvim_set_current_win(M.alternate_window)
-    end
-
-    if vim.api.nvim_win_is_valid(M.window) then
-      vim.api.nvim_win_close(M.window, true)
-    end
-
-    for _, window in ipairs(windows) do
-      if vim.api.nvim_win_is_valid(M.window) then
-        vim.api.nvim_win_close(window, true)
+  if M.alternate_window and vim.api.nvim_win_is_valid(M.alternate_window) then
+    vim.api.nvim_set_current_win(M.alternate_window)
+  end
+  if M.window and vim.api.nvim_win_is_valid(M.window) then
+    vim.api.nvim_win_close(M.window, true)
+  end
+  if M.buffer then
+    local windows = vim.fn.win_findbuf(M.buffer)
+    if #windows > 0 or M.window then
+      for _, window in ipairs(windows) do
+        if vim.api.nvim_win_is_valid(M.window) then
+          vim.api.nvim_win_close(window, true)
+        end
       end
     end
-
-    M.alternate_window = nil
-    M.window = nil
-    M.buffer = nil
+    if vim.api.nvim_win_is_valid(M.buffer) then
+      vim.api.nvim_buf_delete(M.buffer, { force = true })
+    end
   end
+  M.buffer = nil
+  M.window = nil
+  M.alternate_window = nil
 end
 
 return M
