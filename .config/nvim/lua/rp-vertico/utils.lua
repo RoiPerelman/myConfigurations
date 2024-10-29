@@ -27,4 +27,32 @@ M.unhide_cursor = function()
   end)
 end
 
+-- process shell command and call callback with results
+M.shell_command = function(command, cb)
+  local executable, args = command[1], vim.list_slice(command, 2, #command)
+  local stdout = vim.loop.new_pipe()
+  local options = {
+    args = args,
+    stdio = { nil, stdout, nil }
+  }
+  local process, pid = nil, nil
+  process, pid = vim.loop.spawn(executable, options, function()
+    if process and process:is_active() then process:close() end
+  end)
+  local data_feed = {}
+  stdout:read_start(function(err, data)
+    assert(not err, err)
+    -- fill data_feed with data
+    if data ~= nil then return table.insert(data_feed, data) end
+    -- create items from full data_feed
+    local lines = vim.split(table.concat(data_feed), '\n')
+    -- clean data_feed
+    data_feed = nil
+    -- close the pipe
+    stdout:close()
+    -- cb with lines
+    cb(lines)
+  end)
+end
+
 return M

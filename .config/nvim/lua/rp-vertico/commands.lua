@@ -1,45 +1,39 @@
 local rp_vertico = require('rp-vertico')
 local fzf = require('rp-vertico.fzf')
+local Utils = require('rp-vertico.utils')
 
 local M = {}
 
-M.find_files = function()
-  local initial_command = function(cache)
-    local shell_command = { "rg", "--files", "--color", "never", "-g", "!.git", "--hidden" }
-    local executable, args = shell_command[1], vim.list_slice(shell_command, 2, #shell_command)
+M.find_files = function(opts)
+  local command = function(cache, is_init)
+    if is_init then
+      local command = { "rg", "--files", "--color", "never", "-g", "!.git", "--hidden" }
 
-    local process, pid, stdout = nil, nil, vim.loop.new_pipe()
+      -- add directories to search for command
+      if opts and opts.dirs and type(opts.dirs) == "table" then
+        for _, dir in ipairs(opts.dirs) do
+          table.insert(command, vim.fn.expand(dir))
+        end
+      end
 
-    local stdout = vim.loop.new_pipe()
-    local options = {
-      args = args,
-      stdio = { nil, stdout, nil }
-    }
-    process, pid = vim.loop.spawn(executable, options, function()
-      if process and process:is_active() then process:close() end
-    end)
+      vim.notify(table.concat(command, " "))
 
-    local data_feed = {}
-    stdout:read_start(function(err, data)
-      assert(not err, err)
-
-      -- fill data_feed with data
-      if data ~= nil then return table.insert(data_feed, data) end
-
-      -- create items from full data_feed
-      local items = vim.split(table.concat(data_feed), '\n')
-      data_feed = nil
-      -- and close the pipe
-      stdout:close()
-      cache.items = items
-    end)
+      Utils.shell_command(command, function(lines)
+        cache.items = vim.tbl_map(function(line) return { path = line, text = line } end, lines)
+        fzf.fzf_filter_sort(cache)
+      end)
+    else
+      vim.schedule(function()
+        fzf.fzf_filter_sort(cache)
+      end)
+    end
   end
-  local fuzzy_command = function(cache)
-    fzf.fzf_filter_sort(cache)
-    -- vim.schedule(function()
-    -- end)
+  local close_cb = function()
+    -- clear fzf cache
+    fzf.cache = {}
+    fzf.matches = {}
   end
-  rp_vertico.open({ initial_command = initial_command, fuzzy_command = fuzzy_command })
+  rp_vertico.open({ command = command, close_cb = close_cb })
 end
 
 M.search_grep = function()
@@ -78,9 +72,7 @@ M.search_grep = function()
       local processed_items = {}
       for _, item in pairs(items) do
         if item ~= '' then
-          vim.notify('ROIROI ROIROI ROIROI')
           local lua_table = vim.json.decode(item)
-          vim.notify('ROIROI 222')
 
           -- Only process items where type is "match"
           if lua_table.type == "match" then

@@ -4,6 +4,11 @@ M.buffer = nil
 M.window = nil
 M.alternate_window = nil
 
+-- parameters for windowing lines
+M.window_height = nil
+M.window_start = nil
+M.window_end = nil
+
 function M.get_scratch_buffer(bufname)
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
     if vim.fn.bufname(bufnr) == bufname then
@@ -45,9 +50,12 @@ M.open_search_window = function()
   local windows = vim.fn.win_findbuf(buffer)
   -- Buffer not displayed in any window
   if #windows == 0 then
+    M.buffer = buffer
     M.alternate_window = vim.api.nvim_get_current_win()
     M.window = M.display_window(buffer)
-    M.buffer = buffer
+    M.window_height = vim.api.nvim_win_get_height(M.window) - 1
+    M.window_start = 1
+    M.window_end = M.window_height
     return true
   else
     M.close_search_window()

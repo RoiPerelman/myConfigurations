@@ -14,8 +14,8 @@ rp_vertico.setup()
 
 -- vim.api.nvim_create_user_command("RP", commands.find_files, {})
 
--- commands.find_files()
-commands.search_grep()
+commands.find_files({ dirs = { '~/myConfigurations', '~/Other' } })
+-- commands.search_grep()
 --
 -- local fzf = require "fzf_lib"
 -- vim.print(fzf)

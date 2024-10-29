@@ -15,17 +15,21 @@ M.actions = {
     end
   end,
   cursor_down = function(cache)
-    if cache.cursor_line < #cache.items - 1 then
+    vim.notify('ROIROI AAA')
+    if cache.cursor_line < #cache.indices - 1 then
+      vim.notify('ROIROI BBB')
       cache.cursor_line = cache.cursor_line + 1
-    elseif cache.cursor_line == #cache.items - 1 then
+    elseif cache.cursor_line == #cache.indices - 1 then
+      vim.notify('ROIROI CCC')
       cache.cursor_line = 1
     end
+    vim.notify('ROIROI DDD')
   end,
   cursor_up = function(cache)
     if cache.cursor_line > 1 then
       cache.cursor_line = cache.cursor_line - 1
     elseif cache.cursor_line == 1 then
-      cache.cursor_line = #cache.items - 1
+      cache.cursor_line = #cache.indices - 1
     end
   end,
   delete_char = function(cache)
