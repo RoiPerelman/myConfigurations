@@ -6,7 +6,7 @@ Config.automatically_reload_config = true
 -- Config.enable_tab_bar = false
 Config.window_close_confirmation = "NeverPrompt"
 Config.window_decorations = "RESIZE" -- disable the title bar but enable resize
-Config.window_padding = { left = 8, right = 8, top = 8, bottom = 0 }
+Config.window_padding = { left = 8, right = 8, top = 0, bottom = 0, }
 Config.color_scheme = "Dracula (Official)"
 Config.font = wezterm.font("JetBrains Mono", { weight = "Bold" })
 Config.font_size = 13

@@ -28,6 +28,7 @@ function M.open(opts)
   -- set visible range
   local ok, _ = pcall(M.main_loop, command, close_cb)
 
+  vim.notify('ROIROI END')
   -- close
   close_cb()
   Window.close_search_window()
