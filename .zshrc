@@ -77,10 +77,16 @@ then
 fi
 
 # pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 if command -v pyenv > /dev/null; then
-  export PYENV_ROOT="$HOME/.pyenv"
-  [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
   eval "$(pyenv init -)"
+
+  # virtualenv
+  export WORKON_HOME=$HOME/.virtualenvs
+  export VIRTUALENVWRAPPER_PYTHON=$(pyenv which python)
+  export VIRTUALENVWRAPPER_SCRIPT=/home/roip/.pyenv/versions/3.11.7/bin/virtualenvwrapper.sh
+  [ -f $VIRTUALENVWRAPPER_SCRIPT] && source $VIRTUALENVWRAPPER_SCRIPT
 fi
 
 # nvm

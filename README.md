@@ -1,20 +1,27 @@
 # PREREQUISITES
 
-## git ssh command
+## clone and ssh
 
 ```bash
-ssh-add -K ~/.ssh/id_ed25519_roiperelman_github
-# add special ssh key to repo
-git config core.sshCommand 'ssh -i ~/.ssh/id_ed25519_roiperelman_github'
-# use special ssh key in repo
-GIT_SSH_COMMAND='ssh -i ~/.ssh/id_ed25519_roiperelman_github' git push
+git clone https://github.com/RoiPerelman/myConfigurations.git
+# create an ssh key and add it to github
+ssh-keygen -t ed25519 -C "roip-$PC personal github"
+# use ~/.ssh/id_ed25519_personal_github
+git clone git@github.com:RoiPerelman/myConfigurations.git
+# if cloned using https - change origin
+git remote set-url origin git@github.com:RoiPerelman/myConfigurations.git
 ```
 
-## tmux
+## wezterm
 
-``` bash
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-ln -snf ~/myConfigurations/tmux/tmux.conf ~/.tmux.conf
+```bash
+# install wezterm
+curl -LO https://github.com/wez/wezterm/releases/download/20240203-110809-5046fc22/wezterm-20240203-110809-5046fc22.Ubuntu22.04.deb
+sudo dpkg -i ./wezterm-20240203-110809-5046fc22.Ubuntu22.04.deb
+rm ./wezterm-20240203-110809-5046fc22.Ubuntu22.04.deb
+
+mkdir -p ~/.config/wezterm
+ln -snf ~/myConfigurations/.config/wezterm/wezterm.lua ~/.config/wezterm/wezterm.lua
 ```
 
 ## nvim
@@ -26,7 +33,20 @@ sudo apt update && sudo apt install ripgrep fd-find xclip
 # ruff language server wants
 sudo apt update && sudo apt install python3-venv
 # other language servers need node
+sudo chown $USER:$USER /usr/local
+curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n | bash -s lts
+npm install -g n
 
+mkdir ~/Applications
+cd ~/Applications
+
+# for linux tar.gz
+curl -L -O https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+tar -xvf nvim-linux64.tar.gz && rm -rf nvim-linux64.tar.gz
+sudo ln -snf `realpath ./nvim-linux64/bin/nvim` /usr/local/bin/nvim
+ln -snf ~/myConfigurations/.config/nvim ~/.config/nvim
+
+# for linux from source
 mkdir ~/Applications
 cd ~/Applications
 git clone https://github.com/neovim/neovim.git
@@ -42,19 +62,7 @@ python3 -m pip install -U pip pynvim
 npm install -g tree-sitter-cli
 # not necessary but recommended
 npm install -g n
-brew install tmux
-```
-
-## wezterm
-
-```bash
-# install wezterm
-curl -LO https://github.com/wez/wezterm/releases/download/20240203-110809-5046fc22/wezterm-20240203-110809-5046fc22.Ubuntu22.04.deb
-sudo dpkg -i ./wezterm-20240203-110809-5046fc22.Ubuntu22.04.deb
-rm ./wezterm-20240203-110809-5046fc22.Ubuntu22.04.deb
-
-mkdir -p ~/.config/wezterm
-ln -snf ~/myConfigurations/.config/wezterm/wezterm.lua ~/.config/wezterm/wezterm.lua
+ln -snf ~/myConfigurations/.config/nvim ~/.config/nvim
 ```
 
 ## zsh
@@ -80,13 +88,38 @@ ln -snf ~/myConfigurations/.zshrc ~/.zshrc
 mkdir -p ~/.config && ln -snf ~/myConfigurations/.config/starship.toml ~/.config/starship.toml
 ```
 
+## utilities
+
+```bash
+# set caps-lock to ctrl on linux
+# tweaks -> keyboard & mouse -> additional layout options -> ctrl position
+sudo apt install gnome-tweaks
+```
+
 ## git
 
 ``` bash
 ln -snf ~/myConfigurations/git/config ~/.gitconfig
 ```
+## git ssh command
 
-## fonts
+```bash
+# add special ssh key to git config of project
+git config core.sshCommand 'ssh -i ~/.ssh/id_ed25519_personal_github'
+# use special ssh key in command
+GIT_SSH_COMMAND='ssh -i ~/.ssh/id_ed25519_personal_github' git push
+```
+
+## unused
+
+### tmux
+
+``` bash
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+ln -snf ~/myConfigurations/tmux/tmux.conf ~/.tmux.conf
+```
+
+### fonts
 
 ```bash
 mkdir ~/.local/share/fonts
@@ -101,26 +134,6 @@ mv cascadia/ttf/*.ttf .
 rm -rf CascadiaCode-2404.23.zip cascadia
 fc-cache -fv
 ```
-
-## utilities
-
-```bash
-# set caps-lock to ctrl on linux
-# tweaks -> keyboard & mouse -> additional layout options -> ctrl position
-sudo apt install gnome-tweaks
-# or in ~/.profile
-if [[ "$(uname)" == "Linux" ]]; then
-  setxkbmap -option ctrl:nocaps
-fi
-# to remove caps lock
-python3 -c 'from ctypes import *; \
-X11 = cdll.LoadLibrary("libX11.so.6"); \
-display = X11.XOpenDisplay(None); \
-X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); \
-X11.XCloseDisplay(display)'
-```
-
-## unused
 
 ### ideavimrc
 
