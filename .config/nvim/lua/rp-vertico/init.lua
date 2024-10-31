@@ -2,6 +2,7 @@ local Window = require('rp-vertico.window')
 local Utils = require('rp-vertico.utils')
 local Actions = require('rp-vertico.actions')
 local Cache = require('rp-vertico.cache')
+local Preview = require('rp-vertico.preview')
 
 local M = {}
 local H = {}
@@ -26,10 +27,12 @@ function M.open(opts)
   Utils.hide_cursor()
   -- set visible range
   local ok, _ = pcall(M.main_loop, command, close_cb)
-  if not ok then
-    Window.close_search_window()
-    Utils.unhide_cursor()
-  end
+
+  -- close
+  close_cb()
+  Window.close_search_window()
+  Preview.close_preview()
+  Utils.unhide_cursor()
 end
 
 function M.main_loop(command, close_cb)
@@ -68,11 +71,6 @@ function M.main_loop(command, close_cb)
 
     ::continue::
   end
-
-  -- close
-  close_cb()
-  Window.close_search_window()
-  Utils.unhide_cursor()
 end
 
 -- main loop helpers
@@ -172,6 +170,10 @@ H.draw = function()
     end
   end
 
+  local item = Utils.get_active_item(Cache)
+  if item then
+    Preview.preview_item(Window.alternate_window, item)
+  end
 
   vim.api.nvim__redraw({ flush = true, cursor = true })
   -- vim.api.nvim__redraw({ flush = false, cursor = false })

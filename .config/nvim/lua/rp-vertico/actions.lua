@@ -1,3 +1,5 @@
+local Utils = require('rp-vertico.utils')
+
 local M = {}
 
 M.actions = {
@@ -37,12 +39,11 @@ M.actions = {
     end
   end,
   choose = function(cache, window)
-    local item = M.items[M.indices[M.cursor_line]]
+    local window_target = window.alternate_window
+    local item = Utils.get_active_item(cache)
     if item.path then
-      local buffer = vim.api.nvim_create_buf(false, true)
-      vim.api.nvim_win_set_buf(window.alternate_window, buffer)
-      vim.api.nvim_buf_set_name(buffer, item.path)
-      vim.cmd("edit " .. item.path)
+      local norm_path = Utils.norm_path(item.path)
+      vim.api.nvim_win_call(window_target, function() pcall(vim.cmd, 'edit ' .. norm_path) end)
       cache.stop = true
     end
   end

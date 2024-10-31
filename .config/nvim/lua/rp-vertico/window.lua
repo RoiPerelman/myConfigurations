@@ -7,24 +7,25 @@ M.alternate_window = nil
 -- parameters for visible lines in window
 M.visible_range = { from = -1, to = -1 }
 
-function M.get_scratch_buffer(bufname)
-  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.fn.bufname(bufnr) == bufname then
-      return bufnr
-    end
+M.open_search_window = function()
+  if M.buffer ~= nil or M.window ~= nil then
+    vim.notify('rp-vertico open_search_window creation failed')
+    return
   end
-  local bufnr = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_name(bufnr, bufname)
-  vim.api.nvim_set_option_value("buftype", "nofile", { buf = bufnr })
-  vim.api.nvim_set_option_value("bufhidden", "hide", { buf = bufnr })
-  vim.api.nvim_set_option_value("swapfile", false, { buf = bufnr })
-  return bufnr
-end
-
-function M.display_window(bufnr)
+  local name = 'rp-vertico-buffer'
+  M.alternate_window = vim.api.nvim_get_current_win()
   vim.cmd("botright new")
-  local window = vim.api.nvim_get_current_win()
-  vim.api.nvim_win_set_buf(window, bufnr)
+  M.window = vim.api.nvim_get_current_win()
+  local window = M.window
+  M.buffer = vim.api.nvim_win_get_buf(window)
+  local buffer = M.buffer
+  vim.api.nvim_win_set_buf(window, buffer)
+  --- set buffer options
+  vim.api.nvim_buf_set_name(buffer, name)
+  vim.api.nvim_set_option_value("buftype", "nofile", { buf = buffer })
+  vim.api.nvim_set_option_value("bufhidden", "hide", { buf = buffer })
+  vim.api.nvim_set_option_value("swapfile", false, { buf = buffer })
+  -- set window options
   vim.api.nvim_set_option_value("winfixheight", true, { win = window })
   vim.api.nvim_set_option_value("foldenable", false, { win = window })
   vim.api.nvim_set_option_value("foldmethod", "manual", { win = window })
@@ -39,23 +40,6 @@ function M.display_window(bufnr)
   vim.api.nvim_set_option_value("colorcolumn", "", { win = window })
   vim.api.nvim_win_set_height(window, 11)
   vim.api.nvim_win_set_cursor(window, { 1, 0 })
-  return window
-end
-
-M.open_search_window = function()
-  local name = 'rp-vertico'
-  local buffer = M.get_scratch_buffer(name)
-  local windows = vim.fn.win_findbuf(buffer)
-  -- Buffer not displayed in any window
-  if #windows == 0 then
-    M.buffer = buffer
-    M.alternate_window = vim.api.nvim_get_current_win()
-    M.window = M.display_window(buffer)
-    return true
-  else
-    M.close_search_window()
-    M.open_search_window()
-  end
 end
 
 M.close_search_window = function()
@@ -74,7 +58,7 @@ M.close_search_window = function()
         end
       end
     end
-    if vim.api.nvim_win_is_valid(M.buffer) then
+    if vim.api.nvim_buf_is_valid(M.buffer) then
       vim.api.nvim_buf_delete(M.buffer, { force = true })
     end
   end

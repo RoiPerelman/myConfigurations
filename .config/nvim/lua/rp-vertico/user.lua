@@ -5,6 +5,7 @@ package.loaded['rp-vertico.fzf'] = nil
 package.loaded['rp-vertico.init'] = nil
 package.loaded['rp-vertico.utils'] = nil
 package.loaded['rp-vertico.window'] = nil
+package.loaded['rp-vertico.preview'] = nil
 package.loaded['rp-vertico'] = nil
 
 local rp_vertico = require('rp-vertico')
@@ -17,23 +18,23 @@ rp_vertico.setup()
 -- rp_commands.find_files({ dirs = { '~/myConfigurations', '~/Other' } })
 
 local inspekto_filepaths = {
-  "~/sinspekto/tinybox",
-  "~/sinspekto/inspekto-os",
-  "~/sinspekto/meta-inspekto",
-  "~/sinspekto/fixi",
-  "~/sinspekto/fixi-client",
-  "~/sinspekto/tiny-database",
-  "~/sinspekto/tiny-std",
-  "~/sinspekto/common-std",
-  "~/sinspekto/data-coordinator",
-  "~/sinspekto/connectivity",
-  "~/sinspekto/inspekto-agent",
-  "~/sinspekto/integration-managers",
-  "~/sinspekto/agc",
-  "~/sinspekto/profile-center",
-  "~/sinspekto/inspekto-agent",
-  "~/sinspekto/defect-predictor",
-  "~/sinspekto/defect-detector",
+  "~/inspekto/tinybox",
+  "~/inspekto/inspekto-os",
+  "~/inspekto/meta-inspekto",
+  "~/inspekto/fixi",
+  "~/inspekto/fixi-client",
+  "~/inspekto/tiny-database",
+  "~/inspekto/tiny-std",
+  "~/inspekto/common-std",
+  "~/inspekto/data-coordinator",
+  "~/inspekto/connectivity",
+  "~/inspekto/inspekto-agent",
+  "~/inspekto/integration-managers",
+  "~/inspekto/agc",
+  "~/inspekto/profile-center",
+  "~/inspekto/inspekto-agent",
+  "~/inspekto/defect-predictor",
+  "~/inspekto/defect-detector",
 }
 
 vim.keymap.set("n", "<leader>rf", function()

@@ -55,4 +55,11 @@ M.shell_command = function(command, cb)
   end)
 end
 
+M.norm_path = function(path)
+  return vim.fn.fnameescape(vim.fn.fnamemodify((path), ':.'))
+end
+
+M.get_active_item = function(cache)
+  return cache.items[cache.indices[cache.cursor_line]]
+end
 return M

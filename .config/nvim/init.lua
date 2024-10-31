@@ -5,6 +5,8 @@ require("rp/config/autocommands")
 -- Add plugins - download git repos
 require("rp/plugin-manager")
 
+require("rp-vertico/user")
+
 -- Configure plugins
 local now, later = MiniDeps.now, MiniDeps.later
 now(function() require("rp/colorscheme") end)

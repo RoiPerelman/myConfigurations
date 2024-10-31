@@ -19,7 +19,8 @@ M.find_files = function(opts)
       vim.notify(table.concat(command, " "))
 
       Utils.shell_command(command, function(lines)
-        cache.items = vim.tbl_map(function(line) return { path = line, text = line } end, lines)
+        local non_empty_lines = vim.tbl_filter(function(line) return line ~= "" end, lines)
+        cache.items = vim.tbl_map(function(line) return { path = line, text = line } end, non_empty_lines)
         fzf.fzf_filter_sort(cache)
       end)
     else
