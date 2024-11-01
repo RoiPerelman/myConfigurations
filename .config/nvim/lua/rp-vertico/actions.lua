@@ -16,6 +16,28 @@ M.actions = {
       cache.caret = cache.caret + 1
     end
   end,
+  caret_start = function(cache)
+    cache.caret = 1
+  end,
+  caret_end = function(cache)
+    cache.caret = #cache.query + 1
+  end,
+  caret_word_forward = function(cache)
+    while cache.caret <= #cache.query and cache.query[cache.caret] ~= ' ' do
+      cache.caret = cache.caret + 1
+    end
+    while cache.caret <= #cache.query and cache.query[cache.caret] == ' ' do
+      cache.caret = cache.caret + 1
+    end
+  end,
+  caret_word_backword = function(cache)
+    while cache.caret > 1 and cache.query[cache.caret - 1] == ' ' do
+      cache.caret = cache.caret - 1
+    end
+    while cache.caret > 1 and cache.query[cache.caret - 1] ~= ' ' do
+      cache.caret = cache.caret - 1
+    end
+  end,
   cursor_down = function(cache)
     if cache.cursor_line < #cache.indices - 1 then
       cache.cursor_line = cache.cursor_line + 1
@@ -34,6 +56,7 @@ M.actions = {
     if cache.caret > 1 then
       -- Remove the character before the caret
       table.remove(cache.query, cache.caret - 1)
+      cache.query_update = true
       -- Move the caret one step left
       cache.caret = cache.caret - 1
     end
@@ -52,6 +75,13 @@ M.actions = {
 M.actions_map = {
   ['<Left>']    = M.actions.caret_left,
   ['<Right>']   = M.actions.caret_right,
+  -- emacsy movements
+  ['<C-a>']     = M.actions.caret_start,
+  ['<C-e>']     = M.actions.caret_end,
+  ['<C-b>']     = M.actions.caret_left,
+  ['<C-f>']     = M.actions.caret_right,
+  ['<M-b>']     = M.actions.caret_word_backword,
+  ['<M-f>']     = M.actions.caret_word_forward,
 
   ['<CR>']      = M.actions.choose,
   ['<C-s>']     = 'choose_in_split',
@@ -65,7 +95,7 @@ M.actions_map = {
   ['<C-w>']     = 'delete_word',
 
   ['<C-x>']     = 'mark',
-  ['<C-a>']     = 'mark_all',
+  -- ['<C-a>']     = 'mark_all',
 
   ['<C-n>']     = M.actions.cursor_down,
   ['<C-g>']     = 'move_start',
@@ -76,10 +106,10 @@ M.actions_map = {
   ['<C-Space>'] = 'refine',
   ['<M-Space>'] = 'refine_marked',
 
-  ['<C-f>']     = 'scroll_down',
-  ['<C-h>']     = 'scroll_left',
-  ['<C-l>']     = 'scroll_right',
-  ['<C-b>']     = 'scroll_up',
+  -- ['<C-f>']     = 'scroll_down',
+  -- ['<C-h>']     = 'scroll_left',
+  -- ['<C-l>']     = 'scroll_right',
+  -- ['<C-b>']     = 'scroll_up',
 
   ['<Esc>']     = M.actions.stop,
 
