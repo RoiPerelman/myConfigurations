@@ -24,12 +24,9 @@ M.actions = {
     end
   end,
   cursor_up = function(cache)
-    vim.notify('ROIROI 111')
     if cache.cursor_line > 1 then
-      vim.notify('ROIROI 222')
       cache.cursor_line = cache.cursor_line - 1
     elseif cache.cursor_line == 1 then
-      vim.notify('ROIROI 333')
       cache.cursor_line = #cache.indices - 1
     end
   end,

@@ -38,19 +38,19 @@ require("telescope").setup({
 pcall(require("telescope").load_extension, "fzf")
 pcall(require("telescope").load_extension, "ui-select")
 
-vim.keymap.set("n", "<leader>ff", function()
-  require("telescope.builtin").find_files({
-    find_command = { "rg", "--files", "--color", "never", "-g", "!.git", "--hidden" },
-  })
-end, { desc = "[F]ind [F]iles cwd" })
-
-vim.keymap.set("n", "<leader>fF", function()
-  local buf_root = require("rp.utils.find_buf_root")()
-  require("telescope.builtin").find_files({
-    find_command = { "rg", "--files", "--color", "never", "-g", "!.git", "--hidden" },
-    cwd = buf_root
-  })
-end, { desc = "[F]ind [F]iles buf root" })
+-- vim.keymap.set("n", "<leader>ff", function()
+--   require("telescope.builtin").find_files({
+--     find_command = { "rg", "--files", "--color", "never", "-g", "!.git", "--hidden" },
+--   })
+-- end, { desc = "[F]ind [F]iles cwd" })
+--
+-- vim.keymap.set("n", "<leader>fF", function()
+--   local buf_root = require("rp.utils.find_buf_root")()
+--   require("telescope.builtin").find_files({
+--     find_command = { "rg", "--files", "--color", "never", "-g", "!.git", "--hidden" },
+--     cwd = buf_root
+--   })
+-- end, { desc = "[F]ind [F]iles buf root" })
 
 vim.keymap.set("n", "<leader>fc", function()
   require("telescope.builtin").find_files({
@@ -155,13 +155,13 @@ local inspekto_path_display = function(_, path)
   return path
 end
 
-vim.keymap.set("n", "<leader>if", function()
-  require("telescope.builtin").find_files({
-    find_command = { "rg", "--files", "--color", "never", "-g", "!.git", "--hidden" },
-    search_dirs = inspekto_filepaths,
-    path_display = inspekto_path_display,
-  })
-end, { desc = "[I]inspekto [F]iles" })
+-- vim.keymap.set("n", "<leader>if", function()
+--   require("telescope.builtin").find_files({
+--     find_command = { "rg", "--files", "--color", "never", "-g", "!.git", "--hidden" },
+--     search_dirs = inspekto_filepaths,
+--     path_display = inspekto_path_display,
+--   })
+-- end, { desc = "[I]inspekto [F]iles" })
 
 vim.keymap.set("n", "<leader>ig", function()
   require("telescope.builtin").live_grep({

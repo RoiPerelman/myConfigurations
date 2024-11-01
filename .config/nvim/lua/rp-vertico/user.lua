@@ -37,11 +37,17 @@ local inspekto_filepaths = {
   "~/inspekto/defect-detector",
 }
 
-vim.keymap.set("n", "<leader>rf", function()
+vim.keymap.set("n", "<leader>ff", function()
   rp_commands.find_files()
-end, { desc = "RP [F]ind [F]iles cwd" })
+end, { desc = "[F]ind [F]iles cwd" })
 
-vim.keymap.set("n", "<leader>rif", function()
+
+vim.keymap.set("n", "<leader>fF", function()
+  local buf_root = require("rp.utils.find_buf_root")()
+  rp_commands.find_files({ dirs = { buf_root } })
+end, { desc = "[F]ind [F]iles buf root" })
+
+vim.keymap.set("n", "<leader>if", function()
   rp_commands.find_files({ dirs = inspekto_filepaths })
 end, { desc = "RP [F]ind [F]iles cwd" })
 

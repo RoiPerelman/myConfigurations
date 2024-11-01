@@ -21,27 +21,21 @@ function M.preview_item(preview_win, item)
     return
   end
 
-  vim.notify('ROIROI BBB')
   if not (preview_win and vim.api.nvim_win_is_valid(preview_win)) or not item then
     vim.notify('rp-vertico preview_item bad params')
     return
   end
 
-  vim.notify('ROIROI CCC')
   if item.path then
     local norm_path = Utils.norm_path(item.path)
     local buffer_name = 'rp_preview:' .. norm_path
     local buffer = vim.fn.bufnr(buffer_name, false)
-    vim.notify('ROIROI CCD' .. tostring(buffer))
     if buffer == -1 then
       buffer = vim.api.nvim_create_buf(false, true) -- Create a scratch buffer
-      vim.notify('ROIROI DDD' .. tostring(buffer))
-      vim.notify('ROIROI DEE' .. tostring(norm_path))
 
       vim.api.nvim_buf_set_var(buffer, "is_rp_preview", true)
       vim.api.nvim_buf_set_name(buffer, buffer_name)
 
-      vim.notify('ROIROI EEE')
       -- Read file contents
       local file = io.open(norm_path, "r")
       if file then
@@ -55,7 +49,6 @@ function M.preview_item(preview_win, item)
         vim.notify("rp-vertico preview Failed to open file: " .. norm_path)
         return
       end
-      vim.notify('ROIROI FFF')
 
       local filetype = vim.filetype.match({ filename = norm_path })
       if filetype then
@@ -63,7 +56,6 @@ function M.preview_item(preview_win, item)
       end
     end
 
-    vim.notify('ROIROI GGG')
     vim.api.nvim_buf_call(buffer, function()
       -- center (zz) and open folds on line (zv)
       vim.cmd("norm! zz zv")
@@ -74,9 +66,7 @@ function M.preview_item(preview_win, item)
     --   vim.lsp.buf_detach_client(buffer, client.id)
     -- end
 
-    vim.notify('ROIROI HHH')
     vim.api.nvim_win_set_buf(preview_win, buffer)
-    vim.notify('ROIROI III')
     -- local pos = { entry.lnum, entry.col }
     -- local line_count = vim.api.nvim_buf_line_count(bufnr)
     -- pos[1] = math.min(pos[1], line_count)

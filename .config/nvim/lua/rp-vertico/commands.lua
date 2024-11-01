@@ -5,7 +5,7 @@ local Utils = require('rp-vertico.utils')
 local M = {}
 
 M.find_files = function(opts)
-  local command = function(cache, is_init)
+  local command = function(is_init, cache, draw_cb)
     if is_init then
       local command = { "rg", "--files", "--color", "never", "-g", "!.git", "--hidden" }
 
@@ -22,10 +22,12 @@ M.find_files = function(opts)
         local non_empty_lines = vim.tbl_filter(function(line) return line ~= "" end, lines)
         cache.items = vim.tbl_map(function(line) return { path = line, text = line } end, non_empty_lines)
         fzf.fzf_filter_sort(cache)
+        draw_cb()
       end)
     else
       vim.schedule(function()
         fzf.fzf_filter_sort(cache)
+        draw_cb()
       end)
     end
   end
