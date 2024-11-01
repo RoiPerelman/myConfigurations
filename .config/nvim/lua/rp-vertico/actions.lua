@@ -39,9 +39,9 @@ M.actions = {
     end
   end,
   cursor_down = function(cache)
-    if cache.cursor_line < #cache.indices - 1 then
+    if cache.cursor_line < #cache.indices then
       cache.cursor_line = cache.cursor_line + 1
-    elseif cache.cursor_line == #cache.indices - 1 then
+    elseif cache.cursor_line == #cache.indices then
       cache.cursor_line = 1
     end
   end,
@@ -49,8 +49,14 @@ M.actions = {
     if cache.cursor_line > 1 then
       cache.cursor_line = cache.cursor_line - 1
     elseif cache.cursor_line == 1 then
-      cache.cursor_line = #cache.indices - 1
+      cache.cursor_line = #cache.indices
     end
+  end,
+  cursor_start = function(cache)
+    cache.cursor_line = 1
+  end,
+  cursor_end = function(cache)
+    cache.cursor_line = #cache.indices
   end,
   delete_char = function(cache)
     if cache.caret > 1 then
@@ -60,6 +66,32 @@ M.actions = {
       -- Move the caret one step left
       cache.caret = cache.caret - 1
     end
+  end,
+  delete_char_forward = function(cache)
+    if cache.caret <= #cache.query then
+      table.remove(cache.query, cache.caret)
+      cache.query_update = true
+    end
+  end,
+  delete_word_forward = function(cache)
+    while cache.caret <= #cache.query and cache.query[cache.caret] == ' ' do
+      table.remove(cache.query, cache.caret)
+    end
+    while cache.caret <= #cache.query and cache.query[cache.caret] ~= ' ' do
+      table.remove(cache.query, cache.caret)
+    end
+    cache.query_update = true
+  end,
+  delete_word_backword = function(cache)
+    while cache.caret > 1 and cache.query[cache.caret - 1] == ' ' do
+      table.remove(cache.query, cache.caret - 1)
+      cache.caret = cache.caret - 1
+    end
+    while cache.caret > 1 and cache.query[cache.caret - 1] ~= ' ' do
+      table.remove(cache.query, cache.caret - 1)
+      cache.caret = cache.caret - 1
+    end
+    cache.query_update = true
   end,
   choose = function(cache, window)
     local window_target = window.alternate_window
@@ -83,6 +115,11 @@ M.actions_map = {
   ['<M-b>']     = M.actions.caret_word_backword,
   ['<M-f>']     = M.actions.caret_word_forward,
 
+  ['<C-n>']     = M.actions.cursor_down,
+  ['<C-p>']     = M.actions.cursor_up,
+  ['<M-n>']     = M.actions.cursor_end,
+  ['<M-p>']     = M.actions.cursor_start,
+
   ['<CR>']      = M.actions.choose,
   ['<C-s>']     = 'choose_in_split',
   ['<C-t>']     = 'choose_in_tabpage',
@@ -90,16 +127,12 @@ M.actions_map = {
   ['<M-CR>']    = 'choose_marked',
 
   ['<BS>']      = M.actions.delete_char,
-  ['<Del>']     = 'delete_char_right',
-  ['<C-u>']     = 'delete_left',
-  ['<C-w>']     = 'delete_word',
+  ['<C-d>']     = M.actions.delete_char_forward,
+  ['<M-BS>']    = M.actions.delete_word_backword,
+  ['<M-d>']     = M.actions.delete_word_forward,
 
   ['<C-x>']     = 'mark',
   -- ['<C-a>']     = 'mark_all',
-
-  ['<C-n>']     = M.actions.cursor_down,
-  ['<C-g>']     = 'move_start',
-  ['<C-p>']     = M.actions.cursor_up,
 
   ['<C-r>']     = 'paste',
 
