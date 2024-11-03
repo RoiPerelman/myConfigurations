@@ -38,16 +38,16 @@ local inspekto_filepaths = {
 }
 
 -- find files
-vim.keymap.set("n", "<leader>ff", function()
+vim.keymap.set("n", "<leader>rff", function()
   local buf_root = require("rp.utils.find_buf_root")()
   rp_commands.find_files({ dirs = { buf_root } })
 end, { desc = "[F]ind [F]iles buf root" })
 
-vim.keymap.set("n", "<leader>fF", function()
+vim.keymap.set("n", "<leader>rfF", function()
   rp_commands.find_files()
 end, { desc = "[F]ind [F]iles cwd" })
 
-vim.keymap.set("n", "<leader>if", function()
+vim.keymap.set("n", "<leader>rif", function()
   rp_commands.find_files({ dirs = inspekto_filepaths })
 end, { desc = "RP [F]ind [F]iles cwd" })
 

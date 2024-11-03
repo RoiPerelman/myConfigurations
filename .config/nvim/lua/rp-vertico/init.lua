@@ -108,13 +108,13 @@ H.draw = function()
   local caret = Cache.caret
 
   if cursor_line > Cache.visible_range.to then
-    Cache.visible_range.from = cursor_line - vim.api.nvim_win_get_height(Window.window) + 1
+    Cache.visible_range.from = cursor_line - vim.api.nvim_win_get_height(Window.window) + 2
     Cache.visible_range.to = cursor_line
   end
 
   if cursor_line < Cache.visible_range.from then
     Cache.visible_range.from = cursor_line
-    Cache.visible_range.to = cursor_line + vim.api.nvim_win_get_height(Window.window) - 1
+    Cache.visible_range.to = cursor_line + vim.api.nvim_win_get_height(Window.window) - 2
   end
 
   local range_from = Cache.visible_range.from
