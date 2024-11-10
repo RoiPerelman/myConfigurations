@@ -38,6 +38,7 @@ add({ source = "folke/ts-comments.nvim" })
 -- git
 add({ source = "tpope/vim-fugitive" })
 add({ source = "sindrets/diffview.nvim" })
+add({ source = "lewis6991/gitsigns.nvim" })
 -- telescope
 add({
   source = "nvim-telescope/telescope-fzf-native.nvim",
