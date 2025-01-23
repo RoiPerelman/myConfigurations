@@ -85,7 +85,7 @@ if command -v pyenv > /dev/null; then
   # virtualenv
   export WORKON_HOME=$HOME/.virtualenvs
   export VIRTUALENVWRAPPER_PYTHON=$(pyenv which python)
-  export VIRTUALENVWRAPPER_SCRIPT=/home/roip/.pyenv/versions/3.11.7/bin/virtualenvwrapper.sh
+  export VIRTUALENVWRAPPER_SCRIPT=/home/roip/.pyenv/versions/3.11.2/bin/virtualenvwrapper.sh
   [ -f $VIRTUALENVWRAPPER_SCRIPT ] && source $VIRTUALENVWRAPPER_SCRIPT
 fi
 

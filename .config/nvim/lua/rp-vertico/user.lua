@@ -17,26 +17,6 @@ rp_vertico.setup()
 
 -- rp_commands.find_files({ dirs = { '~/myConfigurations', '~/Other' } })
 
-local inspekto_filepaths = {
-  "~/inspekto/tinybox",
-  "~/inspekto/inspekto-os",
-  "~/inspekto/meta-inspekto",
-  "~/inspekto/fixi",
-  "~/inspekto/fixi-client",
-  "~/inspekto/tiny-database",
-  "~/inspekto/tiny-std",
-  "~/inspekto/common-std",
-  "~/inspekto/data-coordinator",
-  "~/inspekto/connectivity",
-  "~/inspekto/inspekto-agent",
-  "~/inspekto/integration-managers",
-  "~/inspekto/agc",
-  "~/inspekto/profile-center",
-  "~/inspekto/inspekto-agent",
-  "~/inspekto/defect-predictor",
-  "~/inspekto/defect-detector",
-}
-
 -- find files
 vim.keymap.set("n", "<leader>rff", function()
   local buf_root = require("rp.utils.find_buf_root")()
@@ -46,10 +26,6 @@ end, { desc = "[F]ind [F]iles buf root" })
 vim.keymap.set("n", "<leader>rfF", function()
   rp_commands.find_files()
 end, { desc = "[F]ind [F]iles cwd" })
-
-vim.keymap.set("n", "<leader>rif", function()
-  rp_commands.find_files({ dirs = inspekto_filepaths })
-end, { desc = "RP [F]ind [F]iles cwd" })
 
 -- commands.search_grep()
 --

@@ -15,6 +15,7 @@ later(function() require("rp/plugins/treesitter") end)
 later(function() require("ts-comments").setup() end)
 later(function() require("rp/plugins/telescope") end)
 later(function() require("rp/plugins/git") end)
+later(function() require("rp/plugins/oil") end)
 
 -- mini plugins!
 later(function() require("rp/plugins/mini/icons") end)
