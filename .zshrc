@@ -70,12 +70,6 @@ fi
 # zoxide
 eval "$(zoxide init --cmd j zsh)"
 
-# virtualenvwrapper
-if command -v virtualenvwrapper.sh &> /dev/null
-then
-    source virtualenvwrapper.sh
-fi
-
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
@@ -85,7 +79,7 @@ if command -v pyenv > /dev/null; then
   # virtualenv
   export WORKON_HOME=$HOME/.virtualenvs
   export VIRTUALENVWRAPPER_PYTHON=$(pyenv which python)
-  export VIRTUALENVWRAPPER_SCRIPT=/home/roip/.pyenv/versions/3.11.2/bin/virtualenvwrapper.sh
+  export VIRTUALENVWRAPPER_SCRIPT=$(pyenv which virtualenvwrapper.sh)
   [ -f $VIRTUALENVWRAPPER_SCRIPT ] && source $VIRTUALENVWRAPPER_SCRIPT
 fi
 
