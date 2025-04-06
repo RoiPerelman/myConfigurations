@@ -2,5 +2,7 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 
--- diable autoformat globally
-vim.g.autoformat = false -- globally
+vim.g.autoformat = false -- diable autoformat globally
+
+vim.opt.clipboard = "unnamedplus" -- always use the system clipboard
+
