@@ -1,5 +1,11 @@
 export ZSH="$HOME/.oh-my-zsh"
 
+# brew
+if [[ -f "/opt/homebrew/bin/brew" ]] then
+  # If you're using macOS, you'll want this enabled
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
 # load starship prompt
 eval "$(starship init zsh)"
 
@@ -57,12 +63,6 @@ export PATH=~/.local/bin:$PATH
 export EDITOR="nvim"
 export VISUAL="nvim"
 export MANPAGER='nvim +Man!'
-
-# brew
-if [[ -f "/opt/homebrew/bin/brew" ]] then
-  # If you're using macOS, you'll want this enabled
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
 
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
