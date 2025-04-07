@@ -5,8 +5,8 @@ gitsigns.setup()
 
 vim.keymap.set("n", "<Leader>gB", gitsigns.blame_line, { desc = "Git [B]lame" })
 
-vim.keymap.set("n", "]c", gitsigns.next_hunk, { desc = "Next [C]hange" })
-vim.keymap.set("n", "[c", gitsigns.prev_hunk, { desc = "Prev [C]hange" })
+vim.keymap.set("n", "]h", gitsigns.next_hunk, { desc = "Next [H]unk" })
+vim.keymap.set("n", "[h", gitsigns.prev_hunk, { desc = "Prev [H]unk" })
 
 vim.keymap.set("n", "<leader>hp", gitsigns.preview_hunk, { desc = "[H]unk [P]review" })
 vim.keymap.set("n", "<leader>hP", gitsigns.preview_hunk_inline, { desc = "[H]unk [P]review inline" })

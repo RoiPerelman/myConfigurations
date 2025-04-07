@@ -35,7 +35,8 @@ add({ source = "stevearc/oil.nvim" })
 add({ source = "alexghergh/nvim-tmux-navigation" })
 -- treesitter
 add({ source = "windwp/nvim-ts-autotag" })
-add({ source = "nvim-treesitter/nvim-treesitter" })
+add({ source = "nvim-treesitter/nvim-treesitter", hooks = { post_install = function() vim.cmd('TSUpdate') end } })
+add({ source = "nvim-treesitter/nvim-treesitter-textobjects" })
 add({ source = "folke/ts-comments.nvim" })
 -- git
 add({ source = "tpope/vim-fugitive" })

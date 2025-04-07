@@ -27,7 +27,6 @@ vim.opt.autowriteall = true -- autowrite so we can move buffers without errors
 vim.opt.updatetime = 250 -- Decrease update time
 -- vim.opt.timeoutlen = 300 -- Decrease mapped sequence wait time (displays which-key popup sooner)
 vim.opt.listchars = { trail = "·", tab = "→ ", nbsp = "␣", extends = "›", precedes = "‹" } -- how to show special chars space? →›‹»↲␣·•⟩⟨
-
 -- window options
 vim.opt.list = true -- show listchars
 vim.opt.number = true -- add number
@@ -38,11 +37,15 @@ vim.opt.signcolumn = "yes" -- add extra space to the left column for signs
 vim.opt.colorcolumn = "120" -- color a column at 90
 vim.opt.breakindent = true -- Enable break indent
 
--- buffer options
-vim.opt.undofile = true -- Save undo history
+-- use treesitter for folding
+vim.opt.foldenable = false
+vim.wo.foldmethod = 'expr'
+vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 
--- TODO: fix how to set option from lua vim api and not vim.cmd
-vim.cmd("set iskeyword+=-") -- treat dash separated words as a word text object
+-- buffer options
+vim.opt.undofile = true       -- Save undo history
+
+vim.opt.iskeyword:append("-") -- treat dash separated words as a word text object
 
 -- show full path in statusline
 vim.opt.statusline:append('%F')

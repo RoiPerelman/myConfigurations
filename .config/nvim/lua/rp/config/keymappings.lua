@@ -70,26 +70,6 @@ vim.keymap.set("v", "c", '"_c')
 vim.keymap.set("v", "C", '"_C')
 vim.keymap.set("x", "p", [["_dP"]])
 
--- -- highlights under cursor
--- vim.keymap.set("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
--- vim.keymap.set("n", "<leader>uI", "<cmd>InspectTree<cr>", { desc = "Inspect Tree" })
-
--- diagnostic
-local diagnostic_goto = function(next, severity)
-  local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
-  severity = severity and vim.diagnostic.severity[severity] or nil
-  return function()
-    go({ severity = severity })
-  end
-end
-vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
-vim.keymap.set("n", "]d", diagnostic_goto(true), { desc = "Next Diagnostic" })
-vim.keymap.set("n", "[d", diagnostic_goto(false), { desc = "Prev Diagnostic" })
-vim.keymap.set("n", "]e", diagnostic_goto(true, "ERROR"), { desc = "Next Error" })
-vim.keymap.set("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error" })
-vim.keymap.set("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })
-vim.keymap.set("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
-
 -- Function to toggle the specified window (quickfix or location list)
 local function toggle_window(window_type)
   local window_exists = false
@@ -135,11 +115,4 @@ vim.api.nvim_set_keymap(
   "<leader>l",
   ":ToggleLoclist<CR>",
   { noremap = true, silent = true, desc = "[L]ocalist Toggle" }
-)
-
-vim.api.nvim_set_keymap(
-  "n",
-  "<leader>e",
-  ":Ex<CR>",
-  { noremap = true, silent = true, desc = "[E]xplorer" }
 )

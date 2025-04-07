@@ -35,28 +35,48 @@ require("nvim-treesitter.configs").setup({
   auto_install = true,
   highlight = { enable = true },
   indent = { enable = true },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "<Enter>", -- set to `false` to disable one of the mappings
+      node_incremental = "<Enter>",
+      scope_incremental = false,
+      node_decremental = "<Backspace>",
+    },
+  },
   -- enable autotagging (w/ nvim-ts-autotag plugin)
   -- autotag = {
   --   enable = true,
   -- },
-  -- incremental_selection = {
-  --   enable = true,
-  --   keymaps = {
-  --     init_selection = "<C-space>",
-  --     node_incremental = "<C-space>",
-  --     scope_incremental = false,
-  --     node_decremental = "<bs>",
-  --   },
-  -- },
-  -- textobjects = {
-  --   move = {
-  --     enable = true,
-  --     goto_next_start = { ["]f"] = "@function.outer", ["]c"] = "@class.outer", ["]a"] = "@parameter.inner" },
-  --     goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer", ["]A"] = "@parameter.inner" },
-  --     goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer", ["[a"] = "@parameter.inner" },
-  --     goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer", ["[A"] = "@parameter.inner" },
-  --   },
-  -- },
+  textobjects = {
+    select = {
+      enable = true,
+      lookahead = true,
+      keymaps = {
+        ["af"] = { query = "@function.outer", desc = "[A]round [F]unction" },
+        ["if"] = { query = "@function.inner", desc = "[I]nside [F]unction" },
+        ["ac"] = { query = "@class.outer", desc = "[A]round [C]lass" },
+        ["ic"] = { query = "@class.inner", desc = "[I]nside  [C]lass" },
+      },
+      include_surrounding_whitespace = true,
+    },
+    move = {
+      enable = true,
+      goto_next_start = { ["]f"] = "@function.outer", ["]c"] = "@class.outer", ["]a"] = "@parameter.inner" },
+      goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer", ["]A"] = "@parameter.inner" },
+      goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer", ["[a"] = "@parameter.inner" },
+      goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer", ["[A"] = "@parameter.inner" },
+    },
+    swap = {
+      enable = true,
+      swap_next = {
+        ["<leader>a"] = "@parameter.inner",
+      },
+      swap_previous = {
+        ["<leader>A"] = "@parameter.inner",
+      },
+    },
+  },
 })
 
 require('nvim-ts-autotag').setup({})

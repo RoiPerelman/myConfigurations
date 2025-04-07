@@ -30,8 +30,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
     map("gO", require("telescope.builtin").lsp_document_symbols, "[G]oto Document [S]ymbols")
     map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-    map("<Leader>cn", vim.lsp.buf.rename, "[C]ode Re[N]ame")
-    map("<Leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
     map("K", vim.lsp.buf.hover, "Hover Do[K]umentation")
 
     map("g=", vim.lsp.buf.format, "[G]et [=]format lsp")
@@ -39,8 +37,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     -- Diagnostics
     vim.diagnostic.config({ virtual_text = false }) -- remove virtual text
-    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous [D]iagnostic message" })
-    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next [D]iagnostic message" })
     vim.keymap.set("n", "E", vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror messages" })
     -- vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
