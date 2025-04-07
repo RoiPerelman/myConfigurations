@@ -74,15 +74,6 @@ vim.keymap.set("x", "p", [["_dP"]])
 -- vim.keymap.set("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
 -- vim.keymap.set("n", "<leader>uI", "<cmd>InspectTree<cr>", { desc = "Inspect Tree" })
 
--- next prev key bindings
--- buffers
-vim.keymap.set("n", "]b", ":bnext<CR>")
-vim.keymap.set("n", "[b", ":bprevious<CR>")
--- quickfix and locallist
-vim.keymap.set("n", "]q", ":cnext<CR>")
-vim.keymap.set("n", "[q", ":cprev<CR>")
-vim.keymap.set("n", "]l", ":lnext<CR>")
-vim.keymap.set("n", "[l", ":lprev<CR>")
 -- diagnostic
 local diagnostic_goto = function(next, severity)
   local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev

@@ -25,10 +25,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
     end
     map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-    map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-    map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+    map("grr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+    map("gri", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
     map("gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
-    map("gs", require("telescope.builtin").lsp_document_symbols, "[G]oto Document [S]ymbols")
+    map("gO", require("telescope.builtin").lsp_document_symbols, "[G]oto Document [S]ymbols")
     map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
     map("<Leader>cn", vim.lsp.buf.rename, "[C]ode Re[N]ame")
     map("<Leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
@@ -50,6 +50,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
       return
     end
 
+    -- nvim v0.11 supports autocompletion - C-s to show signature
+    if client:supports_method('textDocument/completion') then
+      vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
+    end
 
     -- To know server capabilities, use (for example):
     -- :lua =vim.lsp.get_active_clients()[1].server_capabilities
