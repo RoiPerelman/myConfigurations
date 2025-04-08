@@ -72,6 +72,14 @@ add({
 add({
   source = "nvim-telescope/telescope.nvim",
 })
+-- blink
+add({
+  source = "saghen/blink.cmp",
+  depends = {
+    "rafamadriz/friendly-snippets",
+  },
+  checkout = "v1.1.1",
+})
 -- copilot start with :Copilot setup
 add({ source = "github/copilot.vim" })
 -- language server tools
