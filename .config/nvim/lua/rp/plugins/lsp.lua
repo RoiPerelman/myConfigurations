@@ -23,12 +23,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local map = function(keys, func, desc)
       vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
     end
-    map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-    map("grr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-    map("gri", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
-    map("gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
-    map("gO", require("telescope.builtin").lsp_document_symbols, "[G]oto Document [S]ymbols")
-    map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
     map("K", vim.lsp.buf.hover, "Hover Do[K]umentation")
 
     map("g=", vim.lsp.buf.format, "[G]et [=]format lsp")

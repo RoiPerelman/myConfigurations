@@ -38,6 +38,8 @@ add({ source = "windwp/nvim-ts-autotag" })
 add({ source = "nvim-treesitter/nvim-treesitter", hooks = { post_install = function() vim.cmd('TSUpdate') end } })
 add({ source = "nvim-treesitter/nvim-treesitter-textobjects" })
 add({ source = "folke/ts-comments.nvim" })
+-- snacks
+add({ source = "folke/snacks.nvim" })
 -- git
 add({ source = "tpope/vim-fugitive" })
 add({ source = "sindrets/diffview.nvim" })

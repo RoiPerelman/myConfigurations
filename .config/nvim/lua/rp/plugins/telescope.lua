@@ -71,6 +71,12 @@ vim.keymap.set("n", "<leader>fb", "<cmd>Telescope buffers sort_mru=true sort_las
   { desc = "[F]ind [B]uffers" })
 
 vim.keymap.set("n", "<leader>sg", require("telescope.builtin").live_grep, { desc = "[S]earch [G]rep" })
+vim.keymap.set("n", "<leader>sG", function()
+  local buf_root = require("rp.utils.find_buf_root")()
+  require("telescope.builtin").live_grep({
+    cwd = buf_root,
+  })
+end, { desc = "[S]earch [G]rep buf root" })
 vim.keymap.set("n", "<leader>sw", require("telescope.builtin").grep_string, { desc = "[S]earch [W]ord under cursor" })
 vim.keymap.set("n", "<leader>sx", function()
   require "telescope.builtin".grep_string({
@@ -91,3 +97,14 @@ vim.keymap.set("n", "<leader>sb", require("telescope.builtin").current_buffer_fu
 vim.keymap.set("n", "<leader>sc", require("telescope.builtin").command_history, { desc = "[S]earch [C]command history" })
 vim.keymap.set("n", "<leader>sC", require("telescope.builtin").commands, { desc = "[S]earch [C]commands" })
 vim.keymap.set("n", "<leader>so", require("telescope.builtin").vim_options, { desc = "[S]earch vim [O]ptions" })
+
+-- lsp
+local map = function(keys, func, desc)
+  vim.keymap.set("n", keys, func, { desc = "LSP: " .. desc })
+end
+map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+map("grr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+map("gri", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+map("gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
+map("gO", require("telescope.builtin").lsp_document_symbols, "[G]oto Document [S]ymbols")
+map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")

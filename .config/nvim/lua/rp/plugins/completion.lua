@@ -1,6 +1,6 @@
 require('blink.cmp').setup({
   sources = {
-    default = { "copilot", "lsp", "path", "snippets", "buffer", "lazydev" },
+    default = { "lsp", "path", "snippets", "buffer", "lazydev" },
     providers = {
       lazydev = {
         name = "LazyDev",

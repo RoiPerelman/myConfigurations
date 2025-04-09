@@ -9,11 +9,13 @@ require("rp-vertico/user")
 
 -- Configure plugins
 local now, later = MiniDeps.now, MiniDeps.later
+
 now(function() require("rp/colorscheme") end)
 now(function() require("rp/plugins/tmux") end)
+now(function() require("rp/plugins/snacks") end)
 later(function() require("rp/plugins/treesitter") end)
 later(function() require("ts-comments").setup() end)
-later(function() require("rp/plugins/telescope") end)
+-- later(function() require("rp/plugins/telescope") end)
 later(function() require("rp/plugins/git") end)
 later(function() require("rp/plugins/oil") end)
 later(function() require("rp/plugins/completion") end)
