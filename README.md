@@ -116,7 +116,7 @@ GIT_SSH_COMMAND='ssh -i ~/.ssh/id_ed25519_personal_github' git push
 
 ``` bash
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-ln -snf ~/myConfigurations/tmux/tmux.conf ~/.tmux.conf
+ln -snf ~/myConfigurations/tmux.conf ~/.tmux.conf
 ```
 
 ### fonts
