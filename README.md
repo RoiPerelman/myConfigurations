@@ -29,7 +29,7 @@ ln -snf ~/myConfigurations/.config/wezterm/wezterm.lua ~/.config/wezterm/wezterm
 ``` bash
 # prereq linux for nvim
 sudo apt update && sudo apt install cmake gettext
-sudo apt update && sudo apt install ripgrep fd-find xclip
+sudo apt update && sudo apt install ripgrep fd-find xclip imagemagick gs tectonic mmdc
 # ruff language server wants
 sudo apt update && sudo apt install python3-venv
 # other language servers need node
