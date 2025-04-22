@@ -9,4 +9,6 @@ html
 # But exclude these files from being ignored
 !.config/emacs/init.el
 !.config/emacs/rp-theme.el
+!.config/emacs/config.org
+!.config/emacs/config.el
 
