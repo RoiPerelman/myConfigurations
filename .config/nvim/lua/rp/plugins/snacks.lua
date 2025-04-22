@@ -1,18 +1,11 @@
 require('snacks').setup({
-<<<<<<< Updated upstream
-  picker = { enabled = true },
-  notifier = { enabled = true },
-  indent = {
-    enabled = true
-  },
-=======
   picker = {
     layouts = {
       select = require("snacks.picker.config.layouts").default
     }
   },
+  notifier = { enabled = true },
   indent = { enabled = true },
->>>>>>> Stashed changes
   zen = {
     toggles = {
       dim = false,
