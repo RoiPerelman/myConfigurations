@@ -1,5 +1,9 @@
 require('snacks').setup({
-  indent = { enabled = true },
+  picker = { enabled = true },
+  notifier = { enabled = true },
+  indent = {
+    enabled = true
+  },
   zen = {
     toggles = {
       dim = true,
@@ -39,10 +43,19 @@ function get_project_root()
 end
 
 -- files
-vim.keymap.set('n', '<leader>ff', function() Snacks.picker.smart() end, { desc = '[F]ind [F]iles cwd' })
-vim.keymap.set('n', '<leader>fF', function() Snacks.picker.smart({ cwd = get_project_root() }) end, { desc = '[F]ind [F]iles buf root' })
-vim.keymap.set('n', '<leader>fc', function() Snacks.picker.smart({ cwd = vim.fn.stdpath('config') }) end, { desc = '[F]ind [C]onfig files' })
-vim.keymap.set('n', '<leader>fC', function() Snacks.picker.smart({ cwd = MiniDeps.config.path.package }) end, { desc = "[F]ind [C]onfig's plugin files" })
+vim.keymap.set('n', '<leader><leader>', function()
+  Snacks.picker.smart({
+    layout = {
+      preview = "main",
+      preset = "ivy",
+      layout = { height = 15 }
+    }
+  })
+end, { desc = '[F]ind [F]iles cwd' })
+vim.keymap.set('n', '<leader>ff', function() Snacks.picker.files() end, { desc = '[F]ind [F]iles cwd' })
+vim.keymap.set('n', '<leader>fF', function() Snacks.picker.files({ cwd = get_project_root() }) end, { desc = '[F]ind [F]iles buf root' })
+vim.keymap.set('n', '<leader>fc', function() Snacks.picker.files({ cwd = vim.fn.stdpath('config') }) end, { desc = '[F]ind [C]onfig files' })
+vim.keymap.set('n', '<leader>fC', function() Snacks.picker.files({ cwd = MiniDeps.config.path.package }) end, { desc = "[F]ind [C]onfig's plugin files" })
 vim.keymap.set('n', '<leader>fr', function() Snacks.picker.recent() end, { desc = '[F]ind [R]ecent files' })
 vim.keymap.set('n', '<leader>fb', function() Snacks.picker.buffers() end, { desc = '[F]ind [B]uffers' })
 
