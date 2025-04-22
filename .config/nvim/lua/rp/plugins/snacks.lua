@@ -1,12 +1,21 @@
 require('snacks').setup({
+<<<<<<< Updated upstream
   picker = { enabled = true },
   notifier = { enabled = true },
   indent = {
     enabled = true
   },
+=======
+  picker = {
+    layouts = {
+      select = require("snacks.picker.config.layouts").default
+    }
+  },
+  indent = { enabled = true },
+>>>>>>> Stashed changes
   zen = {
     toggles = {
-      dim = true,
+      dim = false,
       git_signs = true,
       mini_diff_signs = true,
       diagnostics = true,
@@ -17,6 +26,8 @@ require('snacks').setup({
       backdrop = { transparent = false },
     }
   },
+  bigfile = { enabled = true },
+  quickfile = { enabled = true },
 })
 
 -- use snacks debug functions for easier debugging

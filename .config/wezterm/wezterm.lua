@@ -12,7 +12,7 @@ Config.font = wezterm.font("JetBrains Mono", { weight = "Bold" })
 Config.font_size = 13
 
 -- tab bar
-Config.hide_tab_bar_if_only_one_tab = false
+Config.hide_tab_bar_if_only_one_tab = true
 Config.tab_bar_at_bottom = true
 Config.use_fancy_tab_bar = false
 Config.tab_max_width = 25

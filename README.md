@@ -149,7 +149,7 @@ mkdir ~/Applications
 cd ~/Applications
 git clone https://git.savannah.gnu.org/git/emacs.git
 cd emacs
-git checkout emacs-29.3
+git checkout emacs-30.1
 sudo apt build-dep emacs
 ./autogen.sh
 ./configure --with-native-compilation=aot \
@@ -168,6 +168,9 @@ sudo apt build-dep emacs
 make
 make install
 ln -snf ~/myConfigurations/emacs ~/.config/emacs
+# for c-h i manuals to work
+make info
+sudo make install-info
 # to map caps lock to ctrl in debian
 ```
 
