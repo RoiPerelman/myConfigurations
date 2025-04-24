@@ -7,21 +7,29 @@
 
 * TABLE OF CONTENTS :toc:
 - [[#initialize-package-manager][Initialize Package Manager]]
-- [[#emacs-package-general-defaults][Emacs package general defaults]]
+- [[#sane-defaults][Sane defaults]]
+  - [[#general-settings][General Settings]]
+  - [[#line-numbers][line numbers]]
+  - [[#frame-management][Frame Management]]
+  - [[#no-littering][No Littering]]
+  - [[#mac-support][Mac support]]
+  - [[#isearch][Isearch]]
+  - [[#elec-pair][Elec Pair]]
+- [[#general-functions][General Functions]]
+- [[#general-keybinding][General Keybinding]]
+- [[#general-hooks][General Hooks]]
 - [[#all-the-icons][All the icons]]
 - [[#fonts][Fonts]]
 - [[#theme][Theme]]
-- [[#general-functions][General-Functions]]
-- [[#general-keybinding][General-Keybinding]]
-- [[#general-hooks][General-Hooks]]
-- [[#isearch][Isearch]]
+- [[#treesitter][Treesitter]]
 - [[#syntax-subword][Syntax Subword]]
 - [[#minibuffer-completions][Minibuffer-Completions]]
-- [[#org-mode][Org-Mode]]
+- [[#org-mode][Org Mode]]
 - [[#sudo][Sudo]]
 - [[#undo-tree][Undo Tree]]
-- [[#elec-pair][Elec Pair]]
-- [[#rainbow][Rainbow]]
+- [[#rainbow-delimiters][Rainbow Delimiters]]
+- [[#rainbow-colors][Rainbow colors]]
+- [[#copilot][Copilot]]
 
 * Initialize Package Manager
 
@@ -34,91 +42,215 @@
     (package-refresh-contents))
 #+end_src
 
-* Emacs package general defaults
+* Sane defaults
+
+** General Settings
 
 #+begin_src emacs-lisp
   (use-package emacs
+    :ensure nil
     :init
-    ;; Disable startup message
-    (setq inhibit-startup-screen t)
-    ;; Disable annoying noisy bell
-    (setq ring-bell-function 'ignore)
-    ;; Disable visible scrollbar
-    (scroll-bar-mode -1)
-    ;; Disable the toolbar
-    (tool-bar-mode -1)
-    ;; Disable tooltips
-    (tooltip-mode -1)
-    ;; Disable the menu bar
-    (menu-bar-mode -1)
-    ;; Add some space to lines
-    (set-fringe-mode 5)
-    ;; Highlight current line
-    (global-hl-line-mode t)
-    ;; Automatically update buffers if file content on the disk has changed.
-    (global-auto-revert-mode t)
-    ;; automatically delete selected text without backspace
-    (delete-selection-mode 1)
-    ;; Change all yes/no questions to y/n type (fset 'yes-or-no-p 'y-or-n-p)
-    (setq use-short-answers t)
-    ;; for dired
-    (setq dired-dwim-target t)
+    (setq inhibit-startup-screen t) 	; Disable startup message
+    (setq ring-bell-function 'ignore)	; Disable annoying noisy bell
+    (scroll-bar-mode -1)			; Disable visible scrollbar
+    (tool-bar-mode -1)			; Disable the toolbar
+    (tooltip-mode -1)			; Disable tooltips
+    (menu-bar-mode -1)			; Disable the menu bar
+    (set-fringe-mode 5)			; Add some space to lines
+    (global-hl-line-mode t)		        ; Highlight current line
+    (global-auto-revert-mode t)             ; Automatically update buffers if file changes on disk
+    (delete-selection-mode 1)               ; Automatically delete selected text without backspace
+    (setq use-short-answers t)		; Use y/n instead of yes/no
+    (setq dired-dwim-target t)              ; Enable smarter target suggestion in dired
+    )
+  #+end_src
 
-    ;; Show line numbers
-    (global-display-line-numbers-mode 1)
-    ;; Show column as well as line number in bottom line
-    (column-number-mode 1)
+** line numbers
+
+#+begin_src emacs-lisp
+  (use-package emacs
+    :ensure nil
+    :init
+    (global-display-line-numbers-mode 1)	; Show line numbers
+    (column-number-mode 1)                  ; Show column as well as line number in bottom line
+
     ;; Disable line numbers for some modes
     (dolist (mode '(
-    		org-mode-hook
-    		term-mode-hook
-    		shell-mode-hook
-    		eshell-mode-hook
-    		vterm-mode-hook
-    		))
-    (add-hook mode (lambda () (display-line-numbers-mode 0))))
+      		  org-mode-hook
+      		  term-mode-hook
+      		  shell-mode-hook
+      		  eshell-mode-hook
+      		  vterm-mode-hook
+      		  ))
+      (add-hook mode (lambda () (display-line-numbers-mode 0))))
+    )
+#+end_src
+
+** Frame Management
+
+#+begin_src emacs-lisp
+  (use-package emacs
+    :ensure nil
+    :init
+    ;; make sure we start emacs fullscreen and maximized
+    (set-frame-parameter (selected-frame) 'fullscreen 'maximized)	; sets initial frame
+    (add-to-list 'default-frame-alist '(fullscreen . maximized))    ; sets next frames
+    )
+#+end_src
+
+** No Littering
+
+#+begin_src emacs-lisp
+  (use-package emacs
+    :ensure nil
+    :init
+    (setq custom-file (concat user-emacs-directory "custom.el")) ; set custom file - so things wont be added in this file
+    (load custom-file 'noerror)
+
+    ;; set backup directory (Use copying to avoid symlinks)
+    (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
+          backup-by-copying t
+          delete-old-versions t
+          kept-new-versions 6
+          kept-old-versions 2
+          version-control t)
+    (setq auto-save-file-name-transforms
+          `((".*" ,(concat user-emacs-directory "saves") t)))
+    )
+#+end_src
+
+** Mac support
+
+#+begin_src emacs-lisp
+  (use-package emacs
+    :ensure nil
+    :init
     (when (eq system-type 'darwin)
       ;; Change meta from option to command key
       (setq mac-option-key-is-meta nil
             mac-command-key-is-meta t
             mac-command-modifier 'meta
             mac-option-modifier 'none))
-      (use-package exec-path-from-shell
-        :if (memq window-system '(mac ns x))
-        :ensure t
-        :config
-        (exec-path-from-shell-initialize))
 
-    ;; make sure we start emacs fullscreen and maximized
-    ;; sets initial frame
-    (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-    ;; sets next frames
-    (add-to-list 'default-frame-alist '(fullscreen . maximized))
-
-    ;;; ───────────────────────── 'No-littering' ────────────────────────
-    ;; set custom file - so things wont be added in this file
-    (setq custom-file (concat user-emacs-directory "custom.el"))
-    (load custom-file 'noerror)
-
-    ;; set backup directory (Use copying to avoid symlinks)
-    (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
-  	  backup-by-copying t
-  	  delete-old-versions t
-  	  kept-new-versions 6
-  	  kept-old-versions 2
-  	  version-control t)
-    (setq auto-save-file-name-transforms
-  	`((".*" ,(concat user-emacs-directory "saves") t)))
-  )
+    ;; make it so starting emacs as an app, actually use the shell for env variables
+    (use-package exec-path-from-shell
+      :if (memq window-system '(mac ns x))
+      :ensure t
+      :config
+      (exec-path-from-shell-initialize))
+    )
 #+end_src
 
+** Isearch
+
+#+begin_src emacs-lisp
+  ;; update isearch functionality
+  (use-package isearch
+    :ensure nil
+    :defer t
+    :config
+    (setq isearch-lazy-count t)	   ; adds a counter eg 4/34 to isearch
+    ;; use selection to search (https://www.reddit.com/r/emacs/comments/2amn1v/comment/cixq7zx/)
+    (defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
+      (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+          (progn
+            (isearch-update-ring (buffer-substring-no-properties (mark) (point)))
+            (deactivate-mark)
+            ad-do-it
+            (if (not forward)
+                (isearch-repeat-backward)
+              (goto-char (mark))
+              (isearch-repeat-forward)))
+        ad-do-it))
+    ;; push isearch search to project-find-regexp (C-x p g)
+    (defun isearch-rp-project ()
+      (interactive)
+      (let ((query (if isearch-regexp
+  		     isearch-string
+  		   (regexp-quote isearch-string))))
+        (isearch-update-ring isearch-string isearch-regexp)
+        (let (search-nonincremental-instead)
+          (ignore-errors (isearch-done t t)))
+        (project-find-regexp query)))
+    (defun isearch-rp-consult-line ()
+      "Invoke `consult-line' from isearch."
+      (interactive)
+      (let ((query (if isearch-regexp
+  		     isearch-string
+  		   (regexp-quote isearch-string))))
+        (isearch-update-ring isearch-string isearch-regexp)
+        (let (search-nonincremental-instead)
+          (ignore-errors (isearch-done t t)))
+        (consult-line query)))
+    :bind
+    (:map isearch-mode-map
+  	("M-o" . isearch-occur)
+          ("M-p" . isearch-rp-project)
+  	("M-." . isearch-forward-thing-at-point)
+  	("M-l" . isearch-rp-consult-line)
+  	;; ("C-j" . avy-isearch)
+  	)
+    )
+#+end_src
+
+** Elec Pair
+
+#+begin_src emacs-lisp
+  (use-package elec-pair
+    :ensure nil
+    :config
+    (electric-pair-mode 1))
+#+end_src
+
+* General Functions
+
+#+begin_src emacs-lisp
+(defun toggle-comment-on-line-or-region ()
+  "Toggle comment on the current line or active region."
+  (interactive)
+  (if (use-region-p)
+      (comment-or-uncomment-region (region-beginning) (region-end))
+    (comment-or-uncomment-region (line-beginning-position) (line-end-position))))
+#+end_src
+
+* General Keybinding
+
+#+begin_src emacs-lisp
+  (use-package emacs
+    :ensure nil
+    :init
+    ;; Set up keybindings for config workflow
+    (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ; Make esc work like C-g
+    (global-set-key (kbd "M-o") 'other-window)              ; `C-x o' is a 2 step key binding. `M-o' is much easier.
+    (global-set-key (kbd "C-;") 'toggle-comment-on-line)
+    (global-set-key (kbd "M-k") 'kill-current-buffer)
+
+    ;; zoom in and out
+    (global-set-key (kbd "C-=") 'text-scale-increase)
+    (global-set-key (kbd "C--") 'text-scale-decrease)
+    (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
+    (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
+
+    ;; config management
+    (global-set-key (kbd "M-s M-r")
+      (lambda () (interactive) (load-file "~/.config/emacs/init.el")))
+    (global-set-key (kbd "M-s M-c")
+      (lambda () (interactive) (find-file "~/.config/emacs/config.org")))
+    )
+#+end_src
+
+* General Hooks
+
+#+begin_src emacs-lisp
+  (add-hook 'before-save-hook 'delete-trailing-whitespace) ; Delete whitespace just when a file is saved.
+#+end_src
 
 * All the icons
 
 #+begin_src emacs-lisp
-(use-package all-the-icons)
-(use-package all-the-icons-completion)
-(use-package all-the-icons-dired)
+  (use-package all-the-icons :ensure t)
+  (use-package all-the-icons-completion :ensure t)
+  (use-package all-the-icons-dired :ensure t)
 #+end_src
 
 * Fonts
@@ -164,100 +296,41 @@
     :config (load-theme 'modus-vivendi))
 #+end_src
 
-* General-Functions
+* Treesitter
+
+Use M-x treesit-install-language-grammer to install grammers manually in case of issues
 
 #+begin_src emacs-lisp
-  (defun toggle-comment-on-line ()
-    "Comment or uncomment current line."
-    (interactive)
-    (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
-#+end_src
-
-* General-Keybinding
-#+begin_src emacs-lisp
-  (use-package emacs
-    :init
-    ;; Set up keybindings for config workflow
-    ;; Make esc work like C-g
-    (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-    ;; `C-x o' is a 2 step key binding. `M-o' is much easier.
-    (global-set-key (kbd "M-o") 'other-window)
-    (global-set-key (kbd "C-;") 'toggle-comment-on-line)
-    (global-set-key (kbd "M-k") 'kill-current-buffer)
-
-    ;; zoom in and out
-    (global-set-key (kbd "C-=") 'text-scale-increase)
-    (global-set-key (kbd "C--") 'text-scale-decrease)
-    (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
-    (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
-
-    (global-set-key (kbd "M-s M-r")
-      (lambda () (interactive) (load-file "~/.config/emacs/init.el")))
-    (global-set-key (kbd "M-s M-c")
-      (lambda () (interactive) (find-file "~/.config/emacs/config.org")))
+  (use-package treesit
+    :ensure nil
+    :config
+    (setq treesit-font-lock-level 4)
+    (add-to-list 'treesit-language-source-alist '(python "https://github.com/tree-sitter/tree-sitter-python"))
+    (add-to-list 'treesit-language-source-alist '(javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+    (add-to-list 'treesit-language-source-alist '(typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+    (add-to-list 'treesit-language-source-alist '(tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+    (add-to-list 'treesit-language-source-alist '(html "https://github.com/tree-sitter/tree-sitter-html"))
+    (add-to-list 'treesit-language-source-alist '(css "https://github.com/tree-sitter/tree-sitter-css"))
+    (add-to-list 'treesit-language-source-alist '(elisp "https://github.com/Wilfred/tree-sitter-elisp"))
+    (add-to-list 'treesit-language-source-alist '(bash "https://github.com/tree-sitter/tree-sitter-bash"))
+    (add-to-list 'treesit-language-source-alist '(make "https://github.com/alemuller/tree-sitter-make"))
+    (add-to-list 'treesit-language-source-alist '(dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile" "main" "src"))
+    (add-to-list 'treesit-language-source-alist '(json "https://github.com/tree-sitter/tree-sitter-json"))
+    (add-to-list 'treesit-language-source-alist '(toml "https://github.com/tree-sitter/tree-sitter-toml"))
+    (add-to-list 'treesit-language-source-alist '(yaml "https://github.com/ikatyang/tree-sitter-yaml"))
+    (add-to-list 'treesit-language-source-alist '(cmake "https://github.com/uyha/tree-sitter-cmake"))
+    (use-package markdown-ts-mode
+      :ensure t
+      :mode ("\\.md\\'" . markdown-ts-mode)
+      :defer 't
+      :config
+      (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown/src"))
+      (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown-inline/src"))
+      )
+    (dolist (source treesit-language-source-alist)
+      (unless (treesit-ready-p (car source))
+        (treesit-install-language-grammar (car source))))
     )
-#+end_src
-
-* General-Hooks
-#+begin_src emacs-lisp
-  ;; Delete whitespace just when a file is saved.
-  (add-hook 'before-save-hook 'delete-trailing-whitespace)
-#+end_src
-
-* Isearch
-
-#+begin_src emacs-lisp
-;; update isearch functionality
-(use-package isearch
-  :ensure nil
-  :defer t
-  :config
-  ;; adds a counter eg 4/34 to isearch
-  (setq isearch-lazy-count t)
-  ;; change isearch space literal to non greedy regex (this acts weird, doesn't mark the whole area)
-  ;; (setq search-whitespace-regexp "*.?")
-
-  ;; use selection to search (https://www.reddit.com/r/emacs/comments/2amn1v/comment/cixq7zx/)
-  (defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
-    (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
-        (progn
-          (isearch-update-ring (buffer-substring-no-properties (mark) (point)))
-          (deactivate-mark)
-          ad-do-it
-          (if (not forward)
-              (isearch-repeat-backward)
-            (goto-char (mark))
-            (isearch-repeat-forward)))
-      ad-do-it))
-  ;; push isearch search to porject-find-regexp (C-x p g)
-  (defun isearch-rp-project ()
-    (interactive)
-    (let ((query (if isearch-regexp
-		     isearch-string
-		   (regexp-quote isearch-string))))
-      (isearch-update-ring isearch-string isearch-regexp)
-      (let (search-nonincremental-instead)
-        (ignore-errors (isearch-done t t)))
-      (project-find-regexp query)))
-  (defun isearch-rp-consult-line ()
-    "Invoke `consult-line' from isearch."
-    (interactive)
-    (let ((query (if isearch-regexp
-		     isearch-string
-		   (regexp-quote isearch-string))))
-      (isearch-update-ring isearch-string isearch-regexp)
-      (let (search-nonincremental-instead)
-        (ignore-errors (isearch-done t t)))
-      (consult-line query)))
-  :bind
-  (:map isearch-mode-map
-	("M-o" . isearch-occur)
-        ("M-p" . isearch-rp-project)
-	("M-." . isearch-forward-thing-at-point)
-	("M-l" . isearch-rp-consult-line)
-	;; ("C-j" . avy-isearch)
-	)
-  )
 #+end_src
 
 * Syntax Subword
@@ -265,9 +338,11 @@
 make us go (or delete) forward and backwards better
 
 #+begin_src emacs-lisp
-(use-package syntax-subword
-  :config (global-syntax-subword-mode))
+  (use-package syntax-subword
+    :ensure t
+    :config (global-syntax-subword-mode))
 #+end_src
+
 
 * Minibuffer-Completions
 
@@ -279,6 +354,7 @@ make us go (or delete) forward and backwards better
 
   ;; Adds out-of-order pattern matching algorithm
   (use-package orderless
+    :ensure t
     :config
     (setq completion-styles '(orderless basic)))
 
@@ -303,6 +379,7 @@ make us go (or delete) forward and backwards better
   ;; Gives previews for current item
   ;; binds M-s as opposed to native C-s C-r
   (use-package consult
+    :ensure t
     :bind (;; A recursive grep
            ("M-s M-g" . consult-ripgrep)
   	 ("M-s M-G" . consult-grep)
@@ -332,10 +409,11 @@ make us go (or delete) forward and backwards better
   	  (apply (if vertico-mode
   		     #'consult-completion-in-region
   		   #'completion--in-region)
-  		 args)))
+  		 args))))
 
   ;; adds actions for current item
   (use-package embark
+    :ensure t
     :bind (("C-." . embark-act)
            :map minibuffer-local-map
            ("C-c C-c" . embark-collect)
@@ -343,18 +421,20 @@ make us go (or delete) forward and backwards better
 
   ;; adds embark actions to consult functions
   (use-package embark-consult
+    :ensure t
     :hook (embark-collect-mode . consult-preview-at-point-mode))
 
   ;; edit the results of a grep search  while inside a `grep-mode' buffer.
   ;; toggle editable mode, make changes, type C-c C-c to confirm | C-c C-k to abort.
   (use-package wgrep
+    :ensure t
     :bind ( :map grep-mode-map
             ("e" . wgrep-change-to-wgrep-mode)
             ("C-x C-q" . wgrep-change-to-wgrep-mode)
             ("C-c C-c" . wgrep-finish-edit)))
 #+end_src
 
-* Org-Mode
+* Org Mode
 
 #+begin_src emacs-lisp
     (use-package toc-org
@@ -374,41 +454,63 @@ make us go (or delete) forward and backwards better
 
 * Sudo
 #+begin_src emacs-lisp
-(use-package sudo-edit
-  :ensure t
-  :config
-  (global-set-key (kbd "C-c f u") #'sudo-edit-find-file)
-  (global-set-key (kbd "C-c f U") #'sudo-edit))
+  (use-package sudo-edit
+    :ensure t
+    :config
+    (global-set-key (kbd "C-c f u") #'sudo-edit-find-file)
+    (global-set-key (kbd "C-c f U") #'sudo-edit))
 #+end_src
 
 * Undo Tree
 
 #+begin_src emacs-lisp
-(use-package undo-tree
-  :init
-  (global-undo-tree-mode)
-  :config
-  (setq undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "undo")))))
+  (use-package undo-tree
+    :ensure t
+    :init
+    (global-undo-tree-mode)
+    :config
+    (setq undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "undo")))))
 #+end_src
 
-* Elec Pair
+* Rainbow Delimiters
 
 #+begin_src emacs-lisp
-(use-package elec-pair
-  :ensure nil
-  :config
-  (electric-pair-mode 1))
+  ;; adds colors to delimiters
+  (use-package rainbow-delimiters
+    :ensure t
+    :hook
+    (prog-mode . rainbow-delimiters-mode)
+    :config
+    (rainbow-delimiters-mode 1))
 #+end_src
 
-* Rainbow
+* Rainbow colors
 
 #+begin_src emacs-lisp
-;; adds colors to delimiters
-(use-package rainbow-delimiters
-  :hook
-  (prog-mode . rainbow-delimiters-mode)
-  :config
-  (rainbow-delimiters-mode 1))
-;; adds colors to color indications e.g #fff000
-(use-package rainbow-mode)
+
+  ;; adds colors to color indications e.g #fff000
+  (use-package rainbow-mode :ensure t)
+#+end_src
+
+* Copilot
+
+#+begin_src emacs-lisp
+  ;; M-x copilot-install-server
+  ;; M-x copilot-login
+  (use-package copilot
+    :ensure nil
+    :vc (:url "https://github.com/copilot-emacs/copilot.el" :branch "main")
+    :init
+    (use-package dash :ensure t)
+    (use-package s :ensure t)
+    (use-package editorconfig :ensure t)
+    (use-package f :ensure t)
+    :bind (:map copilot-completion-map
+                ("<tab>" . copilot-accept-completion)
+                ("TAB" . copilot-accept-completion))
+    :hook (prog-mode . copilot-mode)
+    :config
+    (setq copilot-max-char -1)
+    (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode . 2))
+    (add-to-list 'copilot-indentation-alist '(org-mode . 2)))
 #+end_src
