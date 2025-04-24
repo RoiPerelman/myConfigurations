@@ -51,6 +51,11 @@
           mac-command-key-is-meta t
           mac-command-modifier 'meta
           mac-option-modifier 'none))
+    (use-package exec-path-from-shell
+      :if (memq window-system '(mac ns x))
+      :ensure t
+      :config
+      (exec-path-from-shell-initialize))
 
   ;; make sure we start emacs fullscreen and maximized
   ;; sets initial frame
@@ -139,6 +144,61 @@
 
 ;; Delete whitespace just when a file is saved.
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; update isearch functionality
+(use-package isearch
+  :ensure nil
+  :defer t
+  :config
+  ;; adds a counter eg 4/34 to isearch
+  (setq isearch-lazy-count t)
+  ;; change isearch space literal to non greedy regex (this acts weird, doesn't mark the whole area)
+  ;; (setq search-whitespace-regexp "*.?")
+
+  ;; use selection to search (https://www.reddit.com/r/emacs/comments/2amn1v/comment/cixq7zx/)
+  (defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
+    (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+        (progn
+          (isearch-update-ring (buffer-substring-no-properties (mark) (point)))
+          (deactivate-mark)
+          ad-do-it
+          (if (not forward)
+              (isearch-repeat-backward)
+            (goto-char (mark))
+            (isearch-repeat-forward)))
+      ad-do-it))
+  ;; push isearch search to porject-find-regexp (C-x p g)
+  (defun isearch-rp-project ()
+    (interactive)
+    (let ((query (if isearch-regexp
+		     isearch-string
+		   (regexp-quote isearch-string))))
+      (isearch-update-ring isearch-string isearch-regexp)
+      (let (search-nonincremental-instead)
+        (ignore-errors (isearch-done t t)))
+      (project-find-regexp query)))
+  (defun isearch-rp-consult-line ()
+    "Invoke `consult-line' from isearch."
+    (interactive)
+    (let ((query (if isearch-regexp
+		     isearch-string
+		   (regexp-quote isearch-string))))
+      (isearch-update-ring isearch-string isearch-regexp)
+      (let (search-nonincremental-instead)
+        (ignore-errors (isearch-done t t)))
+      (consult-line query)))
+  :bind
+  (:map isearch-mode-map
+	("M-o" . isearch-occur)
+        ("M-p" . isearch-rp-project)
+	("M-." . isearch-forward-thing-at-point)
+	("M-l" . isearch-rp-consult-line)
+	;; ("C-j" . avy-isearch)
+	)
+  )
+
+(use-package syntax-subword
+  :config (global-syntax-subword-mode))
 
 ;; save minibuffer histories. Vertico uses to put recently selected options at the top.
 (savehist-mode 1)

@@ -1,25 +1,31 @@
 #+TITLE: RP's GNU Emacs Config
 #+AUTHOR: Roi Perelman
 #+DESCRIPTION: RP's personal emacs config
+#+PROPERTY: header-args:emacs-lisp :tangle yes
 #+STARTUP: showeverything
 #+OPTIONS: toc:2
 
 * TABLE OF CONTENTS :toc:
-- [[#base-configurations][Base Configurations]]
-  - [[#initialize-package-manager][Initialize Package Manager]]
-  - [[#emacs-package-general-defaults][Emacs package general defaults]]
-  - [[#fonts][Fonts]]
-  - [[#theme][Theme]]
-  - [[#general-functions][General-Functions]]
-  - [[#general-keybinding][General-Keybinding]]
-  - [[#general-hooks][General-Hooks]]
-  - [[#packages][Packages]]
+- [[#initialize-package-manager][Initialize Package Manager]]
+- [[#emacs-package-general-defaults][Emacs package general defaults]]
+- [[#all-the-icons][All the icons]]
+- [[#fonts][Fonts]]
+- [[#theme][Theme]]
+- [[#general-functions][General-Functions]]
+- [[#general-keybinding][General-Keybinding]]
+- [[#general-hooks][General-Hooks]]
+- [[#isearch][Isearch]]
+- [[#syntax-subword][Syntax Subword]]
+- [[#minibuffer-completions][Minibuffer-Completions]]
+- [[#org-mode][Org-Mode]]
+- [[#sudo][Sudo]]
+- [[#undo-tree][Undo Tree]]
+- [[#elec-pair][Elec Pair]]
+- [[#rainbow][Rainbow]]
 
-* Base Configurations
+* Initialize Package Manager
 
-** Initialize Package Manager
-
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (require 'package)
   ;; to make sure we are up to date (package-refresh-contents)
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -28,9 +34,9 @@
     (package-refresh-contents))
 #+end_src
 
-** Emacs package general defaults
+* Emacs package general defaults
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (use-package emacs
     :init
     ;; Disable startup message
@@ -77,6 +83,11 @@
             mac-command-key-is-meta t
             mac-command-modifier 'meta
             mac-option-modifier 'none))
+      (use-package exec-path-from-shell
+        :if (memq window-system '(mac ns x))
+        :ensure t
+        :config
+        (exec-path-from-shell-initialize))
 
     ;; make sure we start emacs fullscreen and maximized
     ;; sets initial frame
@@ -101,8 +112,17 @@
   )
 #+end_src
 
-** Fonts
-#+begin_src emacs-lisp :tangle yes
+
+* All the icons
+
+#+begin_src emacs-lisp
+(use-package all-the-icons)
+(use-package all-the-icons-completion)
+(use-package all-the-icons-dired)
+#+end_src
+
+* Fonts
+#+begin_src emacs-lisp
   ;; (set-face-attribute 'variable-pitch nil
   ;; 		    :family "Ubuntu"
   ;; 		    :weight 'semi-bold
@@ -122,9 +142,9 @@
   ;; (set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
 #+end_src
 
-** Theme
+* Theme
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   ;; to see colors M-x modus-themes-list-colors-current
   ;; to see original palette C-h f Modus-vivendi-palette
   ;; to see character info under the point - M-x describe-char
@@ -144,17 +164,17 @@
     :config (load-theme 'modus-vivendi))
 #+end_src
 
-** General-Functions
+* General-Functions
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (defun toggle-comment-on-line ()
     "Comment or uncomment current line."
     (interactive)
     (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
 #+end_src
 
-** General-Keybinding
-#+begin_src emacs-lisp :tangle yes
+* General-Keybinding
+#+begin_src emacs-lisp
   (use-package emacs
     :init
     ;; Set up keybindings for config workflow
@@ -178,21 +198,90 @@
     )
 #+end_src
 
-** General-Hooks
-#+begin_src emacs-lisp :tangle yes
+* General-Hooks
+#+begin_src emacs-lisp
   ;; Delete whitespace just when a file is saved.
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
 #+end_src
 
-** Packages
+* Isearch
 
-*** Minibuffer-Completions
+#+begin_src emacs-lisp
+;; update isearch functionality
+(use-package isearch
+  :ensure nil
+  :defer t
+  :config
+  ;; adds a counter eg 4/34 to isearch
+  (setq isearch-lazy-count t)
+  ;; change isearch space literal to non greedy regex (this acts weird, doesn't mark the whole area)
+  ;; (setq search-whitespace-regexp "*.?")
 
-#+begin_src emacs-lisp :tangle yes
+  ;; use selection to search (https://www.reddit.com/r/emacs/comments/2amn1v/comment/cixq7zx/)
+  (defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
+    (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+        (progn
+          (isearch-update-ring (buffer-substring-no-properties (mark) (point)))
+          (deactivate-mark)
+          ad-do-it
+          (if (not forward)
+              (isearch-repeat-backward)
+            (goto-char (mark))
+            (isearch-repeat-forward)))
+      ad-do-it))
+  ;; push isearch search to porject-find-regexp (C-x p g)
+  (defun isearch-rp-project ()
+    (interactive)
+    (let ((query (if isearch-regexp
+		     isearch-string
+		   (regexp-quote isearch-string))))
+      (isearch-update-ring isearch-string isearch-regexp)
+      (let (search-nonincremental-instead)
+        (ignore-errors (isearch-done t t)))
+      (project-find-regexp query)))
+  (defun isearch-rp-consult-line ()
+    "Invoke `consult-line' from isearch."
+    (interactive)
+    (let ((query (if isearch-regexp
+		     isearch-string
+		   (regexp-quote isearch-string))))
+      (isearch-update-ring isearch-string isearch-regexp)
+      (let (search-nonincremental-instead)
+        (ignore-errors (isearch-done t t)))
+      (consult-line query)))
+  :bind
+  (:map isearch-mode-map
+	("M-o" . isearch-occur)
+        ("M-p" . isearch-rp-project)
+	("M-." . isearch-forward-thing-at-point)
+	("M-l" . isearch-rp-consult-line)
+	;; ("C-j" . avy-isearch)
+	)
+  )
+#+end_src
+
+* Syntax Subword
+
+make us go (or delete) forward and backwards better
+
+#+begin_src emacs-lisp
+(use-package syntax-subword
+  :config (global-syntax-subword-mode))
+#+end_src
+
+* Minibuffer-Completions
+
+#+begin_src emacs-lisp
   ;; save minibuffer histories. Vertico uses to put recently selected options at the top.
   (savehist-mode 1)
   ;; save recently visited files. Consult uses it to put recent files options at the top.
   (recentf-mode 1)
+
+  ;; Adds out-of-order pattern matching algorithm
+  (use-package orderless
+    :config
+    (setq completion-styles '(orderless basic)))
+
   ;; Minibuffer live ui
   (use-package vertico
     :ensure t
@@ -245,27 +334,6 @@
   		   #'completion--in-region)
   		 args)))
 
-    (defvar consult-rp-project-files-source
-      (list :name     "Project Files"
-            :category 'file
-            :narrow   ?p
-            :face     'consult-file
-            :history  'file-name-history
-            :state    #'consult--file-state
-  	  ;; :action   ,(lambda (file)
-  	  ;; 	       (consult--file-action
-  	  ;; 		(expand-file-name file (project-root (project-current)))))
-            :items
-  	  ;; TODO: shorten the name and color me different
-  	  (lambda ()
-  	    (when-let* ((project (project-current))
-  			(root (project-root project)))
-  	      ;; (mapcar (lambda (file) (file-relative-name file root))
-  	      (project-files project)))))
-
-    (add-to-list 'consult-buffer-sources 'consult-rp-project-files-source 'append)
-    )
-
   ;; adds actions for current item
   (use-package embark
     :bind (("C-." . embark-act)
@@ -286,9 +354,9 @@
             ("C-c C-c" . wgrep-finish-edit)))
 #+end_src
 
-*** Org-Mode
+* Org-Mode
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
     (use-package toc-org
       :ensure t
       :commands toc-org-enable
@@ -304,11 +372,43 @@
        )
 #+end_src
 
-*** Sudo
-#+begin_src emacs-lisp :tangle yes
+* Sudo
+#+begin_src emacs-lisp
 (use-package sudo-edit
   :ensure t
   :config
   (global-set-key (kbd "C-c f u") #'sudo-edit-find-file)
   (global-set-key (kbd "C-c f U") #'sudo-edit))
+#+end_src
+
+* Undo Tree
+
+#+begin_src emacs-lisp
+(use-package undo-tree
+  :init
+  (global-undo-tree-mode)
+  :config
+  (setq undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "undo")))))
+#+end_src
+
+* Elec Pair
+
+#+begin_src emacs-lisp
+(use-package elec-pair
+  :ensure nil
+  :config
+  (electric-pair-mode 1))
+#+end_src
+
+* Rainbow
+
+#+begin_src emacs-lisp
+;; adds colors to delimiters
+(use-package rainbow-delimiters
+  :hook
+  (prog-mode . rainbow-delimiters-mode)
+  :config
+  (rainbow-delimiters-mode 1))
+;; adds colors to color indications e.g #fff000
+(use-package rainbow-mode)
 #+end_src
