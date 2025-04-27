@@ -207,63 +207,108 @@
   :config (load-theme 'modus-vivendi))
 
 (use-package treesit
-    :ensure nil
+  :ensure nil
+  :config
+  (setq treesit-font-lock-level 4)
+  ;; add lsp sources to be downloaded
+  (add-to-list 'treesit-language-source-alist '(python "https://github.com/tree-sitter/tree-sitter-python"))
+  (add-to-list 'treesit-language-source-alist '(javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+  (add-to-list 'treesit-language-source-alist '(typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+  (add-to-list 'treesit-language-source-alist '(tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+  (add-to-list 'treesit-language-source-alist '(html "https://github.com/tree-sitter/tree-sitter-html"))
+  (add-to-list 'treesit-language-source-alist '(css "https://github.com/tree-sitter/tree-sitter-css"))
+  (add-to-list 'treesit-language-source-alist '(elisp "https://github.com/Wilfred/tree-sitter-elisp"))
+  (add-to-list 'treesit-language-source-alist '(bash "https://github.com/tree-sitter/tree-sitter-bash"))
+  (add-to-list 'treesit-language-source-alist '(make "https://github.com/alemuller/tree-sitter-make"))
+  (add-to-list 'treesit-language-source-alist '(dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile" "main" "src"))
+  (add-to-list 'treesit-language-source-alist '(json "https://github.com/tree-sitter/tree-sitter-json"))
+  (add-to-list 'treesit-language-source-alist '(toml "https://github.com/tree-sitter/tree-sitter-toml"))
+  (add-to-list 'treesit-language-source-alist '(yaml "https://github.com/ikatyang/tree-sitter-yaml"))
+  (add-to-list 'treesit-language-source-alist '(cmake "https://github.com/uyha/tree-sitter-cmake"))
+  ;; until treesit has markdown-ts-mode I can use this.
+  ;; It still doesn't highlight code blocks
+  (use-package markdown-ts-mode
+    :ensure t
+    :mode ("\\.md\\'" . markdown-ts-mode)
+    :defer 't
     :config
-    (setq treesit-font-lock-level 4)
-    (add-to-list 'treesit-language-source-alist '(python "https://github.com/tree-sitter/tree-sitter-python"))
-    (add-to-list 'treesit-language-source-alist '(javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
-    (add-to-list 'treesit-language-source-alist '(typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
-    (add-to-list 'treesit-language-source-alist '(tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
-    (add-to-list 'treesit-language-source-alist '(html "https://github.com/tree-sitter/tree-sitter-html"))
-    (add-to-list 'treesit-language-source-alist '(css "https://github.com/tree-sitter/tree-sitter-css"))
-    (add-to-list 'treesit-language-source-alist '(elisp "https://github.com/Wilfred/tree-sitter-elisp"))
-    (add-to-list 'treesit-language-source-alist '(bash "https://github.com/tree-sitter/tree-sitter-bash"))
-    (add-to-list 'treesit-language-source-alist '(make "https://github.com/alemuller/tree-sitter-make"))
-    (add-to-list 'treesit-language-source-alist '(dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile" "main" "src"))
-    (add-to-list 'treesit-language-source-alist '(json "https://github.com/tree-sitter/tree-sitter-json"))
-    (add-to-list 'treesit-language-source-alist '(toml "https://github.com/tree-sitter/tree-sitter-toml"))
-    (add-to-list 'treesit-language-source-alist '(yaml "https://github.com/ikatyang/tree-sitter-yaml"))
-    (add-to-list 'treesit-language-source-alist '(cmake "https://github.com/uyha/tree-sitter-cmake"))
-    (use-package markdown-ts-mode
-      :ensure t
-      :mode ("\\.md\\'" . markdown-ts-mode)
-      :defer 't
-      :config
-      (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown/src"))
-      (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown-inline/src"))
-(defun my/markdown-ts-mode-hook ()
-  ;; Add the treesit font-lock settings for bash
-  (setq-local treesit-font-lock-settings
-              (append
-               treesit-font-lock-settings
-               `((bash . ((font-lock-keywords . ((,(regexp-quote "function") . font-lock-keyword-face)
-                                                 (,(regexp-quote "echo") . font-lock-builtin-face)
-                                                 ;; You can add more custom rules here for bash
-                                                 )))))))
-
-  ;; Set up language injection rules for fenced code blocks with bash
-  (setq-local treesit-range-settings
-              (treesit-range-rules
-               :embed 'bash
-               :host 'markdown
-               :local t
-               :offset '(7 . -4)
-               '(((fenced_code_block) @cap (:match "```bash" @cap))))))
-
-  ;; Ensure treesit is set up for markdown mode
-  (add-hook 'markdown-ts-mode-hook #'treesit-major-mode-setup))
-
-(add-hook 'markdown-ts-mode-hook #'my/markdown-ts-mode-hook)
-      )
-
-    (dolist (source treesit-language-source-alist)
-      (unless (treesit-ready-p (car source))
-        (treesit-install-language-grammar (car source))))
+    (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown/src"))
+    (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown-inline/src"))
     )
+  (dolist (source treesit-language-source-alist)
+    (unless (treesit-ready-p (car source))
+      (treesit-install-language-grammar (car source))))
+
+  ;; now make <lang>-mode use <lang>-ts-mode instead
+  ;; files that would normally open in python-mode should open in python-ts-mode
+  (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+  (add-to-list 'major-mode-remap-alist '(bash-mode . bash-ts-mode))
+  (add-to-list 'major-mode-remap-alist '(json-mode . json-ts-mode))
+  (add-to-list 'major-mode-remap-alist '(markdown-mode . markdown-ts-mode))
+  )
+
+(use-package eglot
+  :ensure nil
+  :hook (
+	 (python-base-mode . eglot-ensure)
+	 (typescript-ts-base-mode . eglot-ensure)
+	 )
+  )
+
+;; add ruff linting with flymake
+(use-package flymake-ruff
+  :ensure t
+  :hook ((python-mode . flymake-ruff-load)
+         (python-ts-mode . flymake-ruff-load))
+  :config
+  ;; After Eglot connects, re-add Ruff as eglot is gready and resets flymake BE only to itself
+  (add-hook 'eglot-managed-mode-hook
+            (lambda ()
+              (when (derived-mode-p 'python-mode 'python-ts-mode)
+		(flymake-ruff-load)
+		(flymake-start))))
+  )
+
+(use-package reformatter
+  :ensure t
+  :config
+  (require 'reformatter)
+  (defcustom ruff-command "ruff" "Ruff command to use for formatting." :type 'string :group 'ruff-format)
+  (reformatter-define ruff-fix
+		      :program ruff-command
+		      :args (list "check" "--fix" "--stdin-filename" (or (buffer-file-name) input-file))
+		      :lighter " RuffFix"
+		      :group 'ruff-format)
+  (reformatter-define ruff-isort
+		      :program ruff-command
+		      :args (list "check" "--select=I" "--fix" "--stdin-filename" (or (buffer-file-name) input-file))
+		      :lighter " RuffIsort"
+		      :group 'ruff-format)
+  (reformatter-define ruff-format
+		      :program ruff-command
+		      :args (list "format" "--stdin-filename" (or (buffer-file-name) input-file))
+		      :lighter " RuffFmt"
+		      :group 'ruff-format)
+  (defun ruff-fix-all-buffer ()
+    "Runs all ruff reformatters: ruff-fix, ruff-isort, and ruff-format."
+    (interactive)
+    (call-interactively 'ruff-fix-buffer)
+    (call-interactively 'ruff-isort-buffer)
+    (call-interactively 'ruff-format-buffer))
+  )
 
 (use-package syntax-subword
   :ensure t
   :config (global-syntax-subword-mode))
+
+(use-package magit
+  :ensure t
+  :bind (
+	 ("C-x g" . magit-status)
+	 ("C-c g g" . magit-status)
+	 ("C-c g B" . magit-blame-addition)
+	 )
+  )
 
 ;; save minibuffer histories. Vertico uses to put recently selected options at the top.
 (savehist-mode 1)
@@ -287,11 +332,12 @@
 (use-package marginalia
   :ensure t
   :after vertico
-  :hook
-  (marginalia-mode . all-the-icons-completion-marginalia-setup)
+  :bind (:map minibuffer-local-map ("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode)
   :config
   (setq marginalia-align 'right)
-  (marginalia-mode))
+  )
 
 ;; Gives enhanced completion functions we need to bind
 ;; Gives previews for current item
@@ -351,6 +397,11 @@
           ("C-x C-q" . wgrep-change-to-wgrep-mode)
           ("C-c C-c" . wgrep-finish-edit)))
 
+(use-package vterm
+  :ensure t
+  :bind (:map vterm-mode-map
+	      ("C-c C-c" . vterm--self-insert)))
+
 (use-package toc-org
   :ensure t
   :commands toc-org-enable
@@ -405,5 +456,9 @@
   :hook (prog-mode . copilot-mode)
   :config
   (setq copilot-max-char -1)
-  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode . 2))
-  (add-to-list 'copilot-indentation-alist '(org-mode . 2)))
+  (add-to-list 'copilot-indentation-alist '(prog-mode 2))
+  (add-to-list 'copilot-indentation-alist '(org-mode 2))
+  (add-to-list 'copilot-indentation-alist '(text-mode 2))
+  (add-to-list 'copilot-indentation-alist '(closure-mode 2))
+  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
+  )
