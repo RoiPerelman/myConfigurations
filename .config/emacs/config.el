@@ -130,6 +130,31 @@
 	)
   )
 
+;; ediff
+(use-package ediff
+  :commands (ediff-buffers ediff-files ediff-buffers3 ediff-files3)
+  :init
+  (setq ediff-split-window-function 'split-window-horizontally)
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  :config
+  (setq ediff-keep-variants nil)
+  (setq ediff-make-buffers-readonly-at-startup nil)
+  (setq ediff-merge-revisions-with-ancestor t)
+  (setq ediff-show-clashes-only t)
+  ;; add an option to copy both a and b to c. from https://stackoverflow.com/a/29757750/864684
+  (defun ediff-copy-both-to-C ()
+    (interactive)
+    (ediff-copy-diff ediff-current-difference nil 'C nil
+		     (concat
+		      (ediff-get-region-contents ediff-current-difference 'A ediff-control-buffer)
+		      (ediff-get-region-contents ediff-current-difference 'B ediff-control-buffer))))
+  (defun add-d-to-ediff-mode-map () (define-key ediff-mode-map "d" 'ediff-copy-both-to-C))
+  (add-hook 'ediff-keymap-setup-hook 'add-d-to-ediff-mode-map))
+;; (setq ediff-diff-options "")
+;; (setq ediff-custom-diff-options "-u")
+;; (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+;; (setq ediff-split-window-function 'split-window-vertically)
+
 (use-package elec-pair
   :ensure nil
   :config
@@ -245,6 +270,9 @@
   (add-to-list 'major-mode-remap-alist '(bash-mode . bash-ts-mode))
   (add-to-list 'major-mode-remap-alist '(json-mode . json-ts-mode))
   (add-to-list 'major-mode-remap-alist '(markdown-mode . markdown-ts-mode))
+  ;; files that end with an ending should open in ts-mode
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
   )
 
 (use-package eglot
@@ -253,6 +281,13 @@
 	 (python-base-mode . eglot-ensure)
 	 (typescript-ts-base-mode . eglot-ensure)
 	 )
+  :config
+  (setq-default eglot-workspace-configuration
+              '((pyright
+                 (disableOrganizeImports . t)
+                 (python
+                  (analysis
+                   (typeCheckingMode . "off"))))))
   )
 
 ;; add ruff linting with flymake
@@ -265,37 +300,67 @@
   (add-hook 'eglot-managed-mode-hook
             (lambda ()
               (when (derived-mode-p 'python-mode 'python-ts-mode)
-		(flymake-ruff-load)
-		(flymake-start))))
+    		(flymake-ruff-load)
+    		(flymake-start))))
+  )
+
+(use-package flymake-eslint
+  :ensure t
+  :config
+  ;; If Emacs is compiled with JSON support
+  (setq flymake-eslint-prefer-json-diagnostics t)
+  (setq flymake-eslint-executable "eslint_d")
+  (add-hook 'eglot-managed-mode-hook
+            (lambda ()
+              (when (derived-mode-p 'typescript-ts-mode 'tsx-ts-mode)
+		    (flymake-eslint-enable)
+   		        (flymake-start))))
   )
 
 (use-package reformatter
-  :ensure t
   :config
   (require 'reformatter)
+
   (defcustom ruff-command "ruff" "Ruff command to use for formatting." :type 'string :group 'ruff-format)
   (reformatter-define ruff-fix
-		      :program ruff-command
-		      :args (list "check" "--fix" "--stdin-filename" (or (buffer-file-name) input-file))
-		      :lighter " RuffFix"
-		      :group 'ruff-format)
+    :program ruff-command
+    :args (list "check" "--fix" "--stdin-filename" (or (buffer-file-name) input-file))
+    :lighter " RuffFix"
+    :group 'ruff-format)
   (reformatter-define ruff-isort
-		      :program ruff-command
-		      :args (list "check" "--select=I" "--fix" "--stdin-filename" (or (buffer-file-name) input-file))
-		      :lighter " RuffIsort"
-		      :group 'ruff-format)
+    :program ruff-command
+    :args (list "check" "--select=I" "--fix" "--stdin-filename" (or (buffer-file-name) input-file))
+    :lighter " RuffIsort"
+    :group 'ruff-format)
   (reformatter-define ruff-format
-		      :program ruff-command
-		      :args (list "format" "--stdin-filename" (or (buffer-file-name) input-file))
-		      :lighter " RuffFmt"
-		      :group 'ruff-format)
-  (defun ruff-fix-all-buffer ()
+    :program ruff-command
+    :args (list "format" "--stdin-filename" (or (buffer-file-name) input-file))
+    :lighter " RuffFmt"
+    :group 'ruff-format)
+  (defun ruff-fix-isort-format-buffer ()
     "Runs all ruff reformatters: ruff-fix, ruff-isort, and ruff-format."
     (interactive)
     (call-interactively 'ruff-fix-buffer)
     (call-interactively 'ruff-isort-buffer)
     (call-interactively 'ruff-format-buffer))
-  )
+
+  ;; TODO: fix me
+  (defcustom eslint-command "eslint_d" "ESLint command to use for formatting." :type 'string :group 'eslint-fix)
+  (reformatter-define eslint-fix
+    :program eslint-command
+    :args (list "--fix-to-stdout" "--stdin" "--stdin-filename" (or (buffer-file-name) input-file))
+    :lighter " ESLintFix"
+    :group 'eslint-fix)
+      )
+
+(use-package pyvenv
+  :ensure t
+  :config
+  (setq pyvenv-mode-line-indicator '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
+  (add-hook 'pyvenv-post-activate-hooks
+            #'(lambda ()
+                (call-interactively #'eglot-reconnect)))
+  (pyvenv-mode +1))
 
 (use-package syntax-subword
   :ensure t
