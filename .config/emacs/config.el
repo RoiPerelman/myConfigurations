@@ -8,14 +8,14 @@
 (use-package emacs
   :ensure nil
   :init
-  (setq inhibit-startup-screen t) 	; Disable startup message
+  (setq inhibit-startup-screen t)     ; Disable startup message
   (setq ring-bell-function 'ignore)	; Disable annoying noisy bell
   (scroll-bar-mode -1)			; Disable visible scrollbar
   (tool-bar-mode -1)			; Disable the toolbar
   (tooltip-mode -1)			; Disable tooltips
   (menu-bar-mode -1)			; Disable the menu bar
   (set-fringe-mode 5)			; Add some space to lines
-  (global-hl-line-mode t)		        ; Highlight current line
+  (global-hl-line-mode t)                     ; Highlight current line
   (global-auto-revert-mode t)             ; Automatically update buffers if file changes on disk
   (delete-selection-mode 1)               ; Automatically delete selected text without backspace
   (setq use-short-answers t)		; Use y/n instead of yes/no
@@ -30,12 +30,12 @@
 
   ;; Disable line numbers for some modes
   (dolist (mode '(
-    		  org-mode-hook
-    		  term-mode-hook
-    		  shell-mode-hook
-    		  eshell-mode-hook
-    		  vterm-mode-hook
-    		  ))
+                org-mode-hook
+                term-mode-hook
+                shell-mode-hook
+                eshell-mode-hook
+                vterm-mode-hook
+                ))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
   )
 
@@ -104,8 +104,8 @@
   (defun isearch-rp-project ()
     (interactive)
     (let ((query (if isearch-regexp
-		     isearch-string
-		   (regexp-quote isearch-string))))
+                   isearch-string
+                 (regexp-quote isearch-string))))
       (isearch-update-ring isearch-string isearch-regexp)
       (let (search-nonincremental-instead)
         (ignore-errors (isearch-done t t)))
@@ -114,20 +114,20 @@
     "Invoke `consult-line' from isearch."
     (interactive)
     (let ((query (if isearch-regexp
-		     isearch-string
-		   (regexp-quote isearch-string))))
+                   isearch-string
+                 (regexp-quote isearch-string))))
       (isearch-update-ring isearch-string isearch-regexp)
       (let (search-nonincremental-instead)
         (ignore-errors (isearch-done t t)))
       (consult-line query)))
   :bind
   (:map isearch-mode-map
-	("M-o" . isearch-occur)
+      ("M-o" . isearch-occur)
         ("M-p" . isearch-rp-project)
-	("M-." . isearch-forward-thing-at-point)
-	("M-l" . isearch-rp-consult-line)
-	;; ("C-j" . avy-isearch)
-	)
+      ("M-." . isearch-forward-thing-at-point)
+      ("M-l" . isearch-rp-consult-line)
+      ;; ("C-j" . avy-isearch)
+      )
   )
 
 ;; ediff
@@ -145,9 +145,9 @@
   (defun ediff-copy-both-to-C ()
     (interactive)
     (ediff-copy-diff ediff-current-difference nil 'C nil
-		     (concat
-		      (ediff-get-region-contents ediff-current-difference 'A ediff-control-buffer)
-		      (ediff-get-region-contents ediff-current-difference 'B ediff-control-buffer))))
+                     (concat
+                      (ediff-get-region-contents ediff-current-difference 'A ediff-control-buffer)
+                      (ediff-get-region-contents ediff-current-difference 'B ediff-control-buffer))))
   (defun add-d-to-ediff-mode-map () (define-key ediff-mode-map "d" 'ediff-copy-both-to-C))
   (add-hook 'ediff-keymap-setup-hook 'add-d-to-ediff-mode-map))
 ;; (setq ediff-diff-options "")
@@ -191,22 +191,26 @@
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace) ; Delete whitespace just when a file is saved.
 
+(use-package syntax-subword
+  :ensure t
+  :config (global-syntax-subword-mode))
+
 (use-package all-the-icons :ensure t)
 (use-package all-the-icons-completion :ensure t)
 (use-package all-the-icons-dired :ensure t)
 
 ;; (set-face-attribute 'variable-pitch nil
-;; 		    :family "Ubuntu"
-;; 		    :weight 'semi-bold
-;; 		    :height 120)
+;;                :family "Ubuntu"
+;;                :weight 'semi-bold
+;;                :height 120)
 ;; (set-face-attribute 'fixed-pitch nil
-;; 		    :family "Jetbrains Mono"
-;; 		    :weight 'normal
-;; 		    :height 100)
+;;                :family "Jetbrains Mono"
+;;                :weight 'normal
+;;                :height 100)
 ;; (set-face-attribute 'default nil
-;; 		    :family "Jetbrains Mono"
-;; 		    :weight 'normal
-;; 		    :height 110)
+;;                :family "Jetbrains Mono"
+;;                :weight 'normal
+;;                :height 110)
 ;; ;; (add-to-list 'default-frame-alist '(font . "JetBrains Mono 14"))
 ;; (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
 ;; (set-face-attribute 'font-lock-function-name-face nil :slant 'italic)
@@ -226,9 +230,9 @@
   (setq modus-themes-prompts '(bold italic))
   ;; to override the palette
   (setq modus-vivendi-palette-overrides
-	'(
-	  ;; (comment red-intense)
-	  ))
+      '(
+        ;; (comment red-intense)
+        ))
   :config (load-theme 'modus-vivendi))
 
 (use-package treesit
@@ -275,52 +279,25 @@
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
   )
 
-(use-package eglot
-  :ensure nil
-  :hook (
-	 (python-base-mode . eglot-ensure)
-	 (typescript-ts-base-mode . eglot-ensure)
-	 )
-  :config
-  (setq-default eglot-workspace-configuration
-              '((pyright
-                 (disableOrganizeImports . t)
-                 (python
-                  (analysis
-                   (typeCheckingMode . "off"))))))
-  )
+(use-package reformatter :ensure t)
 
 ;; add ruff linting with flymake
-(use-package flymake-ruff
-  :ensure t
-  :hook ((python-mode . flymake-ruff-load)
-         (python-ts-mode . flymake-ruff-load))
-  :config
-  ;; After Eglot connects, re-add Ruff as eglot is gready and resets flymake BE only to itself
-  (add-hook 'eglot-managed-mode-hook
-            (lambda ()
-              (when (derived-mode-p 'python-mode 'python-ts-mode)
-    		(flymake-ruff-load)
-    		(flymake-start))))
-  )
+;; can add a hook anywhere (add-hook 'python-ts-mode-hook . (flymake-ruff-load))
+(use-package flymake-ruff :ensure t)
 
-(use-package flymake-eslint
-  :ensure t
-  :config
-  ;; If Emacs is compiled with JSON support
-  (setq flymake-eslint-prefer-json-diagnostics t)
-  (setq flymake-eslint-executable "eslint_d")
-  (add-hook 'eglot-managed-mode-hook
-            (lambda ()
-              (when (derived-mode-p 'typescript-ts-mode 'tsx-ts-mode)
-		    (flymake-eslint-enable)
-   		        (flymake-start))))
-  )
-
-(use-package reformatter
+(use-package python-ts-mode
+  :hook (
+	 (python-ts-mode . eglot-ensure)
+	 (python-ts-mode . flymake-ruff-load)
+	 (eglot-managed-mode . (
+				lambda ()
+				       (when (derived-mode-p 'python-mode 'python-ts-mode)
+				   (flymake-ruff-load)
+				   (flymake-start))))
+	 )
+  :mode (("\\.py\\'" . python-ts-mode))
   :config
   (require 'reformatter)
-
   (defcustom ruff-command "ruff" "Ruff command to use for formatting." :type 'string :group 'ruff-format)
   (reformatter-define ruff-fix
     :program ruff-command
@@ -344,14 +321,13 @@
     (call-interactively 'ruff-isort-buffer)
     (call-interactively 'ruff-format-buffer))
 
-  ;; TODO: fix me
   (defcustom eslint-command "eslint_d" "ESLint command to use for formatting." :type 'string :group 'eslint-fix)
   (reformatter-define eslint-fix
     :program eslint-command
     :args (list "--fix-to-stdout" "--stdin" "--stdin-filename" (or (buffer-file-name) input-file))
     :lighter " ESLintFix"
     :group 'eslint-fix)
-      )
+  )
 
 (use-package pyvenv
   :ensure t
@@ -362,17 +338,64 @@
                 (call-interactively #'eglot-reconnect)))
   (pyvenv-mode +1))
 
-(use-package syntax-subword
+;; add eslint linting with flymake
+;; can add a hook anywhere (add-hook 'typescript-ts-mode-hook . (flymake-eslint-enable))
+(use-package flymake-eslint
   :ensure t
-  :config (global-syntax-subword-mode))
+  :config
+  (setq flymake-eslint-prefer-json-diagnostics t)
+  (setq flymake-eslint-executable "eslint_d")
+  )
+
+(use-package typescript-ts-mode
+  :hook (
+	 (typescript-ts-mode . eglot-ensure)
+	 (python-ts-mode . flymake-eslint-enable)
+	 (eglot-managed-mode . (
+				lambda ()
+				       (when (derived-mode-p 'typescript-ts-mode)
+				   (flymake-eslint-enable)
+				   (flymake-start))))
+	 )
+  :mode (("\\.ts\\'" . typescript-ts-mode) ("\\.js\\'" . typescript-ts-mode))
+  :config
+  (require 'reformatter)
+  (defcustom eslint-command "eslint_d" "ESLint command to use for formatting." :type 'string :group 'eslint-fix)
+  (reformatter-define eslint-fix
+    :program eslint-command
+    :args (list "--fix-to-stdout" "--stdin" "--stding-filename" (or (buffer-file-name) input file))
+    :lighter " ESLintFix"
+    :group 'eslint-fix)
+  )
+
+(use-package tsx-ts-mode
+  :hook (
+	 (tsx-ts-mode . eglot-ensure)
+	 (tsx-ts-mode . flymake-eslint-enable)
+	 (eglot-managed-mode . (
+				lambda ()
+				       (when (derived-mode-p 'tsx-ts-mode)
+				   (flymake-eslint-enable)
+				   (flymake-start))))
+	 )
+  :mode (("\\.tsx\\'" . typescript-ts-mode) ("\\.jsx\\'" . typescript-ts-mode))
+  :config
+  (require 'reformatter)
+  (defcustom eslint-command "eslint_d" "ESLint command to use for formatting." :type 'string :group 'eslint-fix)
+  (reformatter-define eslint-fix
+    :program eslint-command
+    :args (list "--fix-to-stdout" "--stdin" "--stding-filename" (or (buffer-file-name) input file))
+    :lighter " ESLintFix"
+    :group 'eslint-fix)
+  )
 
 (use-package magit
   :ensure t
   :bind (
-	 ("C-x g" . magit-status)
-	 ("C-c g g" . magit-status)
-	 ("C-c g B" . magit-blame-addition)
-	 )
+     ("C-x g" . magit-status)
+     ("C-c g g" . magit-status)
+     ("C-c g B" . magit-blame-addition)
+     )
   )
 
 ;; save minibuffer histories. Vertico uses to put recently selected options at the top.
@@ -411,34 +434,34 @@
   :ensure t
   :bind (;; A recursive grep
          ("M-s M-g" . consult-ripgrep)
-	 ("M-s M-G" . consult-grep)
+       ("M-s M-G" . consult-grep)
          ;; Search for files names recursively
          ("M-s M-f" . consult-fd)
-	 ("M-s M-F" . consult-find)
+       ("M-s M-F" . consult-find)
          ;; Search through the outline (headings) of the file
          ("M-s M-o" . consult-outline)
          ;; Search the current buffer
          ("M-s M-l" . consult-line)
          ;; Switch to another buffer/bookmarked/recent file.
          ("M-s M-b" . consult-buffer)
-	 ;; search on imenu
-	 ("M-s M-i" . consult-imenu)
-	 ;; change theme
-	 ("M-s M-t" . consult-theme)
-	 ;; search mark
-	 ("M-s M-m" . consult-mark)
-	 ;; search help info
-	 ("M-s M-h" . consult-info)
-	 )
+       ;; search on imenu
+       ("M-s M-i" . consult-imenu)
+       ;; change theme
+       ("M-s M-t" . consult-theme)
+       ;; search mark
+       ("M-s M-m" . consult-mark)
+       ;; search help info
+       ("M-s M-h" . consult-info)
+       )
   :config
   ;; Use `consult-completion-in-region' if Vertico is enabled.
   ;; Otherwise use the default `completion--in-region' function.
   (setq completion-in-region-function
-	(lambda (&rest args)
-	  (apply (if vertico-mode
-		     #'consult-completion-in-region
-		   #'completion--in-region)
-		 args))))
+      (lambda (&rest args)
+        (apply (if vertico-mode
+                   #'consult-completion-in-region
+                 #'completion--in-region)
+               args))))
 
 ;; adds actions for current item
 (use-package embark
@@ -465,7 +488,7 @@
 (use-package vterm
   :ensure t
   :bind (:map vterm-mode-map
-	      ("C-c C-c" . vterm--self-insert)))
+            ("C-c C-c" . vterm--self-insert)))
 
 (use-package toc-org
   :ensure t

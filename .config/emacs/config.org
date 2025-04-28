@@ -1,4 +1,4 @@
-#+TITLE: RP's GNU Emacs Config
+ty#+TITLE: RP's GNU Emacs Config
 #+AUTHOR: Roi Perelman
 #+DESCRIPTION: RP's personal emacs config
 #+PROPERTY: header-args:emacs-lisp :tangle yes
@@ -19,18 +19,11 @@
 - [[#general-functions][General Functions]]
 - [[#general-keybinding][General Keybinding]]
 - [[#general-hooks][General Hooks]]
+- [[#syntax-subword][Syntax Subword]]
 - [[#all-the-icons][All the icons]]
 - [[#fonts][Fonts]]
 - [[#theme][Theme]]
 - [[#treesitter][Treesitter]]
-- [[#lsp][lsp]]
-  - [[#manually-download-supported-language-servers][manually download supported language servers]]
-  - [[#eglot][eglot]]
-- [[#syntax-checker][Syntax Checker]]
-- [[#reformatter][reformatter]]
-- [[#lang-specific-package][Lang specific package]]
-  - [[#pyvenv][Pyvenv]]
-- [[#syntax-subword][Syntax Subword]]
 - [[#git][Git]]
 - [[#minibuffer-completions][Minibuffer-Completions]]
 - [[#vterm][Vterm]]
@@ -283,6 +276,17 @@
   (add-hook 'before-save-hook 'delete-trailing-whitespace) ; Delete whitespace just when a file is saved.
 #+end_src
 
+* Syntax Subword
+
+make us go (or delete) forward and backwards better
+
+#+begin_src emacs-lisp
+  (use-package syntax-subword
+    :ensure t
+    :config (global-syntax-subword-mode))
+#+end_src
+
+
 * All the icons
 
 M-x all-the-icons-install-fonts
@@ -386,91 +390,52 @@ Use M-x treesit-install-language-grammer to install grammers manually in case of
     )
 #+end_src
 
-* lsp
+* Lsp + Diagnostics + Formatting
 
-** manually download supported language servers
+** Reformatter
 
-*** python `npm install -g pyright`
-*** typescript `npm install -g typescript typescript-language-server`
-*** markdown
-**** mac `brew install marksman`
-**** linux
-
-#+begin_src bash
-  cd ~/Downloads
-  wget https://github.com/artempyanykh/marksman/releases/download/2024-12-18/marksman-linux-x64
-  sudo mv marksman-linux-x64 /usr/local/bin/marksman
-  sudo chmod +x /usr/local/bin/marksman
-#+end_src
-
-** eglot
+so each language can use reformatter to add formatting commands
 
 #+begin_src emacs-lisp
-  (use-package eglot
-    :ensure nil
+  (use-package reformatter :ensure t)
+#+end_src
+
+** Python Prerequisistes
+
+*** pyright language server
+
+#+begin_src bash :tangle no
+npm install -g pyright
+#+end_src
+
+*** ruff
+
+#+begin_src bash :tangle no
+pip3 install --user ruff
+# and in mac I believe u need to add the following in case ruff is missing globally
+sudo ln -s ~/Library/Python/3.9/bin/ruff /usr/local/bin/ruff
+#+end_src
+
+** Python
+
+#+begin_src emacs-lisp
+  ;; add ruff linting with flymake
+  ;; can add a hook anywhere (add-hook 'python-ts-mode-hook . (flymake-ruff-load))
+  (use-package flymake-ruff :ensure t)
+
+  (use-package python-ts-mode
     :hook (
-         (python-base-mode . eglot-ensure)
-         (typescript-ts-base-mode . eglot-ensure)
-         (markdown-ts-mode . eglot-ensure)
-         )
-    :config
-    (setq-default eglot-workspace-configuration
-                '((pyright
-                   (disableOrganizeImports . t)
-                   (python
-                    (analysis
-                     (typeCheckingMode . "off"))))))
-    )
-#+end_src
-
-* Syntax Checker
-
-supported syntax checkers:
-
-- ruff `pip3 install --user ruff` + `sudo ln -s ~/Library/Python/3.9/bin/ruff /usr/local/bin/ruff` (or wherever ruff was installed)
-- eslint_d `npm install -g eslint_d`
-
-#+begin_src emacs-lisp
-    ;; add ruff linting with flymake
-    (use-package flymake-ruff
-      :ensure t
-      :hook ((python-mode . flymake-ruff-load)
-             (python-ts-mode . flymake-ruff-load))
-      :config
-      ;; After Eglot connects, re-add Ruff as eglot is gready and resets flymake BE only to itself
-      (add-hook 'eglot-managed-mode-hook
-                (lambda ()
-                  (when (derived-mode-p 'python-mode 'python-ts-mode)
-                        (flymake-ruff-load)
-                        (flymake-start))))
-      )
-
-    (use-package flymake-eslint
-      :ensure t
-      :config
-      ;; If Emacs is compiled with JSON support
-      (setq flymake-eslint-prefer-json-diagnostics t)
-      (setq flymake-eslint-executable "eslint_d")
-      (add-hook 'eglot-managed-mode-hook
-                (lambda ()
-                  (when (derived-mode-p 'typescript-ts-mode 'tsx-ts-mode)
-                    (flymake-eslint-enable)
-                        (flymake-start))))
-      )
-#+end_src
-
-* reformatter
-
-supported formatters:
-
-- ruff (check installation in Synatx Checker)
-- eslint_d (check installation in Synatx Checker)
-
-#+begin_src emacs-lisp
-  (use-package reformatter
+  	 (python-ts-mode . eglot-ensure)
+  	 (python-ts-mode . flymake-ruff-load)
+  	 (eglot-managed-mode . (
+  				lambda ()
+  				       (when (derived-mode-p 'python-mode 'python-ts-mode)
+  				   (flymake-ruff-load)
+  				   (flymake-start))))
+  	 )
+    :mode (("\\.py\\'" . python-ts-mode))
     :config
     (require 'reformatter)
-
     (defcustom ruff-command "ruff" "Ruff command to use for formatting." :type 'string :group 'ruff-format)
     (reformatter-define ruff-fix
       :program ruff-command
@@ -494,20 +459,14 @@ supported formatters:
       (call-interactively 'ruff-isort-buffer)
       (call-interactively 'ruff-format-buffer))
 
-    ;; TODO: fix me
     (defcustom eslint-command "eslint_d" "ESLint command to use for formatting." :type 'string :group 'eslint-fix)
     (reformatter-define eslint-fix
       :program eslint-command
       :args (list "--fix-to-stdout" "--stdin" "--stdin-filename" (or (buffer-file-name) input-file))
       :lighter " ESLintFix"
       :group 'eslint-fix)
-        )
-#+end_src
-* Lang specific package
+    )
 
-** Pyvenv
-
-#+begin_src emacs-lisp
   (use-package pyvenv
     :ensure t
     :config
@@ -517,14 +476,66 @@ supported formatters:
                   (call-interactively #'eglot-reconnect)))
     (pyvenv-mode +1))
 #+end_src
-* Syntax Subword
 
-make us go (or delete) forward and backwards better
+** Typescript prerequisites
+
+#+begin_src bash :tangle no
+npm install -g typescript typscript-language-server
+#+end_src
+
+** typescript
 
 #+begin_src emacs-lisp
-  (use-package syntax-subword
+  ;; add eslint linting with flymake
+  ;; can add a hook anywhere (add-hook 'typescript-ts-mode-hook . (flymake-eslint-enable))
+  (use-package flymake-eslint
     :ensure t
-    :config (global-syntax-subword-mode))
+    :config
+    (setq flymake-eslint-prefer-json-diagnostics t)
+    (setq flymake-eslint-executable "eslint_d")
+    )
+
+  (use-package typescript-ts-mode
+    :hook (
+  	 (typescript-ts-mode . eglot-ensure)
+  	 (python-ts-mode . flymake-eslint-enable)
+  	 (eglot-managed-mode . (
+  				lambda ()
+  				       (when (derived-mode-p 'typescript-ts-mode)
+  				   (flymake-eslint-enable)
+  				   (flymake-start))))
+  	 )
+    :mode (("\\.ts\\'" . typescript-ts-mode) ("\\.js\\'" . typescript-ts-mode))
+    :config
+    (require 'reformatter)
+    (defcustom eslint-command "eslint_d" "ESLint command to use for formatting." :type 'string :group 'eslint-fix)
+    (reformatter-define eslint-fix
+      :program eslint-command
+      :args (list "--fix-to-stdout" "--stdin" "--stding-filename" (or (buffer-file-name) input file))
+      :lighter " ESLintFix"
+      :group 'eslint-fix)
+    )
+
+  (use-package tsx-ts-mode
+    :hook (
+  	 (tsx-ts-mode . eglot-ensure)
+  	 (tsx-ts-mode . flymake-eslint-enable)
+  	 (eglot-managed-mode . (
+  				lambda ()
+  				       (when (derived-mode-p 'tsx-ts-mode)
+  				   (flymake-eslint-enable)
+  				   (flymake-start))))
+  	 )
+    :mode (("\\.tsx\\'" . typescript-ts-mode) ("\\.jsx\\'" . typescript-ts-mode))
+    :config
+    (require 'reformatter)
+    (defcustom eslint-command "eslint_d" "ESLint command to use for formatting." :type 'string :group 'eslint-fix)
+    (reformatter-define eslint-fix
+      :program eslint-command
+      :args (list "--fix-to-stdout" "--stdin" "--stding-filename" (or (buffer-file-name) input file))
+      :lighter " ESLintFix"
+      :group 'eslint-fix)
+    )
 #+end_src
 
 * Git
