@@ -50,6 +50,8 @@
 (use-package emacs
   :ensure nil
   :init
+  (setq create-lockfiles nil) ;; remove lockfiles emacs creates with .#<name> next to the actual file.
+
   (setq custom-file (concat user-emacs-directory "custom.el")) ; set custom file - so things wont be added in this file
   (load custom-file 'noerror)
 
@@ -270,133 +272,126 @@
 
   ;; now make <lang>-mode use <lang>-ts-mode instead
   ;; files that would normally open in python-mode should open in python-ts-mode
-  (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
   (add-to-list 'major-mode-remap-alist '(bash-mode . bash-ts-mode))
   (add-to-list 'major-mode-remap-alist '(json-mode . json-ts-mode))
-  (add-to-list 'major-mode-remap-alist '(markdown-mode . markdown-ts-mode))
-  ;; files that end with an ending should open in ts-mode
-  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+  (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
   )
 
-(use-package reformatter :ensure t)
-
-;; add ruff linting with flymake
-;; can add a hook anywhere (add-hook 'python-ts-mode-hook . (flymake-ruff-load))
-(use-package flymake-ruff :ensure t)
-
-(use-package python-ts-mode
-  :hook (
-	 (python-ts-mode . eglot-ensure)
-	 (python-ts-mode . flymake-ruff-load)
-	 (eglot-managed-mode . (
-				lambda ()
-				       (when (derived-mode-p 'python-mode 'python-ts-mode)
-				   (flymake-ruff-load)
-				   (flymake-start))))
-	 )
-  :mode (("\\.py\\'" . python-ts-mode))
-  :config
-  (require 'reformatter)
-  (defcustom ruff-command "ruff" "Ruff command to use for formatting." :type 'string :group 'ruff-format)
-  (reformatter-define ruff-fix
-    :program ruff-command
-    :args (list "check" "--fix" "--stdin-filename" (or (buffer-file-name) input-file))
-    :lighter " RuffFix"
-    :group 'ruff-format)
-  (reformatter-define ruff-isort
-    :program ruff-command
-    :args (list "check" "--select=I" "--fix" "--stdin-filename" (or (buffer-file-name) input-file))
-    :lighter " RuffIsort"
-    :group 'ruff-format)
-  (reformatter-define ruff-format
-    :program ruff-command
-    :args (list "format" "--stdin-filename" (or (buffer-file-name) input-file))
-    :lighter " RuffFmt"
-    :group 'ruff-format)
-  (defun ruff-fix-isort-format-buffer ()
-    "Runs all ruff reformatters: ruff-fix, ruff-isort, and ruff-format."
-    (interactive)
-    (call-interactively 'ruff-fix-buffer)
-    (call-interactively 'ruff-isort-buffer)
-    (call-interactively 'ruff-format-buffer))
-
-  (defcustom eslint-command "eslint_d" "ESLint command to use for formatting." :type 'string :group 'eslint-fix)
-  (reformatter-define eslint-fix
-    :program eslint-command
-    :args (list "--fix-to-stdout" "--stdin" "--stdin-filename" (or (buffer-file-name) input-file))
-    :lighter " ESLintFix"
-    :group 'eslint-fix)
-  )
-
-(use-package pyvenv
+(use-package lsp-mode
+  :init
+  (setq lsp-use-plists t)
   :ensure t
-  :config
-  (setq pyvenv-mode-line-indicator '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
-  (add-hook 'pyvenv-post-activate-hooks
-            #'(lambda ()
-                (call-interactively #'eglot-reconnect)))
-  (pyvenv-mode +1))
+  :commands lsp
+  :custom
+  (lsp-prefer-flymake t) ;; We prefer flymake if available
+  (lsp-enable-snippet nil) ;; Optional: disable snippets
+  (lsp-completion-provider :none) ;; stop using company as #'completion-at-point
+  (lsp-log-io nil)         ;; Debug: can set to t if you want to debug LSP issues
+  (lsp-log-io t)
+  )
 
-;; add eslint linting with flymake
-;; can add a hook anywhere (add-hook 'typescript-ts-mode-hook . (flymake-eslint-enable))
-(use-package flymake-eslint
+;; (use-package reformatter :ensure t)
+
+;; Optional: lsp-ui for better UI (like sideline diagnostics)
+(use-package lsp-ui
+    :ensure t
+    :commands lsp-ui-mode)
+
+  ;; Pyright LSP setup. Needs require 'lsp-pyright somewhere before loading lsp
+  (use-package lsp-pyright
+    :ensure t
+    :after lsp-mode
+    :custom
+    (lsp-pyright-typechecking-mode "off") ;; or "basic" / "strict"
+    (lsp-pyright-auto-import-completions t)
+    (lsp-pyright-disable-organize-imports t)
+    )
+
+  ;; Python major mode
+  (use-package python-ts-mode
+    :hook (
+  	 (python-ts-mode . (lambda()
+  			     (require 'lsp-pyright)
+  			     ;; Ruff LSP no need for another package as its already included in lsp-mode
+  			     (require 'lsp-ruff)
+  			     (lsp)))
+    	 )
+    :mode (("\\.py\\'" . python-ts-mode))
+    )
+
+  ;; Pyvenv for managing Python virtualenvs
+  (use-package pyvenv
+    :ensure t
+    :config
+    (setq pyvenv-mode-line-indicator '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
+    (pyvenv-mode 1)
+    ;; Automatically restart LSP after activating new venv
+    (add-hook 'pyvenv-post-activate-hooks
+              (lambda ()
+                (when (bound-and-true-p lsp-mode)
+                  (lsp-restart-workspace)))))
+
+(use-package markdown-mode
   :ensure t
-  :config
-  (setq flymake-eslint-prefer-json-diagnostics t)
-  (setq flymake-eslint-executable "eslint_d")
-  )
-
-(use-package typescript-ts-mode
-  :hook (
-	 (typescript-ts-mode . eglot-ensure)
-	 (python-ts-mode . flymake-eslint-enable)
-	 (eglot-managed-mode . (
-				lambda ()
-				       (when (derived-mode-p 'typescript-ts-mode)
-				   (flymake-eslint-enable)
-				   (flymake-start))))
-	 )
-  :mode (("\\.ts\\'" . typescript-ts-mode) ("\\.js\\'" . typescript-ts-mode))
-  :config
-  (require 'reformatter)
-  (defcustom eslint-command "eslint_d" "ESLint command to use for formatting." :type 'string :group 'eslint-fix)
-  (reformatter-define eslint-fix
-    :program eslint-command
-    :args (list "--fix-to-stdout" "--stdin" "--stding-filename" (or (buffer-file-name) input file))
-    :lighter " ESLintFix"
-    :group 'eslint-fix)
-  )
-
-(use-package tsx-ts-mode
-  :hook (
-	 (tsx-ts-mode . eglot-ensure)
-	 (tsx-ts-mode . flymake-eslint-enable)
-	 (eglot-managed-mode . (
-				lambda ()
-				       (when (derived-mode-p 'tsx-ts-mode)
-				   (flymake-eslint-enable)
-				   (flymake-start))))
-	 )
-  :mode (("\\.tsx\\'" . typescript-ts-mode) ("\\.jsx\\'" . typescript-ts-mode))
-  :config
-  (require 'reformatter)
-  (defcustom eslint-command "eslint_d" "ESLint command to use for formatting." :type 'string :group 'eslint-fix)
-  (reformatter-define eslint-fix
-    :program eslint-command
-    :args (list "--fix-to-stdout" "--stdin" "--stding-filename" (or (buffer-file-name) input file))
-    :lighter " ESLintFix"
-    :group 'eslint-fix)
-  )
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode))
+  :init (setq markdown-command "/usr/local/bin/multimarkdown"))
 
 (use-package magit
   :ensure t
   :bind (
-     ("C-x g" . magit-status)
-     ("C-c g g" . magit-status)
-     ("C-c g B" . magit-blame-addition)
-     )
+	 ("C-x g" . magit-status)
+	 ("C-c g g" . magit-status)
+	 ("C-c g B" . magit-blame-addition)
+	 )
   )
+
+;; adds gutter add, change, revert indication
+;; adds hunk controls
+;; 1. go to next prev hunk
+;; 2. show hunk diff
+;; 3. stage, revert hunk (no unstage hunk)
+(use-package git-gutter
+  :ensure t
+  :hook (prog-mode . git-gutter-mode)
+  :bind (
+	 ("M-] h" . git-gutter:next-hunk)
+	 ("M-[ h" . git-gutter:previous-hunk)
+	 ("C-c h s" . git-gutter:stage-hunk)
+	 ("C-c h r" . git-gutter:revert-hunk)
+	 ("C-c h p" . git-gutter:popup-hunk)
+	 )
+  :config
+  (setq git-gutter:update-interval 0.05)
+  (custom-set-variables
+   '(git-gutter:window-width 1)
+   '(git-gutter:modified-sign " ") ;; two space
+   '(git-gutter:added-sign " ")    ;; multiple character is OK
+   '(git-gutter:deleted-sign " "))
+  )
+
+(use-package git-gutter-fringe
+  :ensure t
+  :config
+  (fringe-helper-define 'git-gutter-fr:added '(center repeated) ".")
+  (fringe-helper-define 'git-gutter-fr:modified '(center repeated) ".")
+  (fringe-helper-define 'git-gutter-fr:deleted 'bottom ".")
+  )
+
+;; for git blame there is
+;; 1. magit-blame-addition (fast and adds lines on buffer) (C-c g B)
+;; 2. vc-annotate (creates a new buffer with git blame on each line (C-x v g)
+;; 3. blamer-mode which is a git line blame
+(use-package blamer
+  :ensure t
+  :bind (("C-c g b" . blamer-mode))
+  :config
+  (setq blamer-idle-time 0.05)
+  (setq blamer-author-formatter "%s ")
+  (setq blamer-datetime-formatter "[%s]")
+  (setq blamer-commit-formatter ": %s")
+  (setq blamer-max-commit-message-length 100)
+  (setq blamer-min-offset 70))
 
 ;; save minibuffer histories. Vertico uses to put recently selected options at the top.
 (savehist-mode 1)
