@@ -271,6 +271,15 @@
   (add-to-list 'major-mode-remap-alist '(bash-mode . bash-ts-mode))
   (add-to-list 'major-mode-remap-alist '(json-mode . json-ts-mode))
   (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+
+  ;; BitBake files in sh-mode
+  (add-to-list 'auto-mode-alist '("\\.bb\\'" . sh-mode))
+  (add-to-list 'auto-mode-alist '("\\.bbappend\\'" . sh-mode))
+  (add-to-list 'auto-mode-alist '("\\.bbclass\\'" . sh-mode))
+  (add-to-list 'auto-mode-alist '("\\.inc\\'" . sh-mode))
+
+  ;; YAML files in tree-sitter yaml-ts-mode
+  (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
   )
 
 (use-package lsp-mode

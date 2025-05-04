@@ -407,6 +407,15 @@ Use M-x treesit-install-language-grammer to install grammers manually in case of
     (add-to-list 'major-mode-remap-alist '(bash-mode . bash-ts-mode))
     (add-to-list 'major-mode-remap-alist '(json-mode . json-ts-mode))
     (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+
+    ;; BitBake files in sh-mode
+    (add-to-list 'auto-mode-alist '("\\.bb\\'" . sh-mode))
+    (add-to-list 'auto-mode-alist '("\\.bbappend\\'" . sh-mode))
+    (add-to-list 'auto-mode-alist '("\\.bbclass\\'" . sh-mode))
+    (add-to-list 'auto-mode-alist '("\\.inc\\'" . sh-mode))
+
+    ;; YAML files in tree-sitter yaml-ts-mode
+    (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
     )
 #+end_src
 
@@ -614,6 +623,7 @@ npm install -g typescript typscript-language-server
   :mode (("README\\.md\\'" . gfm-mode))
   :init (setq markdown-command "/usr/local/bin/multimarkdown"))
 #+end_src
+
 * Git
 
 ** Magit
@@ -698,7 +708,7 @@ npm install -g typescript typscript-language-server
     :config
     (setq completion-styles '(orderless basic)))
 
-  ;; Minibuffer live ui
+    ;; Minibuffer live ui
   (use-package vertico
     :ensure t
     :config
@@ -713,44 +723,41 @@ npm install -g typescript typscript-language-server
     :init
     (marginalia-mode)
     :config
-    (setq marginalia-align 'right)
-    )
+    (setq marginalia-align 'right))
 
   ;; Gives enhanced completion functions we need to bind
   ;; Gives previews for current item
   ;; binds M-s as opposed to native C-s C-r
   (use-package consult
     :ensure t
-    :bind (;; A recursive grep
+    :bind (
            ("M-s M-g" . consult-ripgrep)
-         ("M-s M-G" . consult-grep)
-           ;; Search for files names recursively
+           ("M-s M-G" . consult-grep)
            ("M-s M-f" . consult-fd)
-         ("M-s M-F" . consult-find)
-           ;; Search through the outline (headings) of the file
-           ("M-s M-o" . consult-outline)
-           ;; Search the current buffer
+           ("M-s M-F" . consult-find)
            ("M-s M-l" . consult-line)
-           ;; Switch to another buffer/bookmarked/recent file.
            ("M-s M-b" . consult-buffer)
-         ;; search on imenu
-         ("M-s M-i" . consult-imenu)
-         ;; change theme
-         ("M-s M-t" . consult-theme)
-         ;; search mark
-         ("M-s M-m" . consult-mark)
-         ;; search help info
-         ("M-s M-h" . consult-info)
-         )
+           ("M-s M-o" . consult-outline)
+           ("M-s M-i" . consult-imenu)
+           ("M-s M-t" . consult-theme)
+           ("M-s M-m" . consult-mark)
+           ("M-s M-h" . consult-info))
+      :config
+      ;; Use `consult-completion-in-region' if Vertico is enabled.
+      ;; Otherwise use the default `completion--in-region' function.
+      (setq completion-in-region-function
+          (lambda (&rest args)
+            (apply (if vertico-mode
+                       #'consult-completion-in-region
+                     #'completion--in-region)
+                   args))))
+
+  (use-package consult-project-extra
+    :ensure t
+    :after consult
     :config
-    ;; Use `consult-completion-in-region' if Vertico is enabled.
-    ;; Otherwise use the default `completion--in-region' function.
-    (setq completion-in-region-function
-        (lambda (&rest args)
-          (apply (if vertico-mode
-                     #'consult-completion-in-region
-                   #'completion--in-region)
-                 args))))
+    ;; Use consult-project-extra instead of project-find-file
+    (define-key project-prefix-map (kbd "f") #'consult-project-extra-find))
 
   ;; adds actions for current item
   (use-package embark
