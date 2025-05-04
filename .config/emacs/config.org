@@ -304,7 +304,7 @@ ty#+TITLE: RP's GNU Emacs Config
 
 make us go (or delete) forward and backwards better
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package syntax-subword
     :ensure t
     :config (global-syntax-subword-mode))
@@ -423,16 +423,18 @@ Use M-x treesit-install-language-grammer to install grammers manually in case of
     (lsp-prefer-flymake t) ;; We prefer flymake if available
     (lsp-enable-snippet nil) ;; Optional: disable snippets
     (lsp-completion-provider :none) ;; stop using company as #'completion-at-point
+    (lsp-headerline-breadcrumb-enable nil)
     (lsp-log-io nil)         ;; Debug: can set to t if you want to debug LSP issues
     (lsp-log-io t)
     )
 #+end_src
+
 ** Reformatter
 
 so each language can use reformatter to add formatting commands
 
 #+begin_src emacs-lisp
-  ;; (use-package reformatter :ensure t)
+  (use-package reformatter :ensure t)
 #+end_src
 
 ** Python Prerequisistes
@@ -465,7 +467,7 @@ sudo ln -s ~/Library/Python/3.9/bin/ruff /usr/local/bin/ruff
       :ensure t
       :after lsp-mode
       :custom
-      (lsp-pyright-typechecking-mode "off") ;; or "basic" / "strict"
+      (lsp-pyright-type-checking-mode "off") ;; or "basic" / "strict"
       (lsp-pyright-auto-import-completions t)
       (lsp-pyright-disable-organize-imports t)
       )
@@ -475,7 +477,7 @@ sudo ln -s ~/Library/Python/3.9/bin/ruff /usr/local/bin/ruff
       :hook (
     	 (python-ts-mode . (lambda()
     			     (require 'lsp-pyright)
-    			     ;; Ruff LSP no need for another package as its already included in lsp-mode
+    			     ;; we need for another package as its already included in lsp-mode
     			     (require 'lsp-ruff)
     			     (lsp)))
       	 )
@@ -503,16 +505,14 @@ sudo ln -s ~/Library/Python/3.9/bin/ruff /usr/local/bin/ruff
   (use-package eglot
     :config
     ;; Set up workspace configuration for eglot (Pyright and Python-specific settings)
+    ;; TODO: doesn't work for me. Need to setup pyrightconfig
     (setq-default eglot-workspace-configuration
                   `((:pyright . (:disableOrganizeImports t))
-                    (:python . (:analysis
-                                (:autoSearchPaths t
-  						:diagnosticMode "openFilesOnly"
-  						:typeCheckingMode "off"
-  						:useLibraryCodeForTypes t)))))
+                    (:python . (:analysis (:typeCheckingMode  "off")))))
     )
   (use-package flymake-ruff :ensure t)
 
+  ;; config is not called here
   (use-package python-ts-mode
     :hook (
     	 (python-ts-mode . eglot-ensure)
@@ -524,7 +524,7 @@ sudo ln -s ~/Library/Python/3.9/bin/ruff /usr/local/bin/ruff
     				  (flymake-start))))
     	 )
     :mode (("\\.py\\'" . python-ts-mode))
-    :config
+    :init
     (require 'reformatter)
     (defcustom ruff-command "ruff" "Ruff command to use for formatting." :type 'string :group 'ruff-format)
     (reformatter-define ruff-fix

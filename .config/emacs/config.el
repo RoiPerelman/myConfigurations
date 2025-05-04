@@ -193,10 +193,6 @@
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace) ; Delete whitespace just when a file is saved.
 
-(use-package syntax-subword
-  :ensure t
-  :config (global-syntax-subword-mode))
-
 (use-package all-the-icons :ensure t)
 (use-package all-the-icons-completion :ensure t)
 (use-package all-the-icons-dired :ensure t)
@@ -286,11 +282,12 @@
   (lsp-prefer-flymake t) ;; We prefer flymake if available
   (lsp-enable-snippet nil) ;; Optional: disable snippets
   (lsp-completion-provider :none) ;; stop using company as #'completion-at-point
+  (lsp-headerline-breadcrumb-enable nil)
   (lsp-log-io nil)         ;; Debug: can set to t if you want to debug LSP issues
   (lsp-log-io t)
   )
 
-;; (use-package reformatter :ensure t)
+(use-package reformatter :ensure t)
 
 ;; Optional: lsp-ui for better UI (like sideline diagnostics)
 (use-package lsp-ui
@@ -302,7 +299,7 @@
     :ensure t
     :after lsp-mode
     :custom
-    (lsp-pyright-typechecking-mode "off") ;; or "basic" / "strict"
+    (lsp-pyright-type-checking-mode "off") ;; or "basic" / "strict"
     (lsp-pyright-auto-import-completions t)
     (lsp-pyright-disable-organize-imports t)
     )
@@ -312,7 +309,7 @@
     :hook (
   	 (python-ts-mode . (lambda()
   			     (require 'lsp-pyright)
-  			     ;; Ruff LSP no need for another package as its already included in lsp-mode
+  			     ;; we need for another package as its already included in lsp-mode
   			     (require 'lsp-ruff)
   			     (lsp)))
     	 )
