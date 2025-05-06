@@ -1,4 +1,4 @@
-ty#+TITLE: RP's GNU Emacs Config
+#+TITLE: RP's GNU Emacs Config
 #+AUTHOR: Roi Perelman
 #+DESCRIPTION: RP's personal emacs config
 #+PROPERTY: header-args:emacs-lisp :tangle yes
@@ -26,19 +26,22 @@ ty#+TITLE: RP's GNU Emacs Config
 - [[#theme][Theme]]
 - [[#treesitter][Treesitter]]
 - [[#lsp--diagnostics--formatting][Lsp + Diagnostics + Formatting]]
+  - [[#reformatter-check-apheleia-as-an-alternative][Reformatter (check apheleia as an alternative)]]
+  - [[#diagnostics][Diagnostics]]
   - [[#lsp-mode][LSP Mode]]
-  - [[#reformatter][Reformatter]]
   - [[#python-prerequisistes][Python Prerequisistes]]
   - [[#python-lsp-mode][python lsp-mode]]
   - [[#python-eglot][Python eglot]]
   - [[#typescript-prerequisites][typescript prerequisites]]
-  - [[#typescript][typescript]]
+  - [[#typscript-lsp-mode][typscript lsp-mode]]
+  - [[#typescript-eglot][typescript eglot]]
   - [[#markdown][Markdown]]
 - [[#git][Git]]
   - [[#magit][Magit]]
   - [[#git-gutter][Git Gutter]]
   - [[#git-blamer][Git Blamer]]
 - [[#minibuffer-completions][Minibuffer-Completions]]
+- [[#completion-at-point][Completion at point]]
 - [[#vterm][Vterm]]
 - [[#org-mode][Org Mode]]
 - [[#sudo][Sudo]]
@@ -51,8 +54,8 @@ ty#+TITLE: RP's GNU Emacs Config
 
 #+begin_src emacs-lisp :tangle early-init.el
 ;; https://emacs-lsp.github.io/lsp-mode/page/performance/
-(setq gc-cons-threshold 100000000) ;; 100mb
-(setq read-process-output-max (* 1024 1024)) ;; 1mb
+(setq gc-cons-threshold 200000000) ;; 200mb - updated from 100
+(setq read-process-output-max (* 10 1024 1024)) ;; 10mb - updated from 1mb
 (setenv "LSP_USE_PLISTS" "true")
 #+end_src
 
@@ -323,23 +326,24 @@ M-x all-the-icons-install-fonts
 
 * Fonts
 #+begin_src emacs-lisp
+  (set-face-attribute 'default nil :family "JetBrains Mono" :height 180)
   ;; (set-face-attribute 'variable-pitch nil
-  ;;                :family "Ubuntu"
-  ;;                :weight 'semi-bold
-  ;;                :height 120)
-  ;; (set-face-attribute 'fixed-pitch nil
-  ;;                :family "Jetbrains Mono"
-  ;;                :weight 'normal
-  ;;                :height 100)
-  ;; (set-face-attribute 'default nil
-  ;;                :family "Jetbrains Mono"
-  ;;                :weight 'normal
-  ;;                :height 110)
-  ;; ;; (add-to-list 'default-frame-alist '(font . "JetBrains Mono 14"))
-  ;; (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
-  ;; (set-face-attribute 'font-lock-function-name-face nil :slant 'italic)
-  ;; (set-face-attribute 'font-lock-variable-name-face nil :slant 'italic)
-  ;; (set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
+  ;;                     :family "Jetbrains Mono"
+  ;;                     :weight 'semi-bold
+  ;;                     :height 160)
+    ;; (set-face-attribute 'fixed-pitch nil
+    ;;                :family "Jetbrains Mono"
+    ;;                :weight 'normal
+    ;;                :height 100)
+    ;; (set-face-attribute 'default nil
+    ;;                :family "Jetbrains Mono"
+    ;;                :weight 'normal
+    ;;                :height 110)
+    ;; ;; (add-to-list 'default-frame-alist '(font . "JetBrains Mono 14"))
+    ;; (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
+    ;; (set-face-attribute 'font-lock-function-name-face nil :slant 'italic)
+    ;; (set-face-attribute 'font-lock-variable-name-face nil :slant 'italic)
+    ;; (set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
 #+end_src
 
 * Theme
@@ -369,8 +373,27 @@ M-x all-the-icons-install-fonts
 Use M-x treesit-install-language-grammer to install grammers manually in case of issues
 
 #+begin_src emacs-lisp
+
   (use-package treesit
     :ensure nil
+    ;; basically does for example
+    ;; (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
+    :mode (("\\.tsx\\'" . tsx-ts-mode)
+           ("\\.js\\'"  . typescript-ts-mode)
+           ("\\.mjs\\'" . typescript-ts-mode)
+           ("\\.mts\\'" . typescript-ts-mode)
+           ("\\.cjs\\'" . typescript-ts-mode)
+           ("\\.ts\\'"  . typescript-ts-mode)
+           ("\\.jsx\\'" . tsx-ts-mode)
+           ("\\.json\\'" .  json-ts-mode)
+           ("\\.Dockerfile\\'" . dockerfile-ts-mode)
+           ("\\.ya?ml\\'" . yaml-ts-mode)
+  	 ;; BitBake files
+           ("\\.bb\\'" . bash-ts-mode)
+           ("\\.bbappend\\'" . bash-ts-mode)
+           ("\\.bbclass\\'" . bash-ts-mode)
+           ("\\.inc\\'" . bash-ts-mode))
+
     :config
     (setq treesit-font-lock-level 4)
     ;; add lsp sources to be downloaded
@@ -387,6 +410,8 @@ Use M-x treesit-install-language-grammer to install grammers manually in case of
     (add-to-list 'treesit-language-source-alist '(json "https://github.com/tree-sitter/tree-sitter-json"))
     (add-to-list 'treesit-language-source-alist '(toml "https://github.com/tree-sitter/tree-sitter-toml"))
     (add-to-list 'treesit-language-source-alist '(yaml "https://github.com/ikatyang/tree-sitter-yaml"))
+    (add-to-list 'treesit-language-source-alist '(c "https://github.com/tree-sitter/tree-sitter-c"))
+    (add-to-list 'treesit-language-source-alist '(cpp "https://github.com/tree-sitter/tree-sitter-cpp"))
     (add-to-list 'treesit-language-source-alist '(cmake "https://github.com/uyha/tree-sitter-cmake"))
     ;; until treesit has markdown-ts-mode I can use this.
     ;; It still doesn't highlight code blocks
@@ -405,45 +430,51 @@ Use M-x treesit-install-language-grammer to install grammers manually in case of
     ;; now make <lang>-mode use <lang>-ts-mode instead
     ;; files that would normally open in python-mode should open in python-ts-mode
     (add-to-list 'major-mode-remap-alist '(bash-mode . bash-ts-mode))
+    (add-to-list 'major-mode-remap-alist '(sh-mode . bash-ts-mode))
     (add-to-list 'major-mode-remap-alist '(json-mode . json-ts-mode))
     (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
-
-    ;; BitBake files in sh-mode
-    (add-to-list 'auto-mode-alist '("\\.bb\\'" . sh-mode))
-    (add-to-list 'auto-mode-alist '("\\.bbappend\\'" . sh-mode))
-    (add-to-list 'auto-mode-alist '("\\.bbclass\\'" . sh-mode))
-    (add-to-list 'auto-mode-alist '("\\.inc\\'" . sh-mode))
-
-    ;; YAML files in tree-sitter yaml-ts-mode
-    (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
+    (add-to-list 'major-mode-remap-alist '(css-mode . css-ts-mode))
+    (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
+    (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
     )
 #+end_src
 
 * Lsp + Diagnostics + Formatting
 
-** LSP Mode
-#+begin_src emacs-lisp
-  (use-package lsp-mode
-    :init
-    (setq lsp-use-plists t)
-    :ensure t
-    :commands lsp
-    :custom
-    (lsp-prefer-flymake t) ;; We prefer flymake if available
-    (lsp-enable-snippet nil) ;; Optional: disable snippets
-    (lsp-completion-provider :none) ;; stop using company as #'completion-at-point
-    (lsp-headerline-breadcrumb-enable nil)
-    (lsp-log-io nil)         ;; Debug: can set to t if you want to debug LSP issues
-    (lsp-log-io t)
-    )
-#+end_src
-
-** Reformatter
+** Reformatter (check apheleia as an alternative)
 
 so each language can use reformatter to add formatting commands
 
 #+begin_src emacs-lisp
   (use-package reformatter :ensure t)
+#+end_src
+
+** Diagnostics
+
+#+begin_src emacs-lisp
+(use-package flycheck
+  :ensure t
+  :hook (lsp-mode . flycheck-mode))
+#+end_src
+
+** LSP Mode
+#+begin_src emacs-lisp
+    (use-package lsp-mode
+      :init
+      (setq lsp-use-plists t)
+      :ensure t
+      :commands lsp
+      :custom
+      ;; (lsp-prefer-flymake t) ;; We prefer flymake if available
+      (lsp-diagnostics-provider :flycheck)
+      (lsp-enable-snippet nil) ;; Optional: disable snippets
+      (lsp-completion-provider :none) ;; stop using company as #'completion-at-point
+      (lsp-headerline-breadcrumb-enable nil)
+      (lsp-log-io t)) ;; Debug: can set to t if you want to debug LSP issues
+
+  ;;  (use-package lsp-completion
+  ;;    :no-require
+  ;;    :hook ((lsp-mode . lsp-completion-mode)))
 #+end_src
 
 ** Python Prerequisistes
@@ -471,39 +502,32 @@ sudo ln -s ~/Library/Python/3.9/bin/ruff /usr/local/bin/ruff
       :ensure t
       :commands lsp-ui-mode)
 
-    ;; Pyright LSP setup. Needs require 'lsp-pyright somewhere before loading lsp
-    (use-package lsp-pyright
-      :ensure t
-      :after lsp-mode
-      :custom
-      (lsp-pyright-type-checking-mode "off") ;; or "basic" / "strict"
-      (lsp-pyright-auto-import-completions t)
-      (lsp-pyright-disable-organize-imports t)
-      )
+  ;; Pyright LSP setup. Needs require 'lsp-pyright somewhere before loading lsp
+  (use-package lsp-pyright
+    :ensure t
+    :after lsp-mode
+    :custom
+    (lsp-pyright-type-checking-mode "off") ;; or "basic" / "strict"
+    (lsp-pyright-auto-import-completions t)
+    (lsp-pyright-disable-organize-imports t))
 
-    ;; Python major mode
-    (use-package python-ts-mode
-      :hook (
-    	 (python-ts-mode . (lambda()
+  ;; Python major mode
+  (use-package python-ts-mode
+    :hook ((python-ts-mode . (lambda()
     			     (require 'lsp-pyright)
     			     ;; we need for another package as its already included in lsp-mode
     			     (require 'lsp-ruff)
-    			     (lsp)))
-      	 )
-      :mode (("\\.py\\'" . python-ts-mode))
-      )
+    			     (lsp))))
+    :mode (("\\.py\\'" . python-ts-mode)))
 
-    ;; Pyvenv for managing Python virtualenvs
-    (use-package pyvenv
-      :ensure t
-      :config
-      (setq pyvenv-mode-line-indicator '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
-      (pyvenv-mode 1)
-      ;; Automatically restart LSP after activating new venv
-      (add-hook 'pyvenv-post-activate-hooks
-                (lambda ()
-                  (when (bound-and-true-p lsp-mode)
-                    (lsp-restart-workspace)))))
+  ;; Pyvenv for managing Python virtualenvs
+  (use-package pyvenv
+    :ensure t
+    :config
+    (setq pyvenv-mode-line-indicator '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
+    (pyvenv-mode 1)
+    ;; Automatically restart LSP after activating new venv
+    (add-hook 'pyvenv-post-activate-hooks (lambda () (when (bound-and-true-p lsp-mode) (lsp-restart-workspace)))))
 #+end_src
 
 ** Python eglot
@@ -517,8 +541,8 @@ sudo ln -s ~/Library/Python/3.9/bin/ruff /usr/local/bin/ruff
     ;; TODO: doesn't work for me. Need to setup pyrightconfig
     (setq-default eglot-workspace-configuration
                   `((:pyright . (:disableOrganizeImports t))
-                    (:python . (:analysis (:typeCheckingMode  "off")))))
-    )
+                    (:python . (:analysis (:typeCheckingMode  "off"))))))
+
   (use-package flymake-ruff :ensure t)
 
   ;; config is not called here
@@ -530,8 +554,7 @@ sudo ln -s ~/Library/Python/3.9/bin/ruff /usr/local/bin/ruff
     				lambda ()
     				(when (derived-mode-p 'python-mode 'python-ts-mode)
     				  (flymake-ruff-load)
-    				  (flymake-start))))
-    	 )
+    				  (flymake-start)))))
     :mode (("\\.py\\'" . python-ts-mode))
     :init
     (require 'reformatter)
@@ -563,19 +586,43 @@ sudo ln -s ~/Library/Python/3.9/bin/ruff /usr/local/bin/ruff
     :ensure t
     :config
     (setq pyvenv-mode-line-indicator '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
-    (add-hook 'pyvenv-post-activate-hooks
-              #'(lambda ()
-                  (call-interactively #'eglot-reconnect)))
-    (pyvenv-mode +1))
+    (pyvenv-mode +1)
+    ;; Automatically restart LSP after activating new venv
+    (add-hook 'pyvenv-post-activate-hooks #'(lambda () (call-interactively #'eglot-reconnect))))
 #+end_src
 
 ** typescript prerequisites
 
 #+begin_src bash :tangle no
 npm install -g typescript typscript-language-server
+npm install -g vscode-langservers-extracted
 #+end_src
 
-** typescript
+** typscript lsp-mode
+
+#+begin_src emacs-lisp
+  (use-package lsp-eslint
+    :demand t
+    :after lsp-mode
+    :init
+    (setq lsp-diagnostics-provider :flycheck)
+    (setq lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
+    :config
+    (require 'lsp-eslint))
+
+  ;; Python major mode
+  (use-package typescript-ts-mode
+    :hook (((tsx-ts-mode typescript-ts-mode js-ts-mode) . lsp))
+    :mode (("\\.tsx\\'" . tsx-ts-mode)
+           ("\\.js\\'"  . typescript-ts-mode)
+           ("\\.mjs\\'" . typescript-ts-mode)
+           ("\\.mts\\'" . typescript-ts-mode)
+           ("\\.cjs\\'" . typescript-ts-mode)
+           ("\\.ts\\'"  . typescript-ts-mode)
+           ("\\.jsx\\'" . tsx-ts-mode)))
+#+end_src
+
+** typescript eglot
 
 #+begin_src emacs-lisp :tangle no
   ;; add eslint linting with flymake
@@ -584,8 +631,7 @@ npm install -g typescript typscript-language-server
     :ensure t
     :config
     (setq flymake-eslint-prefer-json-diagnostics t)
-    (setq flymake-eslint-executable "eslint_d")
-    )
+    (setq flymake-eslint-executable "eslint_d"))
 
   (use-package typescript-ts-mode
     :hook (
@@ -597,22 +643,18 @@ npm install -g typescript typscript-language-server
     				lambda ()
     				(when (derived-mode-p 'typescript-ts-mode 'tsx-ts-mode)
     				  (flymake-eslint-enable)
-    				  (flymake-start))))
-    	 )
+    				  (flymake-start)))))
     :mode (
      ("\\.ts\\'" . typescript-ts-mode) ("\\.js\\'" . typescript-ts-mode)
-     ("\\.tsx\\'" . tsx-ts-mode) ("\\.jsx\\'" . tsx-ts-mode)
-     )
+     ("\\.tsx\\'" . tsx-ts-mode) ("\\.jsx\\'" . tsx-ts-mode))
     :config
-    (message "ROIROI Hello from my config 222!")
     (require 'reformatter)
     (defcustom eslint-command "eslint_d" "ESLint command to use for formatting." :type 'string :group 'eslint-fix)
     (reformatter-define eslint-fix
       :program eslint-command
       :args (list "--fix-to-stdout" "--no-warn-ignored" "--stdin" "--stding-filename" (or (buffer-file-name) input file))
       :lighter " ESLintFix"
-      :group 'eslint-fix)
-    )
+      :group 'eslint-fix))
 #+end_src
 
 ** Markdown
@@ -759,6 +801,8 @@ npm install -g typescript typscript-language-server
     ;; Use consult-project-extra instead of project-find-file
     (define-key project-prefix-map (kbd "f") #'consult-project-extra-find))
 
+;;  (setq project-switch-commands '((project-find-file "Find file")))
+
   ;; adds actions for current item
   (use-package embark
     :ensure t
@@ -780,6 +824,45 @@ npm install -g typescript typscript-language-server
             ("e" . wgrep-change-to-wgrep-mode)
             ("C-x C-q" . wgrep-change-to-wgrep-mode)
             ("C-c C-c" . wgrep-finish-edit)))
+#+end_src
+
+* Completion at point
+
+#+begin_src emacs-lisp :tangle no
+    (use-package corfu
+      :ensure t
+      ;; Optional customizations
+      :custom
+      (corfu-cycle t)                 ; Allows cycling through candidates
+      (corfu-auto t)                  ; Enable auto completion
+      (corfu-auto-prefix 2)           ; Minimum length of prefix for completion
+      (corfu-auto-delay 0)            ; No delay for completion
+      (corfu-popupinfo-delay '(0.5 . 0.2))  ; Automatically update info popup after that numver of seconds
+      (corfu-preview-current 'insert) ; insert previewed candidate
+      (corfu-preselect 'prompt)
+      (corfu-on-exact-match nil)      ; Don't auto expand tempel snippets
+      ;; Optionally use TAB for cycling, default is `corfu-complete'.
+      :bind (:map corfu-map
+                  ("M-SPC"      . corfu-insert-separator)
+                  ("TAB"        . corfu-next)
+                  ([tab]        . corfu-next)
+                  ("S-TAB"      . corfu-previous)
+                  ([backtab]    . corfu-previous)
+                  ("S-<return>" . corfu-insert)
+                  ("RET"        . corfu-insert))
+
+      :init
+      (global-corfu-mode)
+      (corfu-history-mode)
+      (corfu-popupinfo-mode) ; Popup completion info
+      :config
+      (add-hook 'eshell-mode-hook
+                (lambda () (setq-local corfu-quit-at-boundary t
+                                       corfu-quit-no-match t
+                                       corfu-auto nil)
+                  (corfu-mode))
+                nil
+                t))
 #+end_src
 
 * Vterm

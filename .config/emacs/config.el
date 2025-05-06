@@ -197,23 +197,24 @@
 (use-package all-the-icons-completion :ensure t)
 (use-package all-the-icons-dired :ensure t)
 
+(set-face-attribute 'default nil :family "JetBrains Mono" :height 180)
 ;; (set-face-attribute 'variable-pitch nil
-;;                :family "Ubuntu"
-;;                :weight 'semi-bold
-;;                :height 120)
-;; (set-face-attribute 'fixed-pitch nil
-;;                :family "Jetbrains Mono"
-;;                :weight 'normal
-;;                :height 100)
-;; (set-face-attribute 'default nil
-;;                :family "Jetbrains Mono"
-;;                :weight 'normal
-;;                :height 110)
-;; ;; (add-to-list 'default-frame-alist '(font . "JetBrains Mono 14"))
-;; (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
-;; (set-face-attribute 'font-lock-function-name-face nil :slant 'italic)
-;; (set-face-attribute 'font-lock-variable-name-face nil :slant 'italic)
-;; (set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
+;;                     :family "Jetbrains Mono"
+;;                     :weight 'semi-bold
+;;                     :height 160)
+  ;; (set-face-attribute 'fixed-pitch nil
+  ;;                :family "Jetbrains Mono"
+  ;;                :weight 'normal
+  ;;                :height 100)
+  ;; (set-face-attribute 'default nil
+  ;;                :family "Jetbrains Mono"
+  ;;                :weight 'normal
+  ;;                :height 110)
+  ;; ;; (add-to-list 'default-frame-alist '(font . "JetBrains Mono 14"))
+  ;; (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
+  ;; (set-face-attribute 'font-lock-function-name-face nil :slant 'italic)
+  ;; (set-face-attribute 'font-lock-variable-name-face nil :slant 'italic)
+  ;; (set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
 
 ;; to see colors M-x modus-themes-list-colors-current
 ;; to see original palette C-h f Modus-vivendi-palette
@@ -235,6 +236,24 @@
 
 (use-package treesit
   :ensure nil
+  ;; basically does for example
+  ;; (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
+  :mode (("\\.tsx\\'" . tsx-ts-mode)
+         ("\\.js\\'"  . typescript-ts-mode)
+         ("\\.mjs\\'" . typescript-ts-mode)
+         ("\\.mts\\'" . typescript-ts-mode)
+         ("\\.cjs\\'" . typescript-ts-mode)
+         ("\\.ts\\'"  . typescript-ts-mode)
+         ("\\.jsx\\'" . tsx-ts-mode)
+         ("\\.json\\'" .  json-ts-mode)
+         ("\\.Dockerfile\\'" . dockerfile-ts-mode)
+         ("\\.ya?ml\\'" . yaml-ts-mode)
+	 ;; BitBake files
+         ("\\.bb\\'" . bash-ts-mode)
+         ("\\.bbappend\\'" . bash-ts-mode)
+         ("\\.bbclass\\'" . bash-ts-mode)
+         ("\\.inc\\'" . bash-ts-mode))
+
   :config
   (setq treesit-font-lock-level 4)
   ;; add lsp sources to be downloaded
@@ -251,6 +270,8 @@
   (add-to-list 'treesit-language-source-alist '(json "https://github.com/tree-sitter/tree-sitter-json"))
   (add-to-list 'treesit-language-source-alist '(toml "https://github.com/tree-sitter/tree-sitter-toml"))
   (add-to-list 'treesit-language-source-alist '(yaml "https://github.com/ikatyang/tree-sitter-yaml"))
+  (add-to-list 'treesit-language-source-alist '(c "https://github.com/tree-sitter/tree-sitter-c"))
+  (add-to-list 'treesit-language-source-alist '(cpp "https://github.com/tree-sitter/tree-sitter-cpp"))
   (add-to-list 'treesit-language-source-alist '(cmake "https://github.com/uyha/tree-sitter-cmake"))
   ;; until treesit has markdown-ts-mode I can use this.
   ;; It still doesn't highlight code blocks
@@ -269,73 +290,88 @@
   ;; now make <lang>-mode use <lang>-ts-mode instead
   ;; files that would normally open in python-mode should open in python-ts-mode
   (add-to-list 'major-mode-remap-alist '(bash-mode . bash-ts-mode))
+  (add-to-list 'major-mode-remap-alist '(sh-mode . bash-ts-mode))
   (add-to-list 'major-mode-remap-alist '(json-mode . json-ts-mode))
   (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
-
-  ;; BitBake files in sh-mode
-  (add-to-list 'auto-mode-alist '("\\.bb\\'" . sh-mode))
-  (add-to-list 'auto-mode-alist '("\\.bbappend\\'" . sh-mode))
-  (add-to-list 'auto-mode-alist '("\\.bbclass\\'" . sh-mode))
-  (add-to-list 'auto-mode-alist '("\\.inc\\'" . sh-mode))
-
-  ;; YAML files in tree-sitter yaml-ts-mode
-  (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
-  )
-
-(use-package lsp-mode
-  :init
-  (setq lsp-use-plists t)
-  :ensure t
-  :commands lsp
-  :custom
-  (lsp-prefer-flymake t) ;; We prefer flymake if available
-  (lsp-enable-snippet nil) ;; Optional: disable snippets
-  (lsp-completion-provider :none) ;; stop using company as #'completion-at-point
-  (lsp-headerline-breadcrumb-enable nil)
-  (lsp-log-io nil)         ;; Debug: can set to t if you want to debug LSP issues
-  (lsp-log-io t)
+  (add-to-list 'major-mode-remap-alist '(css-mode . css-ts-mode))
+  (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
+  (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
   )
 
 (use-package reformatter :ensure t)
+
+(use-package flycheck
+  :ensure t
+  :hook (lsp-mode . flycheck-mode))
+
+(use-package lsp-mode
+    :init
+    (setq lsp-use-plists t)
+    :ensure t
+    :commands lsp
+    :custom
+    ;; (lsp-prefer-flymake t) ;; We prefer flymake if available
+    (lsp-diagnostics-provider :flycheck)
+    (lsp-enable-snippet nil) ;; Optional: disable snippets
+    (lsp-completion-provider :none) ;; stop using company as #'completion-at-point
+    (lsp-headerline-breadcrumb-enable nil)
+    (lsp-log-io t)) ;; Debug: can set to t if you want to debug LSP issues
+
+;;  (use-package lsp-completion
+;;    :no-require
+;;    :hook ((lsp-mode . lsp-completion-mode)))
 
 ;; Optional: lsp-ui for better UI (like sideline diagnostics)
 (use-package lsp-ui
     :ensure t
     :commands lsp-ui-mode)
 
-  ;; Pyright LSP setup. Needs require 'lsp-pyright somewhere before loading lsp
-  (use-package lsp-pyright
-    :ensure t
-    :after lsp-mode
-    :custom
-    (lsp-pyright-type-checking-mode "off") ;; or "basic" / "strict"
-    (lsp-pyright-auto-import-completions t)
-    (lsp-pyright-disable-organize-imports t)
-    )
+;; Pyright LSP setup. Needs require 'lsp-pyright somewhere before loading lsp
+(use-package lsp-pyright
+  :ensure t
+  :after lsp-mode
+  :custom
+  (lsp-pyright-type-checking-mode "off") ;; or "basic" / "strict"
+  (lsp-pyright-auto-import-completions t)
+  (lsp-pyright-disable-organize-imports t))
 
-  ;; Python major mode
-  (use-package python-ts-mode
-    :hook (
-  	 (python-ts-mode . (lambda()
+;; Python major mode
+(use-package python-ts-mode
+  :hook ((python-ts-mode . (lambda()
   			     (require 'lsp-pyright)
   			     ;; we need for another package as its already included in lsp-mode
   			     (require 'lsp-ruff)
-  			     (lsp)))
-    	 )
-    :mode (("\\.py\\'" . python-ts-mode))
-    )
+  			     (lsp))))
+  :mode (("\\.py\\'" . python-ts-mode)))
 
-  ;; Pyvenv for managing Python virtualenvs
-  (use-package pyvenv
-    :ensure t
-    :config
-    (setq pyvenv-mode-line-indicator '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
-    (pyvenv-mode 1)
-    ;; Automatically restart LSP after activating new venv
-    (add-hook 'pyvenv-post-activate-hooks
-              (lambda ()
-                (when (bound-and-true-p lsp-mode)
-                  (lsp-restart-workspace)))))
+;; Pyvenv for managing Python virtualenvs
+(use-package pyvenv
+  :ensure t
+  :config
+  (setq pyvenv-mode-line-indicator '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
+  (pyvenv-mode 1)
+  ;; Automatically restart LSP after activating new venv
+  (add-hook 'pyvenv-post-activate-hooks (lambda () (when (bound-and-true-p lsp-mode) (lsp-restart-workspace)))))
+
+(use-package lsp-eslint
+  :demand t
+  :after lsp-mode
+  :init
+  (setq lsp-diagnostics-provider :flycheck)
+  (setq lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
+  :config
+  (require 'lsp-eslint))
+
+;; Python major mode
+(use-package typescript-ts-mode
+  :hook (((tsx-ts-mode typescript-ts-mode js-ts-mode) . lsp))
+  :mode (("\\.tsx\\'" . tsx-ts-mode)
+         ("\\.js\\'"  . typescript-ts-mode)
+         ("\\.mjs\\'" . typescript-ts-mode)
+         ("\\.mts\\'" . typescript-ts-mode)
+         ("\\.cjs\\'" . typescript-ts-mode)
+         ("\\.ts\\'"  . typescript-ts-mode)
+         ("\\.jsx\\'" . tsx-ts-mode)))
 
 (use-package markdown-mode
   :ensure t
@@ -400,91 +436,90 @@
   (setq blamer-min-offset 70))
 
 ;; save minibuffer histories. Vertico uses to put recently selected options at the top.
-(savehist-mode 1)
-;; save recently visited files. Consult uses it to put recent files options at the top.
-(recentf-mode 1)
+  (savehist-mode 1)
+  ;; save recently visited files. Consult uses it to put recent files options at the top.
+  (recentf-mode 1)
 
-;; Adds out-of-order pattern matching algorithm
-(use-package orderless
-  :ensure t
-  :config
-  (setq completion-styles '(orderless basic)))
+  ;; Adds out-of-order pattern matching algorithm
+  (use-package orderless
+    :ensure t
+    :config
+    (setq completion-styles '(orderless basic)))
 
-;; Minibuffer live ui
-(use-package vertico
-  :ensure t
-  :config
-  (setq vertico-cycle t)
-  (vertico-mode))
+    ;; Minibuffer live ui
+  (use-package vertico
+    :ensure t
+    :config
+    (setq vertico-cycle t)
+    (vertico-mode))
 
-;; Adds item annotations
-(use-package marginalia
-  :ensure t
-  :after vertico
-  :bind (:map minibuffer-local-map ("M-A" . marginalia-cycle))
-  :init
-  (marginalia-mode)
-  :config
-  (setq marginalia-align 'right)
-  )
+  ;; Adds item annotations
+  (use-package marginalia
+    :ensure t
+    :after vertico
+    :bind (:map minibuffer-local-map ("M-A" . marginalia-cycle))
+    :init
+    (marginalia-mode)
+    :config
+    (setq marginalia-align 'right))
 
-;; Gives enhanced completion functions we need to bind
-;; Gives previews for current item
-;; binds M-s as opposed to native C-s C-r
-(use-package consult
-  :ensure t
-  :bind (;; A recursive grep
-         ("M-s M-g" . consult-ripgrep)
-       ("M-s M-G" . consult-grep)
-         ;; Search for files names recursively
-         ("M-s M-f" . consult-fd)
-       ("M-s M-F" . consult-find)
-         ;; Search through the outline (headings) of the file
-         ("M-s M-o" . consult-outline)
-         ;; Search the current buffer
-         ("M-s M-l" . consult-line)
-         ;; Switch to another buffer/bookmarked/recent file.
-         ("M-s M-b" . consult-buffer)
-       ;; search on imenu
-       ("M-s M-i" . consult-imenu)
-       ;; change theme
-       ("M-s M-t" . consult-theme)
-       ;; search mark
-       ("M-s M-m" . consult-mark)
-       ;; search help info
-       ("M-s M-h" . consult-info)
-       )
-  :config
-  ;; Use `consult-completion-in-region' if Vertico is enabled.
-  ;; Otherwise use the default `completion--in-region' function.
-  (setq completion-in-region-function
-      (lambda (&rest args)
-        (apply (if vertico-mode
-                   #'consult-completion-in-region
-                 #'completion--in-region)
-               args))))
+  ;; Gives enhanced completion functions we need to bind
+  ;; Gives previews for current item
+  ;; binds M-s as opposed to native C-s C-r
+  (use-package consult
+    :ensure t
+    :bind (
+           ("M-s M-g" . consult-ripgrep)
+           ("M-s M-G" . consult-grep)
+           ("M-s M-f" . consult-fd)
+           ("M-s M-F" . consult-find)
+           ("M-s M-l" . consult-line)
+           ("M-s M-b" . consult-buffer)
+           ("M-s M-o" . consult-outline)
+           ("M-s M-i" . consult-imenu)
+           ("M-s M-t" . consult-theme)
+           ("M-s M-m" . consult-mark)
+           ("M-s M-h" . consult-info))
+      :config
+      ;; Use `consult-completion-in-region' if Vertico is enabled.
+      ;; Otherwise use the default `completion--in-region' function.
+      (setq completion-in-region-function
+          (lambda (&rest args)
+            (apply (if vertico-mode
+                       #'consult-completion-in-region
+                     #'completion--in-region)
+                   args))))
 
-;; adds actions for current item
-(use-package embark
-  :ensure t
-  :bind (("C-." . embark-act)
-         :map minibuffer-local-map
-         ("C-c C-c" . embark-collect)
-         ("C-c C-e" . embark-export)))
+  (use-package consult-project-extra
+    :ensure t
+    :after consult
+    :config
+    ;; Use consult-project-extra instead of project-find-file
+    (define-key project-prefix-map (kbd "f") #'consult-project-extra-find))
 
-;; adds embark actions to consult functions
-(use-package embark-consult
-  :ensure t
-  :hook (embark-collect-mode . consult-preview-at-point-mode))
+;;  (setq project-switch-commands '((project-find-file "Find file")))
 
-;; edit the results of a grep search  while inside a `grep-mode' buffer.
-;; toggle editable mode, make changes, type C-c C-c to confirm | C-c C-k to abort.
-(use-package wgrep
-  :ensure t
-  :bind ( :map grep-mode-map
-          ("e" . wgrep-change-to-wgrep-mode)
-          ("C-x C-q" . wgrep-change-to-wgrep-mode)
-          ("C-c C-c" . wgrep-finish-edit)))
+  ;; adds actions for current item
+  (use-package embark
+    :ensure t
+    :bind (("C-." . embark-act)
+           :map minibuffer-local-map
+           ("C-c C-c" . embark-collect)
+           ("C-c C-e" . embark-export)))
+
+  ;; adds embark actions to consult functions
+  (use-package embark-consult
+    :ensure t
+    :hook (embark-collect-mode . consult-preview-at-point-mode))
+
+  ;; edit the results of a grep search  while inside a `grep-mode' buffer.
+  ;; toggle editable mode, make changes, type C-c C-c to confirm | C-c C-k to abort.
+  (use-package wgrep
+    :ensure t
+    :bind ( :map grep-mode-map
+            ("e" . wgrep-change-to-wgrep-mode)
+            ("C-x C-q" . wgrep-change-to-wgrep-mode)
+            ("C-c C-c" . wgrep-finish-edit)))
 
 (use-package vterm
   :ensure t
