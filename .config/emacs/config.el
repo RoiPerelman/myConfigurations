@@ -300,31 +300,57 @@
 
 (use-package reformatter :ensure t)
 
+(use-package lsp-mode
+  :ensure t
+  :commands lsp
+  :custom
+  ;; (lsp-prefer-flymake t) ;; We prefer flymake if available
+  (lsp-diagnostics-provider :flycheck)
+  (lsp-diagnostic-package :flycheck)
+  (lsp-enable-snippet nil) ;; Optional: disable snippets
+  (lsp-completion-provider :none) ;; stop using company as #'completion-at-point
+  (lsp-headerline-breadcrumb-enable nil)
+  (lsp-log-io nil) ;; Debug: can set to t if you want to debug LSP issues
+  :init
+  (setq lsp-use-plists t)
+  ;; https://github.com/blahgeek/emacs-lsp-booster
+  (defun lsp-booster--advice-json-parse (old-fn &rest args)
+    "Try to parse bytecode instead of json."
+    (or
+     (when (equal (following-char) ?#)
+       (let ((bytecode (read (current-buffer))))
+	 (when (byte-code-function-p bytecode)
+           (funcall bytecode))))
+     (apply old-fn args)))
+  (advice-add (if (progn (require 'json)
+			 (fboundp 'json-parse-buffer))
+                  'json-parse-buffer
+		'json-read)
+              :around
+              #'lsp-booster--advice-json-parse)
+
+  (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+    "Prepend emacs-lsp-booster command to lsp CMD."
+    (let ((orig-result (funcall old-fn cmd test?)))
+      (if (and (not test?)                             ;; for check lsp-server-present?
+               (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+               lsp-use-plists
+               (not (functionp 'json-rpc-connection))  ;; native json-rpc
+               (executable-find "emacs-lsp-booster"))
+          (progn
+            (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+              (setcar orig-result command-from-exec-path))
+            (message "Using emacs-lsp-booster for %s!" orig-result)
+            (cons "emacs-lsp-booster" orig-result))
+	orig-result)))
+  (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command))
+
 (use-package flycheck
   :ensure t
+  :after lsp-mode
   :hook (lsp-mode . flycheck-mode))
 
-(use-package lsp-mode
-    :init
-    (setq lsp-use-plists t)
-    :ensure t
-    :commands lsp
-    :custom
-    ;; (lsp-prefer-flymake t) ;; We prefer flymake if available
-    (lsp-diagnostics-provider :flycheck)
-    (lsp-enable-snippet nil) ;; Optional: disable snippets
-    (lsp-completion-provider :none) ;; stop using company as #'completion-at-point
-    (lsp-headerline-breadcrumb-enable nil)
-    (lsp-log-io t)) ;; Debug: can set to t if you want to debug LSP issues
-
-;;  (use-package lsp-completion
-;;    :no-require
-;;    :hook ((lsp-mode . lsp-completion-mode)))
-
-;; Optional: lsp-ui for better UI (like sideline diagnostics)
-(use-package lsp-ui
-    :ensure t
-    :commands lsp-ui-mode)
+(use-package consult-flycheck :ensure t :after consult)
 
 ;; Pyright LSP setup. Needs require 'lsp-pyright somewhere before loading lsp
 (use-package lsp-pyright
@@ -341,7 +367,7 @@
   			     (require 'lsp-pyright)
   			     ;; we need for another package as its already included in lsp-mode
   			     (require 'lsp-ruff)
-  			     (lsp))))
+  			     (lsp-deferred))))
   :mode (("\\.py\\'" . python-ts-mode)))
 
 ;; Pyvenv for managing Python virtualenvs
@@ -357,14 +383,13 @@
   :demand t
   :after lsp-mode
   :init
-  (setq lsp-diagnostics-provider :flycheck)
   (setq lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
   :config
   (require 'lsp-eslint))
 
 ;; Python major mode
 (use-package typescript-ts-mode
-  :hook (((tsx-ts-mode typescript-ts-mode js-ts-mode) . lsp))
+  :hook (((tsx-ts-mode typescript-ts-mode js-ts-mode) . lsp-deferred))
   :mode (("\\.tsx\\'" . tsx-ts-mode)
          ("\\.js\\'"  . typescript-ts-mode)
          ("\\.mjs\\'" . typescript-ts-mode)
@@ -436,90 +461,85 @@
   (setq blamer-min-offset 70))
 
 ;; save minibuffer histories. Vertico uses to put recently selected options at the top.
-  (savehist-mode 1)
-  ;; save recently visited files. Consult uses it to put recent files options at the top.
-  (recentf-mode 1)
+(savehist-mode 1)
+;; save recently visited files. Consult uses it to put recent files options at the top.
+(recentf-mode 1)
 
-  ;; Adds out-of-order pattern matching algorithm
-  (use-package orderless
-    :ensure t
-    :config
-    (setq completion-styles '(orderless basic)))
+;; Adds out-of-order pattern matching algorithm
+(use-package orderless
+  :ensure t
+  :config
+  (setq completion-styles '(orderless basic)))
 
-    ;; Minibuffer live ui
-  (use-package vertico
-    :ensure t
-    :config
-    (setq vertico-cycle t)
-    (vertico-mode))
+(use-package vertico
+  :ensure t
+  :config
+  (setq vertico-cycle t)
+  (vertico-mode))
 
-  ;; Adds item annotations
-  (use-package marginalia
-    :ensure t
-    :after vertico
-    :bind (:map minibuffer-local-map ("M-A" . marginalia-cycle))
-    :init
-    (marginalia-mode)
-    :config
-    (setq marginalia-align 'right))
+;; Adds item annotations
+(use-package marginalia
+  :ensure t
+  :after vertico
+  :bind (:map minibuffer-local-map ("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode)
+  :config
+  (setq marginalia-align 'right))
 
-  ;; Gives enhanced completion functions we need to bind
-  ;; Gives previews for current item
-  ;; binds M-s as opposed to native C-s C-r
-  (use-package consult
-    :ensure t
-    :bind (
-           ("M-s M-g" . consult-ripgrep)
-           ("M-s M-G" . consult-grep)
-           ("M-s M-f" . consult-fd)
-           ("M-s M-F" . consult-find)
-           ("M-s M-l" . consult-line)
-           ("M-s M-b" . consult-buffer)
-           ("M-s M-o" . consult-outline)
-           ("M-s M-i" . consult-imenu)
-           ("M-s M-t" . consult-theme)
-           ("M-s M-m" . consult-mark)
-           ("M-s M-h" . consult-info))
-      :config
-      ;; Use `consult-completion-in-region' if Vertico is enabled.
-      ;; Otherwise use the default `completion--in-region' function.
-      (setq completion-in-region-function
-          (lambda (&rest args)
-            (apply (if vertico-mode
-                       #'consult-completion-in-region
-                     #'completion--in-region)
-                   args))))
+;; Gives enhanced completion functions we need to bind
+;; Gives previews for current item
+;; binds M-s as opposed to native C-s C-r
+(use-package consult
+  :ensure t
+  :bind (
+         ("M-s M-g" . consult-ripgrep)
+         ("M-s M-G" . consult-grep)
+         ("M-s M-f" . consult-fd)
+         ("M-s M-F" . consult-find)
+         ("M-s M-l" . consult-line)
+         ("M-s M-b" . consult-buffer)
+         ("M-s M-o" . consult-outline)
+         ("M-s M-i" . consult-imenu)
+         ("M-s M-t" . consult-theme)
+         ("M-s M-m" . consult-mark)
+         ("M-s M-h" . consult-info))
+  :config
+  ;; Use `consult-completion-in-region' if Vertico is enabled.
+  ;; Otherwise use the default `completion--in-region' function.
+  (setq completion-in-region-function
+        (lambda (&rest args)
+          (apply (if vertico-mode
+                     #'consult-completion-in-region
+                   #'completion--in-region)
+                 args))))
 
-  (use-package consult-project-extra
-    :ensure t
-    :after consult
-    :config
-    ;; Use consult-project-extra instead of project-find-file
-    (define-key project-prefix-map (kbd "f") #'consult-project-extra-find))
+(use-package consult-project-extra
+  :ensure t
+  :after consult
+  :bind (("C-c p f" . consult-project-extra-find)))
 
-;;  (setq project-switch-commands '((project-find-file "Find file")))
+;; adds actions for current item
+(use-package embark
+  :ensure t
+  :bind (("C-." . embark-act)
+         :map minibuffer-local-map
+         ("C-c C-c" . embark-collect)
+         ("C-c C-e" . embark-export)))
 
-  ;; adds actions for current item
-  (use-package embark
-    :ensure t
-    :bind (("C-." . embark-act)
-           :map minibuffer-local-map
-           ("C-c C-c" . embark-collect)
-           ("C-c C-e" . embark-export)))
+;; adds embark actions to consult functions
+(use-package embark-consult
+  :ensure t
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
 
-  ;; adds embark actions to consult functions
-  (use-package embark-consult
-    :ensure t
-    :hook (embark-collect-mode . consult-preview-at-point-mode))
-
-  ;; edit the results of a grep search  while inside a `grep-mode' buffer.
-  ;; toggle editable mode, make changes, type C-c C-c to confirm | C-c C-k to abort.
-  (use-package wgrep
-    :ensure t
-    :bind ( :map grep-mode-map
-            ("e" . wgrep-change-to-wgrep-mode)
-            ("C-x C-q" . wgrep-change-to-wgrep-mode)
-            ("C-c C-c" . wgrep-finish-edit)))
+;; edit the results of a grep search  while inside a `grep-mode' buffer.
+;; toggle editable mode, make changes, type C-c C-c to confirm | C-c C-k to abort.
+(use-package wgrep
+  :ensure t
+  :bind ( :map grep-mode-map
+          ("e" . wgrep-change-to-wgrep-mode)
+          ("C-x C-q" . wgrep-change-to-wgrep-mode)
+          ("C-c C-c" . wgrep-finish-edit)))
 
 (use-package vterm
   :ensure t

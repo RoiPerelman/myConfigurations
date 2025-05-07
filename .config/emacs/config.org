@@ -26,22 +26,25 @@
 - [[#theme][Theme]]
 - [[#treesitter][Treesitter]]
 - [[#lsp--diagnostics--formatting][Lsp + Diagnostics + Formatting]]
+  - [[#prerequisites][Prerequisites]]
   - [[#reformatter-check-apheleia-as-an-alternative][Reformatter (check apheleia as an alternative)]]
-  - [[#diagnostics][Diagnostics]]
-  - [[#lsp-mode][LSP Mode]]
-  - [[#python-prerequisistes][Python Prerequisistes]]
-  - [[#python-lsp-mode][python lsp-mode]]
-  - [[#python-eglot][Python eglot]]
-  - [[#typescript-prerequisites][typescript prerequisites]]
-  - [[#typscript-lsp-mode][typscript lsp-mode]]
-  - [[#typescript-eglot][typescript eglot]]
+  - [[#eglot-tangle-no][Eglot (:tangle no)]]
+  - [[#lsp-mode][LSP-Mode]]
   - [[#markdown][Markdown]]
 - [[#git][Git]]
   - [[#magit][Magit]]
   - [[#git-gutter][Git Gutter]]
   - [[#git-blamer][Git Blamer]]
 - [[#minibuffer-completions][Minibuffer-Completions]]
+  - [[#general][General]]
+  - [[#orderless][Orderless]]
+  - [[#vertico][Vertico]]
+  - [[#marginalia][Marginalia]]
+  - [[#consult][Consult]]
+  - [[#embark][Embark]]
 - [[#completion-at-point][Completion at point]]
+  - [[#corfu][Corfu]]
+- [[#wgrep][Wgrep]]
 - [[#vterm][Vterm]]
 - [[#org-mode][Org Mode]]
 - [[#sudo][Sudo]]
@@ -441,6 +444,30 @@ Use M-x treesit-install-language-grammer to install grammers manually in case of
 
 * Lsp + Diagnostics + Formatting
 
+** Prerequisites
+*** Python Prerequisistes
+
+**** pyright language server
+
+#+begin_src bash :tangle no
+npm install -g pyright
+#+end_src
+
+**** ruff
+
+#+begin_src bash :tangle no
+pip3 install --user ruff
+# and in mac I believe u need to add the following in case ruff is missing globally
+sudo ln -s ~/Library/Python/3.9/bin/ruff /usr/local/bin/ruff
+#+end_src
+
+*** typescript prerequisites
+
+#+begin_src bash :tangle no
+npm install -g typescript typscript-language-server
+npm install -g vscode-langservers-extracted
+#+end_src
+
 ** Reformatter (check apheleia as an alternative)
 
 so each language can use reformatter to add formatting commands
@@ -449,88 +476,16 @@ so each language can use reformatter to add formatting commands
   (use-package reformatter :ensure t)
 #+end_src
 
-** Diagnostics
+** Eglot (:tangle no)
 
-#+begin_src emacs-lisp
-(use-package flycheck
-  :ensure t
-  :hook (lsp-mode . flycheck-mode))
+#+begin_src emacs-lisp :tangle no
+(use-package eglot-booster
+    :vc (:url "https://github.com/jdtsmith/eglot-booster" :branch "main")
+	:after eglot
+	:config	(eglot-booster-mode))
 #+end_src
 
-** LSP Mode
-#+begin_src emacs-lisp
-    (use-package lsp-mode
-      :init
-      (setq lsp-use-plists t)
-      :ensure t
-      :commands lsp
-      :custom
-      ;; (lsp-prefer-flymake t) ;; We prefer flymake if available
-      (lsp-diagnostics-provider :flycheck)
-      (lsp-enable-snippet nil) ;; Optional: disable snippets
-      (lsp-completion-provider :none) ;; stop using company as #'completion-at-point
-      (lsp-headerline-breadcrumb-enable nil)
-      (lsp-log-io t)) ;; Debug: can set to t if you want to debug LSP issues
-
-  ;;  (use-package lsp-completion
-  ;;    :no-require
-  ;;    :hook ((lsp-mode . lsp-completion-mode)))
-#+end_src
-
-** Python Prerequisistes
-
-*** pyright language server
-
-#+begin_src bash :tangle no
-npm install -g pyright
-#+end_src
-
-*** ruff
-
-#+begin_src bash :tangle no
-pip3 install --user ruff
-# and in mac I believe u need to add the following in case ruff is missing globally
-sudo ln -s ~/Library/Python/3.9/bin/ruff /usr/local/bin/ruff
-#+end_src
-
-** python lsp-mode
-
-#+begin_src emacs-lisp
-
-    ;; Optional: lsp-ui for better UI (like sideline diagnostics)
-  (use-package lsp-ui
-      :ensure t
-      :commands lsp-ui-mode)
-
-  ;; Pyright LSP setup. Needs require 'lsp-pyright somewhere before loading lsp
-  (use-package lsp-pyright
-    :ensure t
-    :after lsp-mode
-    :custom
-    (lsp-pyright-type-checking-mode "off") ;; or "basic" / "strict"
-    (lsp-pyright-auto-import-completions t)
-    (lsp-pyright-disable-organize-imports t))
-
-  ;; Python major mode
-  (use-package python-ts-mode
-    :hook ((python-ts-mode . (lambda()
-    			     (require 'lsp-pyright)
-    			     ;; we need for another package as its already included in lsp-mode
-    			     (require 'lsp-ruff)
-    			     (lsp))))
-    :mode (("\\.py\\'" . python-ts-mode)))
-
-  ;; Pyvenv for managing Python virtualenvs
-  (use-package pyvenv
-    :ensure t
-    :config
-    (setq pyvenv-mode-line-indicator '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
-    (pyvenv-mode 1)
-    ;; Automatically restart LSP after activating new venv
-    (add-hook 'pyvenv-post-activate-hooks (lambda () (when (bound-and-true-p lsp-mode) (lsp-restart-workspace)))))
-#+end_src
-
-** Python eglot
+*** Python eglot
 
 #+begin_src emacs-lisp :tangle no
   ;; add ruff linting with flymake
@@ -591,38 +546,7 @@ sudo ln -s ~/Library/Python/3.9/bin/ruff /usr/local/bin/ruff
     (add-hook 'pyvenv-post-activate-hooks #'(lambda () (call-interactively #'eglot-reconnect))))
 #+end_src
 
-** typescript prerequisites
-
-#+begin_src bash :tangle no
-npm install -g typescript typscript-language-server
-npm install -g vscode-langservers-extracted
-#+end_src
-
-** typscript lsp-mode
-
-#+begin_src emacs-lisp
-  (use-package lsp-eslint
-    :demand t
-    :after lsp-mode
-    :init
-    (setq lsp-diagnostics-provider :flycheck)
-    (setq lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
-    :config
-    (require 'lsp-eslint))
-
-  ;; Python major mode
-  (use-package typescript-ts-mode
-    :hook (((tsx-ts-mode typescript-ts-mode js-ts-mode) . lsp))
-    :mode (("\\.tsx\\'" . tsx-ts-mode)
-           ("\\.js\\'"  . typescript-ts-mode)
-           ("\\.mjs\\'" . typescript-ts-mode)
-           ("\\.mts\\'" . typescript-ts-mode)
-           ("\\.cjs\\'" . typescript-ts-mode)
-           ("\\.ts\\'"  . typescript-ts-mode)
-           ("\\.jsx\\'" . tsx-ts-mode)))
-#+end_src
-
-** typescript eglot
+*** typescript eglot
 
 #+begin_src emacs-lisp :tangle no
   ;; add eslint linting with flymake
@@ -655,6 +579,120 @@ npm install -g vscode-langservers-extracted
       :args (list "--fix-to-stdout" "--no-warn-ignored" "--stdin" "--stding-filename" (or (buffer-file-name) input file))
       :lighter " ESLintFix"
       :group 'eslint-fix))
+#+end_src
+
+** LSP-Mode
+
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :ensure t
+    :commands lsp
+    :custom
+    ;; (lsp-prefer-flymake t) ;; We prefer flymake if available
+    (lsp-diagnostics-provider :flycheck)
+    (lsp-diagnostic-package :flycheck)
+    (lsp-enable-snippet nil) ;; Optional: disable snippets
+    (lsp-completion-provider :none) ;; stop using company as #'completion-at-point
+    (lsp-headerline-breadcrumb-enable nil)
+    (lsp-log-io nil) ;; Debug: can set to t if you want to debug LSP issues
+    :init
+    (setq lsp-use-plists t)
+    ;; https://github.com/blahgeek/emacs-lsp-booster
+    (defun lsp-booster--advice-json-parse (old-fn &rest args)
+      "Try to parse bytecode instead of json."
+      (or
+       (when (equal (following-char) ?#)
+         (let ((bytecode (read (current-buffer))))
+  	 (when (byte-code-function-p bytecode)
+             (funcall bytecode))))
+       (apply old-fn args)))
+    (advice-add (if (progn (require 'json)
+  			 (fboundp 'json-parse-buffer))
+                    'json-parse-buffer
+  		'json-read)
+                :around
+                #'lsp-booster--advice-json-parse)
+
+    (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+      "Prepend emacs-lsp-booster command to lsp CMD."
+      (let ((orig-result (funcall old-fn cmd test?)))
+        (if (and (not test?)                             ;; for check lsp-server-present?
+                 (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+                 lsp-use-plists
+                 (not (functionp 'json-rpc-connection))  ;; native json-rpc
+                 (executable-find "emacs-lsp-booster"))
+            (progn
+              (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+                (setcar orig-result command-from-exec-path))
+              (message "Using emacs-lsp-booster for %s!" orig-result)
+              (cons "emacs-lsp-booster" orig-result))
+  	orig-result)))
+    (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command))
+#+end_src
+
+*** Flycheck Diagnostics
+
+#+begin_src emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :after lsp-mode
+    :hook (lsp-mode . flycheck-mode))
+
+  (use-package consult-flycheck :ensure t :after consult)
+#+end_src
+
+*** python lsp-mode
+
+#+begin_src emacs-lisp
+  ;; Pyright LSP setup. Needs require 'lsp-pyright somewhere before loading lsp
+  (use-package lsp-pyright
+    :ensure t
+    :after lsp-mode
+    :custom
+    (lsp-pyright-type-checking-mode "off") ;; or "basic" / "strict"
+    (lsp-pyright-auto-import-completions t)
+    (lsp-pyright-disable-organize-imports t))
+
+  ;; Python major mode
+  (use-package python-ts-mode
+    :hook ((python-ts-mode . (lambda()
+    			     (require 'lsp-pyright)
+    			     ;; we need for another package as its already included in lsp-mode
+    			     (require 'lsp-ruff)
+    			     (lsp-deferred))))
+    :mode (("\\.py\\'" . python-ts-mode)))
+
+  ;; Pyvenv for managing Python virtualenvs
+  (use-package pyvenv
+    :ensure t
+    :config
+    (setq pyvenv-mode-line-indicator '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
+    (pyvenv-mode 1)
+    ;; Automatically restart LSP after activating new venv
+    (add-hook 'pyvenv-post-activate-hooks (lambda () (when (bound-and-true-p lsp-mode) (lsp-restart-workspace)))))
+#+end_src
+
+*** typescript lsp-mode
+
+#+begin_src emacs-lisp
+  (use-package lsp-eslint
+    :demand t
+    :after lsp-mode
+    :init
+    (setq lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
+    :config
+    (require 'lsp-eslint))
+
+  ;; Python major mode
+  (use-package typescript-ts-mode
+    :hook (((tsx-ts-mode typescript-ts-mode js-ts-mode) . lsp-deferred))
+    :mode (("\\.tsx\\'" . tsx-ts-mode)
+           ("\\.js\\'"  . typescript-ts-mode)
+           ("\\.mjs\\'" . typescript-ts-mode)
+           ("\\.mts\\'" . typescript-ts-mode)
+           ("\\.cjs\\'" . typescript-ts-mode)
+           ("\\.ts\\'"  . typescript-ts-mode)
+           ("\\.jsx\\'" . tsx-ts-mode)))
 #+end_src
 
 ** Markdown
@@ -738,25 +776,38 @@ npm install -g vscode-langservers-extracted
 
 * Minibuffer-Completions
 
+** General
+
 #+begin_src emacs-lisp
   ;; save minibuffer histories. Vertico uses to put recently selected options at the top.
   (savehist-mode 1)
   ;; save recently visited files. Consult uses it to put recent files options at the top.
   (recentf-mode 1)
+#+end_src
+
+** Orderless
+
+#+begin_src emacs-lisp
 
   ;; Adds out-of-order pattern matching algorithm
   (use-package orderless
     :ensure t
     :config
     (setq completion-styles '(orderless basic)))
+#+end_src
 
-    ;; Minibuffer live ui
+** Vertico
+
+#+begin_src emacs-lisp
   (use-package vertico
     :ensure t
     :config
     (setq vertico-cycle t)
     (vertico-mode))
+#+end_src
 
+** Marginalia
+#+begin_src emacs-lisp
   ;; Adds item annotations
   (use-package marginalia
     :ensure t
@@ -766,7 +817,11 @@ npm install -g vscode-langservers-extracted
     (marginalia-mode)
     :config
     (setq marginalia-align 'right))
+#+end_src
 
+** Consult
+
+#+begin_src emacs-lisp
   ;; Gives enhanced completion functions we need to bind
   ;; Gives previews for current item
   ;; binds M-s as opposed to native C-s C-r
@@ -784,10 +839,10 @@ npm install -g vscode-langservers-extracted
            ("M-s M-t" . consult-theme)
            ("M-s M-m" . consult-mark)
            ("M-s M-h" . consult-info))
-      :config
-      ;; Use `consult-completion-in-region' if Vertico is enabled.
-      ;; Otherwise use the default `completion--in-region' function.
-      (setq completion-in-region-function
+    :config
+    ;; Use `consult-completion-in-region' if Vertico is enabled.
+    ;; Otherwise use the default `completion--in-region' function.
+    (setq completion-in-region-function
           (lambda (&rest args)
             (apply (if vertico-mode
                        #'consult-completion-in-region
@@ -797,12 +852,12 @@ npm install -g vscode-langservers-extracted
   (use-package consult-project-extra
     :ensure t
     :after consult
-    :config
-    ;; Use consult-project-extra instead of project-find-file
-    (define-key project-prefix-map (kbd "f") #'consult-project-extra-find))
+    :bind (("C-c p f" . consult-project-extra-find)))
+#+end_src
 
-;;  (setq project-switch-commands '((project-find-file "Find file")))
+** Embark
 
+#+begin_src emacs-lisp
   ;; adds actions for current item
   (use-package embark
     :ensure t
@@ -815,18 +870,11 @@ npm install -g vscode-langservers-extracted
   (use-package embark-consult
     :ensure t
     :hook (embark-collect-mode . consult-preview-at-point-mode))
-
-  ;; edit the results of a grep search  while inside a `grep-mode' buffer.
-  ;; toggle editable mode, make changes, type C-c C-c to confirm | C-c C-k to abort.
-  (use-package wgrep
-    :ensure t
-    :bind ( :map grep-mode-map
-            ("e" . wgrep-change-to-wgrep-mode)
-            ("C-x C-q" . wgrep-change-to-wgrep-mode)
-            ("C-c C-c" . wgrep-finish-edit)))
 #+end_src
 
 * Completion at point
+
+** Corfu
 
 #+begin_src emacs-lisp :tangle no
     (use-package corfu
@@ -864,6 +912,20 @@ npm install -g vscode-langservers-extracted
                 nil
                 t))
 #+end_src
+
+* Wgrep
+
+#+begin_src emacs-lisp
+  ;; edit the results of a grep search  while inside a `grep-mode' buffer.
+  ;; toggle editable mode, make changes, type C-c C-c to confirm | C-c C-k to abort.
+  (use-package wgrep
+    :ensure t
+    :bind ( :map grep-mode-map
+            ("e" . wgrep-change-to-wgrep-mode)
+            ("C-x C-q" . wgrep-change-to-wgrep-mode)
+            ("C-c C-c" . wgrep-finish-edit)))
+#+end_src
+
 
 * Vterm
 

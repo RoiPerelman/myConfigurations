@@ -97,3 +97,7 @@ fi
 if [ -f ~/.inspektoconfig ]; then
     source ~/.inspektoconfig
 fi
+
+if [ -f "$HOME/.cargo/env" ]; then
+  source "$HOME/.cargo/env"
+fi
