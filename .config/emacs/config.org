@@ -14,14 +14,17 @@
   - [[#frame-management][Frame Management]]
   - [[#no-littering][No Littering]]
   - [[#mac-support][Mac support]]
+  - [[#c-g-upgrade][C-g upgrade]]
+  - [[#syntax-entry][Syntax entry]]
   - [[#isearch][Isearch]]
   - [[#ediff][Ediff]]
   - [[#elec-pair][Elec Pair]]
 - [[#general-functions][General Functions]]
 - [[#general-keybinding][General Keybinding]]
 - [[#general-hooks][General Hooks]]
-- [[#syntax-subword][Syntax Subword]]
-- [[#all-the-icons][All the icons]]
+- [[#syntax][Syntax]]
+  - [[#subword][subword]]
+- [[#icons][Icons]]
 - [[#fonts][Fonts]]
 - [[#theme][Theme]]
 - [[#treesitter][Treesitter]]
@@ -132,24 +135,31 @@
 ** No Littering
 
 #+begin_src emacs-lisp
-    (use-package emacs
-      :ensure nil
-      :init
-      (setq create-lockfiles nil) ;; remove lockfiles emacs creates with .#<name> next to the actual file.
+  (use-package emacs
+    :ensure nil
+    :init
+    (setq create-lockfiles nil) ; remove lockfiles emacs creates with .#<name> next to the actual file.
 
-      (setq custom-file (concat user-emacs-directory "custom.el")) ; set custom file - so things wont be added in this file
-      (load custom-file 'noerror)
+    (setq custom-file (concat user-emacs-directory "custom.el")) ; set custom file - so things wont be added in this file
+    (load custom-file :no-error-if-file-is-missing)
 
-      ;; set backup directory (Use copying to avoid symlinks)
-      (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
-            backup-by-copying t
-            delete-old-versions t
-            kept-new-versions 6
-            kept-old-versions 2
-            version-control t)
-      (setq auto-save-file-name-transforms
-            `((".*" ,(concat user-emacs-directory "saves") t)))
-      )
+    ;; set backup directory (Use copying to avoid symlinks)
+    (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
+          backup-by-copying t
+          delete-old-versions t
+          kept-new-versions 6
+          kept-old-versions 2
+          version-control t)
+    (setq auto-save-file-name-transforms
+          `((".*" ,(concat user-emacs-directory "saves") t)))
+    )
+
+  ;; when installing new packages - do not pop confusing warnings
+  ;; they are produced by the byte compiler
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
+                 (display-buffer-no-window)
+                 (allow-no-window . t)))
 #+end_src
 
 ** Mac support
@@ -172,6 +182,46 @@
       :config
       (exec-path-from-shell-initialize))
     )
+#+end_src
+
+** C-g upgrade
+
+shamelessly taken from [[https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/#h:1e468b2a-9bee-4571-8454-e3f5462d9321][prostesilaos 2024-11-28--basic-emacs-configuration]]
+
+#+begin_src emacs-lisp
+  (defun prot/keyboard-quit-dwim ()
+    "Do-What-I-Mean behaviour for a general `keyboard-quit'.
+
+  The generic `keyboard-quit' does not do the expected thing when
+  the minibuffer is open.  Whereas we want it to close the
+  minibuffer, even without explicitly focusing it.
+
+  The DWIM behaviour of this command is as follows:
+
+  - When the region is active, disable it.
+  - When a minibuffer is open, but not focused, close the minibuffer.
+  - When the Completions buffer is selected, close it.
+  - In every other case use the regular `keyboard-quit'."
+    (interactive)
+    (cond
+     ((region-active-p)
+      (keyboard-quit))
+     ((derived-mode-p 'completion-list-mode)
+      (delete-completion-window))
+     ((> (minibuffer-depth) 0)
+      (abort-recursive-edit))
+     (t
+      (keyboard-quit))))
+
+  (define-key global-map (kbd "C-g") #'prot/keyboard-quit-dwim)
+#+end_src
+
+** Syntax entry
+
+make '-' be considered as part of a word
+
+#+begin_src emacs-lisp
+  (modify-syntax-entry ?- "w")
 #+end_src
 
 ** Isearch
@@ -306,7 +356,9 @@
   (add-hook 'before-save-hook 'delete-trailing-whitespace) ; Delete whitespace just when a file is saved.
 #+end_src
 
-* Syntax Subword
+* Syntax
+
+** subword
 
 make us go (or delete) forward and backwards better
 
@@ -316,33 +368,40 @@ make us go (or delete) forward and backwards better
     :config (global-syntax-subword-mode))
 #+end_src
 
+* Icons
 
-* All the icons
-
-M-x all-the-icons-install-fonts
+M-x nerd-icons-install-fonts
 
 #+begin_src emacs-lisp
-  (use-package all-the-icons :ensure t)
-  (use-package all-the-icons-completion :ensure t)
-  (use-package all-the-icons-dired :ensure t)
+   ;; require manual installation nerd-icons-install-fonts
+   (use-package nerd-icons :ensure t)
+   (use-package nerd-icons-completion
+     :ensure t
+     :after marginalia
+     :config
+     (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+   (use-package nerd-icons-corfu
+     :ensure t
+     :after corfu
+     :config
+     (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+  (use-package nerd-icons-dired
+    :ensure t
+    :hook
+    (dired-mode . nerd-icons-dired-mode))
 #+end_src
 
 * Fonts
+
+default is the only one with abosulte height. The rest use floating point as a multiple of defualt
+
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :family "JetBrains Mono" :height 180)
-  ;; (set-face-attribute 'variable-pitch nil
-  ;;                     :family "Jetbrains Mono"
-  ;;                     :weight 'semi-bold
-  ;;                     :height 160)
-    ;; (set-face-attribute 'fixed-pitch nil
-    ;;                :family "Jetbrains Mono"
-    ;;                :weight 'normal
-    ;;                :height 100)
-    ;; (set-face-attribute 'default nil
-    ;;                :family "Jetbrains Mono"
-    ;;                :weight 'normal
-    ;;                :height 110)
-    ;; ;; (add-to-list 'default-frame-alist '(font . "JetBrains Mono 14"))
+  (let ((mono-spaced-font "Monospace")
+        (proportionately-spaced-font "Sans"))
+    (set-face-attribute 'default nil :family mono-spaced-font :height 180)
+    (set-face-attribute 'fixed-pitch nil :family mono-spaced-font :height 1.0)
+    (set-face-attribute 'variable-pitch nil :family proportionately-spaced-font :height 1.0))
+
     ;; (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
     ;; (set-face-attribute 'font-lock-function-name-face nil :slant 'italic)
     ;; (set-face-attribute 'font-lock-variable-name-face nil :slant 'italic)
@@ -368,7 +427,7 @@ M-x all-the-icons-install-fonts
         '(
           ;; (comment red-intense)
           ))
-    :config (load-theme 'modus-vivendi))
+    :config (load-theme 'modus-vivendi :no-confirm-loading))
 #+end_src
 
 * Treesitter
@@ -391,6 +450,7 @@ Use M-x treesit-install-language-grammer to install grammers manually in case of
            ("\\.json\\'" .  json-ts-mode)
            ("\\.Dockerfile\\'" . dockerfile-ts-mode)
            ("\\.ya?ml\\'" . yaml-ts-mode)
+           ("\\.lua\\'" . lua-ts-mode)
   	 ;; BitBake files
            ("\\.bb\\'" . bash-ts-mode)
            ("\\.bbappend\\'" . bash-ts-mode)
@@ -416,6 +476,7 @@ Use M-x treesit-install-language-grammer to install grammers manually in case of
     (add-to-list 'treesit-language-source-alist '(c "https://github.com/tree-sitter/tree-sitter-c"))
     (add-to-list 'treesit-language-source-alist '(cpp "https://github.com/tree-sitter/tree-sitter-cpp"))
     (add-to-list 'treesit-language-source-alist '(cmake "https://github.com/uyha/tree-sitter-cmake"))
+    (add-to-list 'treesit-language-source-alist '(lua "https://github.com/tree-sitter-grammars/tree-sitter-lua"))
     ;; until treesit has markdown-ts-mode I can use this.
     ;; It still doesn't highlight code blocks
     (use-package markdown-ts-mode
@@ -778,43 +839,48 @@ so each language can use reformatter to add formatting commands
 
 ** General
 
+save minibuffer histories. Vertico uses to put recently selected options at the top.
+save recently visited files. Consult uses it to put recent files options at the top.
+
 #+begin_src emacs-lisp
-  ;; save minibuffer histories. Vertico uses to put recently selected options at the top.
-  (savehist-mode 1)
-  ;; save recently visited files. Consult uses it to put recent files options at the top.
-  (recentf-mode 1)
+  (use-package savehist :ensure nil :hook (after-init . savehist-mode))
+  (use-package recentf :ensure nil :hook (after-init . recentf-mode))
 #+end_src
 
 ** Orderless
 
-#+begin_src emacs-lisp
+Adds out-of-order pattern matching algorithm
 
-  ;; Adds out-of-order pattern matching algorithm
+#+begin_src emacs-lisp
   (use-package orderless
     :ensure t
     :config
-    (setq completion-styles '(orderless basic)))
+    (setq completion-styles '(orderless basic))
+    ;; make sure we use orderless everywhere by setting these to nil
+    (setq completion-category-defaults nil)
+    (setq completion-category-overrides nil))
 #+end_src
 
 ** Vertico
 
+Adds a vertical selection manu in minibuffer
+
 #+begin_src emacs-lisp
   (use-package vertico
     :ensure t
+    :hook (after-init . vertico-mode)
     :config
-    (setq vertico-cycle t)
-    (vertico-mode))
+    (setq vertico-cycle t))
 #+end_src
 
 ** Marginalia
+
+Adds helpful metadata in minibuffer free space
+
 #+begin_src emacs-lisp
-  ;; Adds item annotations
   (use-package marginalia
     :ensure t
-    :after vertico
-    :bind (:map minibuffer-local-map ("M-A" . marginalia-cycle))
-    :init
-    (marginalia-mode)
+    :hook (after-init . marginalia-mode)
     :config
     (setq marginalia-align 'right))
 #+end_src

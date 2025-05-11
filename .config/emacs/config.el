@@ -50,10 +50,10 @@
 (use-package emacs
   :ensure nil
   :init
-  (setq create-lockfiles nil) ;; remove lockfiles emacs creates with .#<name> next to the actual file.
+  (setq create-lockfiles nil) ; remove lockfiles emacs creates with .#<name> next to the actual file.
 
   (setq custom-file (concat user-emacs-directory "custom.el")) ; set custom file - so things wont be added in this file
-  (load custom-file 'noerror)
+  (load custom-file :no-error-if-file-is-missing)
 
   ;; set backup directory (Use copying to avoid symlinks)
   (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
@@ -65,6 +65,13 @@
   (setq auto-save-file-name-transforms
         `((".*" ,(concat user-emacs-directory "saves") t)))
   )
+
+;; when installing new packages - do not pop confusing warnings
+;; they are produced by the byte compiler
+(add-to-list 'display-buffer-alist
+             '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
+               (display-buffer-no-window)
+               (allow-no-window . t)))
 
 (use-package emacs
   :ensure nil
@@ -83,6 +90,34 @@
     :config
     (exec-path-from-shell-initialize))
   )
+
+(defun prot/keyboard-quit-dwim ()
+  "Do-What-I-Mean behaviour for a general `keyboard-quit'.
+
+The generic `keyboard-quit' does not do the expected thing when
+the minibuffer is open.  Whereas we want it to close the
+minibuffer, even without explicitly focusing it.
+
+The DWIM behaviour of this command is as follows:
+
+- When the region is active, disable it.
+- When a minibuffer is open, but not focused, close the minibuffer.
+- When the Completions buffer is selected, close it.
+- In every other case use the regular `keyboard-quit'."
+  (interactive)
+  (cond
+   ((region-active-p)
+    (keyboard-quit))
+   ((derived-mode-p 'completion-list-mode)
+    (delete-completion-window))
+   ((> (minibuffer-depth) 0)
+    (abort-recursive-edit))
+   (t
+    (keyboard-quit))))
+
+(define-key global-map (kbd "C-g") #'prot/keyboard-quit-dwim)
+
+(modify-syntax-entry ?- "w")
 
 ;; update isearch functionality
 (use-package isearch
@@ -193,24 +228,29 @@
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace) ; Delete whitespace just when a file is saved.
 
-(use-package all-the-icons :ensure t)
-(use-package all-the-icons-completion :ensure t)
-(use-package all-the-icons-dired :ensure t)
+;; require manual installation nerd-icons-install-fonts
+ (use-package nerd-icons :ensure t)
+ (use-package nerd-icons-completion
+   :ensure t
+   :after marginalia
+   :config
+   (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+ (use-package nerd-icons-corfu
+   :ensure t
+   :after corfu
+   :config
+   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+(use-package nerd-icons-dired
+  :ensure t
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
 
-(set-face-attribute 'default nil :family "JetBrains Mono" :height 180)
-;; (set-face-attribute 'variable-pitch nil
-;;                     :family "Jetbrains Mono"
-;;                     :weight 'semi-bold
-;;                     :height 160)
-  ;; (set-face-attribute 'fixed-pitch nil
-  ;;                :family "Jetbrains Mono"
-  ;;                :weight 'normal
-  ;;                :height 100)
-  ;; (set-face-attribute 'default nil
-  ;;                :family "Jetbrains Mono"
-  ;;                :weight 'normal
-  ;;                :height 110)
-  ;; ;; (add-to-list 'default-frame-alist '(font . "JetBrains Mono 14"))
+(let ((mono-spaced-font "Monospace")
+      (proportionately-spaced-font "Sans"))
+  (set-face-attribute 'default nil :family mono-spaced-font :height 180)
+  (set-face-attribute 'fixed-pitch nil :family mono-spaced-font :height 1.0)
+  (set-face-attribute 'variable-pitch nil :family proportionately-spaced-font :height 1.0))
+
   ;; (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
   ;; (set-face-attribute 'font-lock-function-name-face nil :slant 'italic)
   ;; (set-face-attribute 'font-lock-variable-name-face nil :slant 'italic)
@@ -232,7 +272,7 @@
       '(
         ;; (comment red-intense)
         ))
-  :config (load-theme 'modus-vivendi))
+  :config (load-theme 'modus-vivendi :no-confirm-loading))
 
 (use-package treesit
   :ensure nil
@@ -248,6 +288,7 @@
          ("\\.json\\'" .  json-ts-mode)
          ("\\.Dockerfile\\'" . dockerfile-ts-mode)
          ("\\.ya?ml\\'" . yaml-ts-mode)
+         ("\\.lua\\'" . lua-ts-mode)
 	 ;; BitBake files
          ("\\.bb\\'" . bash-ts-mode)
          ("\\.bbappend\\'" . bash-ts-mode)
@@ -273,6 +314,7 @@
   (add-to-list 'treesit-language-source-alist '(c "https://github.com/tree-sitter/tree-sitter-c"))
   (add-to-list 'treesit-language-source-alist '(cpp "https://github.com/tree-sitter/tree-sitter-cpp"))
   (add-to-list 'treesit-language-source-alist '(cmake "https://github.com/uyha/tree-sitter-cmake"))
+  (add-to-list 'treesit-language-source-alist '(lua "https://github.com/tree-sitter-grammars/tree-sitter-lua"))
   ;; until treesit has markdown-ts-mode I can use this.
   ;; It still doesn't highlight code blocks
   (use-package markdown-ts-mode
@@ -460,30 +502,26 @@
   (setq blamer-max-commit-message-length 100)
   (setq blamer-min-offset 70))
 
-;; save minibuffer histories. Vertico uses to put recently selected options at the top.
-(savehist-mode 1)
-;; save recently visited files. Consult uses it to put recent files options at the top.
-(recentf-mode 1)
+(use-package savehist :ensure nil :hook (after-init . savehist-mode))
+(use-package recentf :ensure nil :hook (after-init . recentf-mode))
 
-;; Adds out-of-order pattern matching algorithm
 (use-package orderless
   :ensure t
   :config
-  (setq completion-styles '(orderless basic)))
+  (setq completion-styles '(orderless basic))
+  ;; make sure we use orderless everywhere by setting these to nil
+  (setq completion-category-defaults nil)
+  (setq completion-category-overrides nil))
 
 (use-package vertico
   :ensure t
+  :hook (after-init . vertico-mode)
   :config
-  (setq vertico-cycle t)
-  (vertico-mode))
+  (setq vertico-cycle t))
 
-;; Adds item annotations
 (use-package marginalia
   :ensure t
-  :after vertico
-  :bind (:map minibuffer-local-map ("M-A" . marginalia-cycle))
-  :init
-  (marginalia-mode)
+  :hook (after-init . marginalia-mode)
   :config
   (setq marginalia-align 'right))
 
