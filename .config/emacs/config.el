@@ -19,7 +19,6 @@
   (global-auto-revert-mode t)             ; Automatically update buffers if file changes on disk
   (delete-selection-mode 1)               ; Automatically delete selected text without backspace
   (setq use-short-answers t)		; Use y/n instead of yes/no
-  (setq dired-dwim-target t)              ; Enable smarter target suggestion in dired
   )
 
 (use-package emacs
@@ -118,6 +117,39 @@ The DWIM behaviour of this command is as follows:
 (define-key global-map (kbd "C-g") #'prot/keyboard-quit-dwim)
 
 (modify-syntax-entry ?- "w")
+
+(use-package dired
+  :ensure nil
+  :commands (dired)
+  :hook
+  ((dired-mode . dired-hide-details-mode)
+   (dired-mode . hl-line-mode))
+  :config
+  (setq dired-recursive-copies 'always)
+  (setq dired-recursive-deletes 'always)
+  (setq delete-by-moving-to-trash t)
+  (setq dired-dwim-target t))
+
+(use-package dired-subtree
+  :ensure t
+  :after dired
+  :bind
+  ( :map dired-mode-map
+    ("<tab>" . dired-subtree-toggle)
+    ("TAB" . dired-subtree-toggle)
+    ("<backtab>" . dired-subtree-remove)
+    ("S-TAB" . dired-subtree-remove))
+  :config
+  (setq dired-subtree-use-backgrounds nil))
+
+(use-package trashed
+  :ensure t
+  :commands (trashed)
+  :config
+  (setq trashed-action-confirmer 'y-or-n-p)
+  (setq trashed-use-header-line t)
+  (setq trashed-sort-key '("Date deleted" . t))
+  (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
 
 ;; update isearch functionality
 (use-package isearch
@@ -569,6 +601,35 @@ The DWIM behaviour of this command is as follows:
 (use-package embark-consult
   :ensure t
   :hook (embark-collect-mode . consult-preview-at-point-mode))
+
+(use-package corfu
+  :ensure t
+  :hook (after-init . global-corfu-mode)
+  :bind (:map corfu-map ("C-y" . corfu-complete))
+  :custom
+  (corfu-cycle t)                       ; Allows cycling through candidates
+  (corfu-auto t)                        ; Enable auto completion
+  (corfu-auto-prefix 2)                 ; Minimum length of prefix for completion
+  (corfu-auto-delay 0)                  ; No delay for completion
+  (corfu-popupinfo-delay '(0.5 . 0.2))  ; Automatically update info popup after that numver of seconds
+  (corfu-preview-current nil)           ; insert previewed candidate
+  (corfu-preselect 'prompt)
+  (corfu-on-exact-match nil)            ; Don't auto expand tempel snippets
+  (corfu-min-width 20)
+  :config
+  (corfu-popupinfo-mode 1) ; shows documentation after `corfu-popupinfo-delay'
+  ;; Sort by input history (no need to modify `corfu-sort-function').
+  (with-eval-after-load 'savehist
+    (corfu-history-mode 1)
+    (add-to-list 'savehist-additional-variables 'corfu-history))
+  ;; TODO: what is that - do i want it?
+  (add-hook 'eshell-mode-hook
+            (lambda () (setq-local corfu-quit-at-boundary t
+                                   corfu-quit-no-match t
+                                   corfu-auto nil)
+              (corfu-mode))
+            nil
+            t))
 
 ;; edit the results of a grep search  while inside a `grep-mode' buffer.
 ;; toggle editable mode, make changes, type C-c C-c to confirm | C-c C-k to abort.

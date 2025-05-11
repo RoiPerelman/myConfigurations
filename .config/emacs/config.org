@@ -1,9 +1,9 @@
-#+TITLE: RP's GNU Emacs Config
-#+AUTHOR: Roi Perelman
-#+DESCRIPTION: RP's personal emacs config
-#+PROPERTY: header-args:emacs-lisp :tangle yes
-#+STARTUP: showeverything
-#+OPTIONS: toc:2
+#+title: RP's GNU Emacs Config
+#+author: Roi Perelman
+#+description: RP's personal emacs config
+#+property: header-args:emacs-lisp :tangle yes
+#+startup: content indent
+#+options: toc:2
 
 * TABLE OF CONTENTS :toc:
 - [[#early-init][Early Init]]
@@ -16,6 +16,7 @@
   - [[#mac-support][Mac support]]
   - [[#c-g-upgrade][C-g upgrade]]
   - [[#syntax-entry][Syntax entry]]
+  - [[#dired][dired]]
   - [[#isearch][Isearch]]
   - [[#ediff][Ediff]]
   - [[#elec-pair][Elec Pair]]
@@ -31,7 +32,7 @@
 - [[#lsp--diagnostics--formatting][Lsp + Diagnostics + Formatting]]
   - [[#prerequisites][Prerequisites]]
   - [[#reformatter-check-apheleia-as-an-alternative][Reformatter (check apheleia as an alternative)]]
-  - [[#eglot-tangle-no][Eglot (:tangle no)]]
+  - [[#eglot][Eglot]]
   - [[#lsp-mode][LSP-Mode]]
   - [[#markdown][Markdown]]
 - [[#git][Git]]
@@ -95,7 +96,6 @@
     (global-auto-revert-mode t)             ; Automatically update buffers if file changes on disk
     (delete-selection-mode 1)               ; Automatically delete selected text without backspace
     (setq use-short-answers t)		; Use y/n instead of yes/no
-    (setq dired-dwim-target t)              ; Enable smarter target suggestion in dired
     )
   #+end_src
 
@@ -222,6 +222,51 @@ make '-' be considered as part of a word
 
 #+begin_src emacs-lisp
   (modify-syntax-entry ?- "w")
+#+end_src
+
+** dired
+
+#+begin_src emacs-lisp
+  (use-package dired
+    :ensure nil
+    :commands (dired)
+    :hook
+    ((dired-mode . dired-hide-details-mode)
+     (dired-mode . hl-line-mode))
+    :config
+    (setq dired-recursive-copies 'always)
+    (setq dired-recursive-deletes 'always)
+    (setq delete-by-moving-to-trash t)
+    (setq dired-dwim-target t))
+#+end_src
+
+*** dired-subtree
+
+#+begin_src emacs-lisp
+  (use-package dired-subtree
+    :ensure t
+    :after dired
+    :bind
+    ( :map dired-mode-map
+      ("<tab>" . dired-subtree-toggle)
+      ("TAB" . dired-subtree-toggle)
+      ("<backtab>" . dired-subtree-remove)
+      ("S-TAB" . dired-subtree-remove))
+    :config
+    (setq dired-subtree-use-backgrounds nil))
+#+end_src
+
+*** trashed (TODO: doesn't work on mac or both?)
+
+#+begin_src emacs-lisp
+  (use-package trashed
+    :ensure t
+    :commands (trashed)
+    :config
+    (setq trashed-action-confirmer 'y-or-n-p)
+    (setq trashed-use-header-line t)
+    (setq trashed-sort-key '("Date deleted" . t))
+    (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
 #+end_src
 
 ** Isearch
@@ -537,9 +582,12 @@ so each language can use reformatter to add formatting commands
   (use-package reformatter :ensure t)
 #+end_src
 
-** Eglot (:tangle no)
+** Eglot
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle no
+:END:
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 (use-package eglot-booster
     :vc (:url "https://github.com/jdtsmith/eglot-booster" :branch "main")
 	:after eglot
@@ -548,7 +596,7 @@ so each language can use reformatter to add formatting commands
 
 *** Python eglot
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   ;; add ruff linting with flymake
   ;; can add a hook anywhere (add-hook 'python-ts-mode-hook . (flymake-ruff-load))
   (use-package eglot
@@ -609,7 +657,7 @@ so each language can use reformatter to add formatting commands
 
 *** typescript eglot
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   ;; add eslint linting with flymake
   ;; can add a hook anywhere (add-hook 'typescript-ts-mode-hook . (flymake-eslint-enable))
   (use-package flymake-eslint
@@ -942,41 +990,36 @@ Adds helpful metadata in minibuffer free space
 
 ** Corfu
 
-#+begin_src emacs-lisp :tangle no
-    (use-package corfu
-      :ensure t
-      ;; Optional customizations
-      :custom
-      (corfu-cycle t)                 ; Allows cycling through candidates
-      (corfu-auto t)                  ; Enable auto completion
-      (corfu-auto-prefix 2)           ; Minimum length of prefix for completion
-      (corfu-auto-delay 0)            ; No delay for completion
-      (corfu-popupinfo-delay '(0.5 . 0.2))  ; Automatically update info popup after that numver of seconds
-      (corfu-preview-current 'insert) ; insert previewed candidate
-      (corfu-preselect 'prompt)
-      (corfu-on-exact-match nil)      ; Don't auto expand tempel snippets
-      ;; Optionally use TAB for cycling, default is `corfu-complete'.
-      :bind (:map corfu-map
-                  ("M-SPC"      . corfu-insert-separator)
-                  ("TAB"        . corfu-next)
-                  ([tab]        . corfu-next)
-                  ("S-TAB"      . corfu-previous)
-                  ([backtab]    . corfu-previous)
-                  ("S-<return>" . corfu-insert)
-                  ("RET"        . corfu-insert))
 
-      :init
-      (global-corfu-mode)
-      (corfu-history-mode)
-      (corfu-popupinfo-mode) ; Popup completion info
-      :config
-      (add-hook 'eshell-mode-hook
-                (lambda () (setq-local corfu-quit-at-boundary t
-                                       corfu-quit-no-match t
-                                       corfu-auto nil)
-                  (corfu-mode))
-                nil
-                t))
+#+begin_src emacs-lisp
+  (use-package corfu
+    :ensure t
+    :hook (after-init . global-corfu-mode)
+    :bind (:map corfu-map ("C-y" . corfu-complete))
+    :custom
+    (corfu-cycle t)                       ; Allows cycling through candidates
+    (corfu-auto t)                        ; Enable auto completion
+    (corfu-auto-prefix 2)                 ; Minimum length of prefix for completion
+    (corfu-auto-delay 0)                  ; No delay for completion
+    (corfu-popupinfo-delay '(0.5 . 0.2))  ; Automatically update info popup after that numver of seconds
+    (corfu-preview-current nil)           ; insert previewed candidate
+    (corfu-preselect 'prompt)
+    (corfu-on-exact-match nil)            ; Don't auto expand tempel snippets
+    (corfu-min-width 20)
+    :config
+    (corfu-popupinfo-mode 1) ; shows documentation after `corfu-popupinfo-delay'
+    ;; Sort by input history (no need to modify `corfu-sort-function').
+    (with-eval-after-load 'savehist
+      (corfu-history-mode 1)
+      (add-to-list 'savehist-additional-variables 'corfu-history))
+    ;; TODO: what is that - do i want it?
+    (add-hook 'eshell-mode-hook
+              (lambda () (setq-local corfu-quit-at-boundary t
+                                     corfu-quit-no-match t
+                                     corfu-auto nil)
+                (corfu-mode))
+              nil
+              t))
 #+end_src
 
 * Wgrep
