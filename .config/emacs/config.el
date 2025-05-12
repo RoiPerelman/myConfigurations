@@ -372,6 +372,16 @@ The DWIM behaviour of this command is as follows:
   (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
   )
 
+(use-package combobulate
+    :ensure nil
+    :vc (:url "https://github.com/mickeynp/combobulate")
+;;    :load-path "~/.config/emacs/combobulate"
+    :custom
+    ;; You can customize Combobulate's key prefix here.
+    ;; Note that you may have to restart Emacs for this to take effect!
+    (combobulate-key-prefix "C-c o")
+    :hook ((prog-mode . combobulate-mode)))
+
 (use-package reformatter :ensure t)
 
 (use-package lsp-mode

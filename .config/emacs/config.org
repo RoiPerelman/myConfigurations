@@ -29,6 +29,7 @@
 - [[#fonts][Fonts]]
 - [[#theme][Theme]]
 - [[#treesitter][Treesitter]]
+  - [[#combobulate][Combobulate]]
 - [[#lsp--diagnostics--formatting][Lsp + Diagnostics + Formatting]]
   - [[#prerequisites][Prerequisites]]
   - [[#reformatter-check-apheleia-as-an-alternative][Reformatter (check apheleia as an alternative)]]
@@ -546,6 +547,19 @@ Use M-x treesit-install-language-grammer to install grammers manually in case of
     (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
     (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
     )
+#+end_src
+
+** Combobulate
+#+begin_src emacs-lisp
+    (use-package combobulate
+      :ensure nil
+      :vc (:url "https://github.com/mickeynp/combobulate")
+  ;;    :load-path "~/.config/emacs/combobulate"
+      :custom
+      ;; You can customize Combobulate's key prefix here.
+      ;; Note that you may have to restart Emacs for this to take effect!
+      (combobulate-key-prefix "C-c o")
+      :hook ((prog-mode . combobulate-mode)))
 #+end_src
 
 * Lsp + Diagnostics + Formatting
