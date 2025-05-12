@@ -6,6 +6,8 @@
 #+options: toc:2
 
 * TABLE OF CONTENTS :toc:
+- [[#general-information][General information]]
+  - [[#copy-from-manuals-location-c-u-0-w][Copy from manuals location (C-u 0 w)]]
 - [[#early-init][Early Init]]
 - [[#initialize-package-manager][Initialize Package Manager]]
 - [[#sane-defaults][Sane defaults]]
@@ -16,6 +18,7 @@
   - [[#mac-support][Mac support]]
   - [[#c-g-upgrade][C-g upgrade]]
   - [[#syntax-entry][Syntax entry]]
+  - [[#abbrev][abbrev]]
   - [[#dired][dired]]
   - [[#isearch][Isearch]]
   - [[#ediff][Ediff]]
@@ -57,6 +60,17 @@
 - [[#rainbow-delimiters][Rainbow Delimiters]]
 - [[#rainbow-colors][Rainbow colors]]
 - [[#copilot][Copilot]]
+
+* General information
+
+** Copy from manuals location (C-u 0 w)
+
+M-x Info-copy-current-node-name will give the node name.
+now we need to wrap the result with (info "return-value")
+
+#+begin_src emacs-lisp :tangle no
+(info "(elisp) Abbrevs")
+#+end_src
 
 * Early Init
 
@@ -223,6 +237,33 @@ make '-' be considered as part of a word
 
 #+begin_src emacs-lisp
   (modify-syntax-entry ?- "w")
+#+end_src
+
+** abbrev
+
+#+begin_src emacs-lisp :tangle no
+  ;; `global' (in all modes), `prog-mode' (programming), `text-mode' (prose)
+
+  ;; adding abbrev-mode is buffer specific so this is wrong
+  ;; (abbrev-mode 1)
+  ;; this is right
+  (add-hook 'text-mode-hoom 'abbrev-mode)
+
+  ;; acts like a waterfall - the more specific one gets implemented
+  (define-abbrev global-abbrev-table "mytest" "a global abbrev for demo purposes")
+  (define-abbrev text-mode-abbrev-table "mytest" "a text-mode abbrev for demo purposes")
+  (define-abbrev org-mode-abbrev-table "mytest" "a org-mode abbrev for demo purposes")
+  ;; can also run a function that returns a string
+  (defun rp-test-my-current-time ()
+    (insert (format-time-string "%T")))
+  (define-abbrev global-abbrev-table "mytimetest" "" 'rp-test-my-current-time)
+  (defun rp-test-greet-person ()
+    (insert (format "Hello %s" (read-string "Greet person: "))))
+  (define-abbrev global-abbrev-table "mygreettest" "" 'rp-test-greet-person)
+  ;; there are some things abbrev doesn't consider as part of words. like :
+  ;; we can add it like the following and `:uni' will work
+  (abbrev-table-put global-abbrev-table :regexp "\\(?:^\\|[\t\s]+\\)\\(?1:[:_].*\\|.*\\)")
+  (define-abbrev global-abbrev-table ":uni" "🦄")
 #+end_src
 
 ** dired
@@ -905,8 +946,8 @@ save minibuffer histories. Vertico uses to put recently selected options at the 
 save recently visited files. Consult uses it to put recent files options at the top.
 
 #+begin_src emacs-lisp
-  (use-package savehist :ensure nil :hook (after-init . savehist-mode))
-  (use-package recentf :ensure nil :hook (after-init . recentf-mode))
+  (use-package savehist :ensure nil :config (savehist-mode))
+  (use-package recentf :ensure nil :config (recentf-mode))
 #+end_src
 
 ** Orderless
@@ -930,9 +971,9 @@ Adds a vertical selection manu in minibuffer
 #+begin_src emacs-lisp
   (use-package vertico
     :ensure t
-    :hook (after-init . vertico-mode)
     :config
-    (setq vertico-cycle t))
+    (setq vertico-cycle t)
+    (vertico-mode))
 #+end_src
 
 ** Marginalia
@@ -942,9 +983,9 @@ Adds helpful metadata in minibuffer free space
 #+begin_src emacs-lisp
   (use-package marginalia
     :ensure t
-    :hook (after-init . marginalia-mode)
     :config
-    (setq marginalia-align 'right))
+    (setq marginalia-align 'right)
+    (marginalia-mode))
 #+end_src
 
 ** Consult
@@ -1008,7 +1049,6 @@ Adds helpful metadata in minibuffer free space
 #+begin_src emacs-lisp
   (use-package corfu
     :ensure t
-    :hook (after-init . global-corfu-mode)
     :bind (:map corfu-map ("C-y" . corfu-complete))
     :custom
     (corfu-cycle t)                       ; Allows cycling through candidates
@@ -1021,6 +1061,7 @@ Adds helpful metadata in minibuffer free space
     (corfu-on-exact-match nil)            ; Don't auto expand tempel snippets
     (corfu-min-width 20)
     :config
+    (global-corful-mode)
     (corfu-popupinfo-mode 1) ; shows documentation after `corfu-popupinfo-delay'
     ;; Sort by input history (no need to modify `corfu-sort-function').
     (with-eval-after-load 'savehist

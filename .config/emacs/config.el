@@ -544,8 +544,8 @@ The DWIM behaviour of this command is as follows:
   (setq blamer-max-commit-message-length 100)
   (setq blamer-min-offset 70))
 
-(use-package savehist :ensure nil :hook (after-init . savehist-mode))
-(use-package recentf :ensure nil :hook (after-init . recentf-mode))
+(use-package savehist :ensure nil :config (savehist-mode))
+(use-package recentf :ensure nil :config (recentf-mode))
 
 (use-package orderless
   :ensure t
@@ -557,15 +557,15 @@ The DWIM behaviour of this command is as follows:
 
 (use-package vertico
   :ensure t
-  :hook (after-init . vertico-mode)
   :config
-  (setq vertico-cycle t))
+  (setq vertico-cycle t)
+  (vertico-mode))
 
 (use-package marginalia
   :ensure t
-  :hook (after-init . marginalia-mode)
   :config
-  (setq marginalia-align 'right))
+  (setq marginalia-align 'right)
+  (marginalia-mode))
 
 ;; Gives enhanced completion functions we need to bind
 ;; Gives previews for current item
@@ -614,7 +614,6 @@ The DWIM behaviour of this command is as follows:
 
 (use-package corfu
   :ensure t
-  :hook (after-init . global-corfu-mode)
   :bind (:map corfu-map ("C-y" . corfu-complete))
   :custom
   (corfu-cycle t)                       ; Allows cycling through candidates
@@ -627,6 +626,7 @@ The DWIM behaviour of this command is as follows:
   (corfu-on-exact-match nil)            ; Don't auto expand tempel snippets
   (corfu-min-width 20)
   :config
+  (global-corful-mode)
   (corfu-popupinfo-mode 1) ; shows documentation after `corfu-popupinfo-delay'
   ;; Sort by input history (no need to modify `corfu-sort-function').
   (with-eval-after-load 'savehist
