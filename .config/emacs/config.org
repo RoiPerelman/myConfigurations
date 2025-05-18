@@ -23,7 +23,9 @@
   - [[#dired][dired]]
   - [[#isearch][Isearch]]
   - [[#ediff][Ediff]]
-  - [[#elec-pair][Elec Pair]]
+  - [[#elec-pair-tangle-no][Elec Pair (:tangle no)]]
+  - [[#smartparens-todo][smartparens (TODO)]]
+  - [[#save-place][save-place]]
 - [[#general-functions][General Functions]]
 - [[#general-keybinding][General Keybinding]]
 - [[#general-hooks][General Hooks]]
@@ -416,13 +418,43 @@ completions of my creation
 ;; (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 ;; (setq ediff-split-window-function 'split-window-vertically)
 #+end_src
-** Elec Pair
+** Elec Pair (:tangle no)
 
-#+begin_src emacs-lisp
+not tangled because i prefer smartparens
+
+#+begin_src emacs-lisp :tangle no
   (use-package elec-pair
     :ensure nil
     :config
     (electric-pair-mode 1))
+#+end_src
+
+** smartparens (TODO)
+
+#+begin_src emacs-lisp
+  ;; https://ebzzry.com/en/emacs-pairs/
+  ;; TODO: go over smartparens capabalities and choose keybinding
+  (use-package smartparens
+    :ensure t
+    :config
+    (require 'smartparens-config)
+    (smartparens-global-mode t)
+    (show-smartparens-global-mode t)
+    (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+    (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode))
+#+end_src
+
+** save-place
+
+#+begin_src emacs-lisp
+  (use-package saveplace
+    :ensure nil  ; It's built-in, no need to install
+    :defer 3
+    :custom
+    (save-place-file (expand-file-name ".save-place" user-emacs-directory))
+    (save-place-forget-unreadable-files t)
+    :init
+    (save-place-mode 1))
 #+end_src
 
 * General Functions

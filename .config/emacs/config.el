@@ -237,10 +237,25 @@ The DWIM behaviour of this command is as follows:
 ;; (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 ;; (setq ediff-split-window-function 'split-window-vertically)
 
-(use-package elec-pair
-  :ensure nil
+;; https://ebzzry.com/en/emacs-pairs/
+;; TODO: go over smartparens capabalities and choose keybinding
+(use-package smartparens
+  :ensure t
   :config
-  (electric-pair-mode 1))
+  (require 'smartparens-config)
+  (smartparens-global-mode t)
+  (show-smartparens-global-mode t)
+  (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+  (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode))
+
+(use-package saveplace
+  :ensure nil  ; It's built-in, no need to install
+  :defer 3
+  :custom
+  (save-place-file (expand-file-name ".save-place" user-emacs-directory))
+  (save-place-forget-unreadable-files t)
+  :init
+  (save-place-mode 1))
 
 (defun toggle-comment-on-line-or-region ()
   "Toggle comment on the current line or active region."
