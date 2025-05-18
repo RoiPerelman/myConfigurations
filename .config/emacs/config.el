@@ -118,6 +118,19 @@ The DWIM behaviour of this command is as follows:
 
 (modify-syntax-entry ?- "w")
 
+;; Use Dabbrev with Corfu!
+(use-package dabbrev
+  ;; Swap M-/ and C-M-/
+  :bind (("M-/" . dabbrev-completion)
+         ("C-M-/" . dabbrev-expand))
+  :config
+  (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
+  ;; Available since Emacs 29 (Use `dabbrev-ignored-buffer-regexps' on older Emacs)
+  (add-to-list 'dabbrev-ignored-buffer-modes 'authinfo-mode)
+  (add-to-list 'dabbrev-ignored-buffer-modes 'doc-view-mode)
+  (add-to-list 'dabbrev-ignored-buffer-modes 'pdf-view-mode)
+  (add-to-list 'dabbrev-ignored-buffer-modes 'tags-table-mode))
+
 (use-package dired
   :ensure nil
   :commands (dired)
@@ -306,71 +319,17 @@ The DWIM behaviour of this command is as follows:
         ))
   :config (load-theme 'modus-vivendi :no-confirm-loading))
 
-(use-package treesit
-  :ensure nil
-  ;; basically does for example
-  ;; (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
-  :mode (("\\.tsx\\'" . tsx-ts-mode)
-         ("\\.js\\'"  . typescript-ts-mode)
-         ("\\.mjs\\'" . typescript-ts-mode)
-         ("\\.mts\\'" . typescript-ts-mode)
-         ("\\.cjs\\'" . typescript-ts-mode)
-         ("\\.ts\\'"  . typescript-ts-mode)
-         ("\\.jsx\\'" . tsx-ts-mode)
-         ("\\.json\\'" .  json-ts-mode)
-         ("\\.Dockerfile\\'" . dockerfile-ts-mode)
-         ("\\.ya?ml\\'" . yaml-ts-mode)
-         ("\\.lua\\'" . lua-ts-mode)
-	 ;; BitBake files
-         ("\\.bb\\'" . bash-ts-mode)
-         ("\\.bbappend\\'" . bash-ts-mode)
-         ("\\.bbclass\\'" . bash-ts-mode)
-         ("\\.inc\\'" . bash-ts-mode))
-
+(use-package treesit-auto
+  :ensure t
+  :custom
+  (treesit-auto-install 'prompt) ;; or 'always to auto-install grammars silently
   :config
-  (setq treesit-font-lock-level 4)
-  ;; add lsp sources to be downloaded
-  (add-to-list 'treesit-language-source-alist '(python "https://github.com/tree-sitter/tree-sitter-python"))
-  (add-to-list 'treesit-language-source-alist '(javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
-  (add-to-list 'treesit-language-source-alist '(typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
-  (add-to-list 'treesit-language-source-alist '(tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
-  (add-to-list 'treesit-language-source-alist '(html "https://github.com/tree-sitter/tree-sitter-html"))
-  (add-to-list 'treesit-language-source-alist '(css "https://github.com/tree-sitter/tree-sitter-css"))
-  (add-to-list 'treesit-language-source-alist '(elisp "https://github.com/Wilfred/tree-sitter-elisp"))
-  (add-to-list 'treesit-language-source-alist '(bash "https://github.com/tree-sitter/tree-sitter-bash"))
-  (add-to-list 'treesit-language-source-alist '(make "https://github.com/alemuller/tree-sitter-make"))
-  (add-to-list 'treesit-language-source-alist '(dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile" "main" "src"))
-  (add-to-list 'treesit-language-source-alist '(json "https://github.com/tree-sitter/tree-sitter-json"))
-  (add-to-list 'treesit-language-source-alist '(toml "https://github.com/tree-sitter/tree-sitter-toml"))
-  (add-to-list 'treesit-language-source-alist '(yaml "https://github.com/ikatyang/tree-sitter-yaml"))
-  (add-to-list 'treesit-language-source-alist '(c "https://github.com/tree-sitter/tree-sitter-c"))
-  (add-to-list 'treesit-language-source-alist '(cpp "https://github.com/tree-sitter/tree-sitter-cpp"))
-  (add-to-list 'treesit-language-source-alist '(cmake "https://github.com/uyha/tree-sitter-cmake"))
-  (add-to-list 'treesit-language-source-alist '(lua "https://github.com/tree-sitter-grammars/tree-sitter-lua"))
-  ;; until treesit has markdown-ts-mode I can use this.
-  ;; It still doesn't highlight code blocks
-  (use-package markdown-ts-mode
-    :ensure t
-    :mode ("\\.md\\'" . markdown-ts-mode)
-    :defer 't
-    :config
-    (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown/src"))
-    (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown-inline/src"))
-    )
-  (dolist (source treesit-language-source-alist)
-    (unless (treesit-ready-p (car source))
-      (treesit-install-language-grammar (car source))))
+  (global-treesit-auto-mode))
 
-  ;; now make <lang>-mode use <lang>-ts-mode instead
-  ;; files that would normally open in python-mode should open in python-ts-mode
-  (add-to-list 'major-mode-remap-alist '(bash-mode . bash-ts-mode))
-  (add-to-list 'major-mode-remap-alist '(sh-mode . bash-ts-mode))
-  (add-to-list 'major-mode-remap-alist '(json-mode . json-ts-mode))
-  (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
-  (add-to-list 'major-mode-remap-alist '(css-mode . css-ts-mode))
-  (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
-  (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
-  )
+(add-to-list 'auto-mode-alist '("\\.bb\\'" . bash-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.bbappend\\'" . bash-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.bbclass\\'" . bash-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.inc\\'" . bash-ts-mode))
 
 (use-package combobulate
     :ensure nil
@@ -384,103 +343,102 @@ The DWIM behaviour of this command is as follows:
 
 (use-package reformatter :ensure t)
 
-(use-package lsp-mode
-  :ensure t
-  :commands lsp
-  :custom
-  ;; (lsp-prefer-flymake t) ;; We prefer flymake if available
-  (lsp-diagnostics-provider :flycheck)
-  (lsp-diagnostic-package :flycheck)
-  (lsp-enable-snippet nil) ;; Optional: disable snippets
-  (lsp-completion-provider :none) ;; stop using company as #'completion-at-point
-  (lsp-headerline-breadcrumb-enable nil)
-  (lsp-log-io nil) ;; Debug: can set to t if you want to debug LSP issues
-  :init
-  (setq lsp-use-plists t)
-  ;; https://github.com/blahgeek/emacs-lsp-booster
-  (defun lsp-booster--advice-json-parse (old-fn &rest args)
-    "Try to parse bytecode instead of json."
-    (or
-     (when (equal (following-char) ?#)
-       (let ((bytecode (read (current-buffer))))
-	 (when (byte-code-function-p bytecode)
-           (funcall bytecode))))
-     (apply old-fn args)))
-  (advice-add (if (progn (require 'json)
-			 (fboundp 'json-parse-buffer))
-                  'json-parse-buffer
-		'json-read)
-              :around
-              #'lsp-booster--advice-json-parse)
+(use-package eglot-booster
+    :vc (:url "https://github.com/jdtsmith/eglot-booster" :branch "main")
+	:after eglot
+	:config	(eglot-booster-mode))
 
-  (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-    "Prepend emacs-lsp-booster command to lsp CMD."
-    (let ((orig-result (funcall old-fn cmd test?)))
-      (if (and (not test?)                             ;; for check lsp-server-present?
-               (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-               lsp-use-plists
-               (not (functionp 'json-rpc-connection))  ;; native json-rpc
-               (executable-find "emacs-lsp-booster"))
-          (progn
-            (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
-              (setcar orig-result command-from-exec-path))
-            (message "Using emacs-lsp-booster for %s!" orig-result)
-            (cons "emacs-lsp-booster" orig-result))
-	orig-result)))
-  (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command))
+;; add ruff linting with flymake
+;; can add a hook anywhere (add-hook 'python-ts-mode-hook . (flymake-ruff-load))
+(use-package eglot
+  :config
+  ;; Set up workspace configuration for eglot (Pyright and Python-specific settings)
+  ;; TODO: doesn't work for me. Need to setup pyrightconfig
+  (setq-default eglot-workspace-configuration
+                `((:pyright . (:disableOrganizeImports t))
+                  (:python . (:analysis (:typeCheckingMode  "off"))))))
 
-(use-package flycheck
-  :ensure t
-  :after lsp-mode
-  :hook (lsp-mode . flycheck-mode))
+(use-package flymake-ruff :ensure t)
 
-(use-package consult-flycheck :ensure t :after consult)
-
-;; Pyright LSP setup. Needs require 'lsp-pyright somewhere before loading lsp
-(use-package lsp-pyright
-  :ensure t
-  :after lsp-mode
-  :custom
-  (lsp-pyright-type-checking-mode "off") ;; or "basic" / "strict"
-  (lsp-pyright-auto-import-completions t)
-  (lsp-pyright-disable-organize-imports t))
-
-;; Python major mode
+;; config is not called here
 (use-package python-ts-mode
-  :hook ((python-ts-mode . (lambda()
-  			     (require 'lsp-pyright)
-  			     ;; we need for another package as its already included in lsp-mode
-  			     (require 'lsp-ruff)
-  			     (lsp-deferred))))
-  :mode (("\\.py\\'" . python-ts-mode)))
+  :hook (
+  	 (python-ts-mode . eglot-ensure)
+  	 (python-ts-mode . flymake-ruff-load)
+  	 (eglot-managed-mode . (
+  				lambda ()
+  				(when (derived-mode-p 'python-mode 'python-ts-mode)
+  				  (flymake-ruff-load)
+  				  (flymake-start)))))
+  :mode (("\\.py\\'" . python-ts-mode))
+  :init
+  (require 'reformatter)
+  (defcustom ruff-command "ruff" "Ruff command to use for formatting." :type 'string :group 'ruff-format)
+  (reformatter-define ruff-fix
+    :program ruff-command
+    :args (list "check" "--fix" "--stdin-filename" (or (buffer-file-name) input-file))
+    :lighter " RuffFix"
+    :group 'ruff-format)
+  (reformatter-define ruff-isort
+    :program ruff-command
+    :args (list "check" "--select=I" "--fix" "--stdin-filename" (or (buffer-file-name) input-file))
+    :lighter " RuffIsort"
+    :group 'ruff-format)
+  (reformatter-define ruff-format
+    :program ruff-command
+    :args (list "format" "--stdin-filename" (or (buffer-file-name) input-file))
+    :lighter " RuffFmt"
+    :group 'ruff-format)
+  (defun ruff-fix-isort-format-buffer ()
+    "Runs all ruff reformatters: ruff-fix, ruff-isort, and ruff-format."
+    (interactive)
+    (call-interactively 'ruff-fix-buffer)
+    (call-interactively 'ruff-isort-buffer)
+    (call-interactively 'ruff-format-buffer))
+  )
 
-;; Pyvenv for managing Python virtualenvs
 (use-package pyvenv
   :ensure t
   :config
   (setq pyvenv-mode-line-indicator '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
-  (pyvenv-mode 1)
+  (pyvenv-mode +1)
   ;; Automatically restart LSP after activating new venv
-  (add-hook 'pyvenv-post-activate-hooks (lambda () (when (bound-and-true-p lsp-mode) (lsp-restart-workspace)))))
+  (add-hook 'pyvenv-post-activate-hooks #'(lambda () (call-interactively #'eglot-reconnect))))
 
-(use-package lsp-eslint
-  :demand t
-  :after lsp-mode
-  :init
-  (setq lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
+;; add eslint linting with flymake
+;; can add a hook anywhere (add-hook 'typescript-ts-mode-hook . (flymake-eslint-enable))
+(use-package flymake-eslint
+  :ensure t
   :config
-  (require 'lsp-eslint))
+  (setq flymake-eslint-prefer-json-diagnostics t)
+  (setq flymake-eslint-executable "eslint_d"))
 
-;; Python major mode
 (use-package typescript-ts-mode
-  :hook (((tsx-ts-mode typescript-ts-mode js-ts-mode) . lsp-deferred))
-  :mode (("\\.tsx\\'" . tsx-ts-mode)
-         ("\\.js\\'"  . typescript-ts-mode)
-         ("\\.mjs\\'" . typescript-ts-mode)
-         ("\\.mts\\'" . typescript-ts-mode)
-         ("\\.cjs\\'" . typescript-ts-mode)
-         ("\\.ts\\'"  . typescript-ts-mode)
-         ("\\.jsx\\'" . tsx-ts-mode)))
+  :hook (
+  	 (typescript-ts-mode . eglot-ensure)
+  	 (typescript-ts-mode . flymake-eslint-enable)
+  	 (tsx-ts-mode . eglot-ensure)
+  	 (tsx-ts-mode . flymake-eslint-enable)
+  	 (eglot-managed-mode . (
+  				lambda ()
+  				(when (derived-mode-p 'typescript-ts-mode 'tsx-ts-mode)
+  				  (flymake-eslint-enable)
+  				  (flymake-start)))))
+  :mode (
+   ("\\.ts\\'" . typescript-ts-mode) ("\\.js\\'" . typescript-ts-mode)
+   ("\\.tsx\\'" . tsx-ts-mode) ("\\.jsx\\'" . tsx-ts-mode))
+  :config
+  (require 'reformatter)
+  (defcustom eslint-command "eslint_d" "ESLint command to use for formatting." :type 'string :group 'eslint-fix)
+  (reformatter-define eslint-fix
+    :program eslint-command
+    :args (list "--fix-to-stdout" "--no-warn-ignored" "--stdin" "--stding-filename" (or (buffer-file-name) input file))
+    :lighter " ESLintFix"
+    :group 'eslint-fix))
+
+(use-package rust-ts-mode
+  :mode (("\\.rs\\'" . rust-ts-mode))
+  :hook ((rust-ts-mode . eglot-ensure)))
 
 (use-package jtsx
   :ensure t
@@ -491,7 +449,7 @@ The DWIM behaviour of this command is as follows:
   :hook ((jtsx-jsx-mode . hs-minor-mode)
          (jtsx-tsx-mode . hs-minor-mode)
          (jtsx-typescript-mode . hs-minor-mode))
-  :custom
+  ;; :custom
   ;; Optional customizations
   ;; (js-indent-level 2)
   ;; (typescript-ts-mode-indent-offset 2)
@@ -599,11 +557,22 @@ The DWIM behaviour of this command is as follows:
 
 (use-package orderless
   :ensure t
+  :custom
+  (completion-styles '(orderless basic))
+  ;; make sure we use orderless everywhere by setting these
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion))))
   :config
-  (setq completion-styles '(orderless basic))
-  ;; make sure we use orderless everywhere by setting these to nil
-  (setq completion-category-defaults nil)
-  (setq completion-category-overrides nil))
+  ;; for corfu - not to slow down the system. use more basic matching style
+  (orderless-define-completion-style orderless-literal-only
+    (orderless-style-dispatchers nil)
+    (orderless-matching-styles '(orderless-literal)))
+
+  (add-hook 'corfu-mode-hook
+            (lambda ()
+              (setq-local completion-styles '(orderless-literal-only basic)
+                          completion-category-overrides nil
+                          completion-category-defaults nil))))
 
 (use-package vertico
   :ensure t
@@ -669,15 +638,25 @@ The DWIM behaviour of this command is as follows:
   (corfu-cycle t)                       ; Allows cycling through candidates
   (corfu-auto t)                        ; Enable auto completion
   (corfu-auto-prefix 2)                 ; Minimum length of prefix for completion
-  (corfu-auto-delay 0)                  ; No delay for completion
+  (corfu-auto-delay 0.1)                ; delay for completion
   (corfu-popupinfo-delay '(0.5 . 0.2))  ; Automatically update info popup after that numver of seconds
   (corfu-preview-current nil)           ; insert previewed candidate
   (corfu-preselect 'prompt)
   (corfu-on-exact-match nil)            ; Don't auto expand tempel snippets
   (corfu-min-width 20)
   :config
-  (global-corful-mode)
+  (global-corfu-mode)
   (corfu-popupinfo-mode 1) ; shows documentation after `corfu-popupinfo-delay'
+  ;; add minibuffer support but not while vertico is running
+  (setq global-corfu-minibuffer
+  	(lambda ()
+  	  (not (or (bound-and-true-p mct--active)
+  		   (bound-and-true-p vertico--input)
+  		   (eq (current-local-map) read-passwd-map)))))
+  ;; eshell and shell support
+  (add-hook 'eshell-mode-hook (lambda ()
+  				(setq-local corfu-auto nil)
+  				(corfu-mode)))
   ;; Sort by input history (no need to modify `corfu-sort-function').
   (with-eval-after-load 'savehist
     (corfu-history-mode 1)
@@ -689,7 +668,54 @@ The DWIM behaviour of this command is as follows:
                                    corfu-auto nil)
               (corfu-mode))
             nil
-            t))
+            t)
+  ;; add M-m to move selection options to minibuffer
+  (defun corfu-move-to-minibuffer ()
+    (interactive)
+    (pcase completion-in-region--data
+      (`(,beg ,end ,table ,pred ,extras)
+       (let ((completion-extra-properties extras)
+             completion-cycle-threshold completion-cycling)
+	 (consult-completion-in-region beg end table pred)))))
+  (keymap-set corfu-map "M-m" #'corfu-move-to-minibuffer)
+  (add-to-list 'corfu-continue-commands #'corfu-move-to-minibuffer)
+  ;; if we use auto in order not to slow down the system. use more basic matching style
+  (defun orderless-fast-dispatch (word index total)
+    (and (= index 0) (= total 1) (length< word 4)
+  	 (cons 'orderless-literal-prefix word)))
+
+  (orderless-define-completion-style orderless-fast
+    (orderless-style-dispatchers '(orderless-fast-dispatch))
+    (orderless-matching-styles '(orderless-literal orderless-regexp)))
+
+  (add-hook 'corfu-mode-hook
+            (lambda ()
+              (setq-local completion-styles '(orderless-fast basic)
+                          completion-category-overrides nil
+                          completion-category-defaults nil))))
+
+;; Add extensions
+(use-package cape
+  :ensure t
+  ;; Bind prefix keymap providing all Cape commands under a mnemonic key.
+  ;; Press C-c p ? to for help.
+  :bind ("C-c p" . cape-prefix-map) ;; Alternative key: M-<tab>, M-p, M-+
+  ;; Alternatively bind Cape commands individually.
+  ;; :bind (("C-c p d" . cape-dabbrev)
+  ;;        ("C-c p h" . cape-history)
+  ;;        ("C-c p f" . cape-file)
+  ;;        ...)
+  :init
+  ;; Add to the global default value of `completion-at-point-functions' which is
+  ;; used by `completion-at-point'.  The order of the functions matters, the
+  ;; first function returning a result wins.  Note that the list of buffer-local
+  ;; completion functions takes precedence over the global list.
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'completion-at-point-functions #'cape-elisp-block)
+  ;; (add-hook 'completion-at-point-functions #'cape-history)
+  ;; ...
+)
 
 ;; edit the results of a grep search  while inside a `grep-mode' buffer.
 ;; toggle editable mode, make changes, type C-c C-c to confirm | C-c C-k to abort.
