@@ -307,7 +307,7 @@ The DWIM behaviour of this command is as follows:
 
 (let ((mono-spaced-font "Monospace")
       (proportionately-spaced-font "Sans"))
-  (set-face-attribute 'default nil :family mono-spaced-font :height 180)
+  (set-face-attribute 'default nil :family mono-spaced-font :height 140)
   (set-face-attribute 'fixed-pitch nil :family mono-spaced-font :height 1.0)
   (set-face-attribute 'variable-pitch nil :family proportionately-spaced-font :height 1.0))
 
@@ -341,6 +341,9 @@ The DWIM behaviour of this command is as follows:
   :config
   (global-treesit-auto-mode))
 
+(add-to-list 'auto-mode-alist '("\\.Dockerfile\\'" . dockerfile-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
+;; bitbake
 (add-to-list 'auto-mode-alist '("\\.bb\\'" . bash-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.bbappend\\'" . bash-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.bbclass\\'" . bash-ts-mode))
@@ -447,7 +450,7 @@ The DWIM behaviour of this command is as follows:
   (defcustom eslint-command "eslint_d" "ESLint command to use for formatting." :type 'string :group 'eslint-fix)
   (reformatter-define eslint-fix
     :program eslint-command
-    :args (list "--fix-to-stdout" "--no-warn-ignored" "--stdin" "--stding-filename" (or (buffer-file-name) input file))
+    :args (list "--fix-to-stdout" "--no-warn-ignored" "--stdin" "--stdin-filename" (or (buffer-file-name) input file))
     :lighter " ESLintFix"
     :group 'eslint-fix))
 
@@ -510,6 +513,14 @@ The DWIM behaviour of this command is as follows:
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode))
   :init (setq markdown-command "/usr/local/bin/multimarkdown"))
+
+(use-package org
+  :hook
+  (org-mode . my/org-mode-setup)
+  :config
+  (defun my/org-mode-setup ()
+    (setq fill-column 100)
+    (auto-fill-mode 1)))
 
 (use-package magit
   :ensure t

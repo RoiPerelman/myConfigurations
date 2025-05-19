@@ -45,6 +45,7 @@
   - [[#lsp-mode][LSP-Mode]]
   - [[#jtsx---better-typescript][jtsx - better typescript]]
   - [[#markdown][Markdown]]
+  - [[#org-mode][org mode]]
 - [[#git][Git]]
   - [[#magit][Magit]]
   - [[#git-gutter][Git Gutter]]
@@ -61,7 +62,7 @@
   - [[#cape-todo-make-sure-understand-this][cape (TODO: make sure understand this)]]
 - [[#wgrep][Wgrep]]
 - [[#vterm][Vterm]]
-- [[#org-mode][Org Mode]]
+- [[#org-mode-1][Org Mode]]
 - [[#sudo][Sudo]]
 - [[#undo-tree][Undo Tree]]
 - [[#rainbow-delimiters][Rainbow Delimiters]]
@@ -542,7 +543,7 @@ default is the only one with abosulte height. The rest use floating point as a m
 #+begin_src emacs-lisp
   (let ((mono-spaced-font "Monospace")
         (proportionately-spaced-font "Sans"))
-    (set-face-attribute 'default nil :family mono-spaced-font :height 180)
+    (set-face-attribute 'default nil :family mono-spaced-font :height 140)
     (set-face-attribute 'fixed-pitch nil :family mono-spaced-font :height 1.0)
     (set-face-attribute 'variable-pitch nil :family proportionately-spaced-font :height 1.0))
 
@@ -584,17 +585,20 @@ basically changes all manual setup of treesitter for each language
 which includes downloading and setting as default filetypes
 
 #+begin_src emacs-lisp
-(use-package treesit-auto
-  :ensure t
-  :custom
-  (treesit-auto-install 'prompt) ;; or 'always to auto-install grammars silently
-  :config
-  (global-treesit-auto-mode))
+  (use-package treesit-auto
+    :ensure t
+    :custom
+    (treesit-auto-install 'prompt) ;; or 'always to auto-install grammars silently
+    :config
+    (global-treesit-auto-mode))
 #+end_src
 
 ** treesit file associations (TODO: decide if to keep it here)
 
 #+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.Dockerfile\\'" . dockerfile-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
+;; bitbake
 (add-to-list 'auto-mode-alist '("\\.bb\\'" . bash-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.bbappend\\'" . bash-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.bbclass\\'" . bash-ts-mode))
@@ -757,7 +761,7 @@ so each language can use reformatter to add formatting commands
     (defcustom eslint-command "eslint_d" "ESLint command to use for formatting." :type 'string :group 'eslint-fix)
     (reformatter-define eslint-fix
       :program eslint-command
-      :args (list "--fix-to-stdout" "--no-warn-ignored" "--stdin" "--stding-filename" (or (buffer-file-name) input file))
+      :args (list "--fix-to-stdout" "--no-warn-ignored" "--stdin" "--stdin-filename" (or (buffer-file-name) input file))
       :lighter " ESLintFix"
       :group 'eslint-fix))
 #+end_src
@@ -941,6 +945,7 @@ so each language can use reformatter to add formatting commands
 #+end_src
 
 ** Markdown
+
 #+begin_src emacs-lisp
 (use-package markdown-mode
   :ensure t
@@ -949,6 +954,16 @@ so each language can use reformatter to add formatting commands
   :init (setq markdown-command "/usr/local/bin/multimarkdown"))
 #+end_src
 
+** org mode
+#+begin_src emacs-lisp
+  (use-package org
+    :hook
+    (org-mode . my/org-mode-setup)
+    :config
+    (defun my/org-mode-setup ()
+      (setq fill-column 100)
+      (auto-fill-mode 1)))
+#+end_src
 * Git
 
 ** Magit
