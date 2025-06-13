@@ -19,6 +19,8 @@
   (global-auto-revert-mode t)             ; Automatically update buffers if file changes on disk
   (delete-selection-mode 1)               ; Automatically delete selected text without backspace
   (setq use-short-answers t)		; Use y/n instead of yes/no
+  (global-display-fill-column-indicator-mode 1) ; add column indicator
+  (set-face-background 'fill-column-indicator "red") ; add color to column indicator
   )
 
 (use-package emacs
@@ -237,17 +239,6 @@ The DWIM behaviour of this command is as follows:
 ;; (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 ;; (setq ediff-split-window-function 'split-window-vertically)
 
-;; https://ebzzry.com/en/emacs-pairs/
-;; TODO: go over smartparens capabalities and choose keybinding
-(use-package smartparens
-  :ensure t
-  :config
-  (require 'smartparens-config)
-  (smartparens-global-mode t)
-  (show-smartparens-global-mode t)
-  (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
-  (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode))
-
 (use-package saveplace
   :ensure nil  ; It's built-in, no need to install
   :defer 3
@@ -288,6 +279,10 @@ The DWIM behaviour of this command is as follows:
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace) ; Delete whitespace just when a file is saved.
 
+(use-package roip-lib
+  :load-path "~/.config/emacs/roip/"
+  :hook (find-file . roip/enable-inspekto-sync-if-in-project))
+
 ;; require manual installation nerd-icons-install-fonts
  (use-package nerd-icons :ensure t)
  (use-package nerd-icons-completion
@@ -305,9 +300,9 @@ The DWIM behaviour of this command is as follows:
   :hook
   (dired-mode . nerd-icons-dired-mode))
 
-(let ((mono-spaced-font "Monospace")
+(let ((mono-spaced-font "Fira Code") ; "JetBrains Mono" "Iosevka"
       (proportionately-spaced-font "Sans"))
-  (set-face-attribute 'default nil :family mono-spaced-font :height 140)
+  (set-face-attribute 'default nil :family mono-spaced-font :height 180)
   (set-face-attribute 'fixed-pitch nil :family mono-spaced-font :height 1.0)
   (set-face-attribute 'variable-pitch nil :family proportionately-spaced-font :height 1.0))
 
@@ -348,16 +343,6 @@ The DWIM behaviour of this command is as follows:
 (add-to-list 'auto-mode-alist '("\\.bbappend\\'" . bash-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.bbclass\\'" . bash-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . bash-ts-mode))
-
-(use-package combobulate
-    :ensure nil
-    :vc (:url "https://github.com/mickeynp/combobulate")
-;;    :load-path "~/.config/emacs/combobulate"
-    :custom
-    ;; You can customize Combobulate's key prefix here.
-    ;; Note that you may have to restart Emacs for this to take effect!
-    (combobulate-key-prefix "C-c o")
-    :hook ((prog-mode . combobulate-mode)))
 
 (use-package reformatter :ensure t)
 

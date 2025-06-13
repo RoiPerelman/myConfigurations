@@ -11,4 +11,4 @@ html
 !.config/emacs/rp-theme.el
 !.config/emacs/config.org
 !.config/emacs/config.el
-
+!.config/emacs/roip/
