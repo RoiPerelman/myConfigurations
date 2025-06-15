@@ -279,10 +279,6 @@ The DWIM behaviour of this command is as follows:
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace) ; Delete whitespace just when a file is saved.
 
-(use-package roip-lib
-  :load-path "~/.config/emacs/roip/"
-  :hook (find-file . roip/enable-inspekto-sync-if-in-project))
-
 ;; require manual installation nerd-icons-install-fonts
  (use-package nerd-icons :ensure t)
  (use-package nerd-icons-completion

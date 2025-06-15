@@ -506,9 +506,12 @@ not tangled because i prefer smartparens
 
 * General roip-lib
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package roip-lib
     :load-path "~/.config/emacs/roip/"
+    :init
+    (defvar roip/inspekto-sync-project-root "~/sinspekto/inspekto/")
+    (defvar roip/inspekto-sync-target-root "~/sinspekto/dupspekto/")
     ;; enable inspekto-sync-mode only if in inspekto project
     :hook (find-file . roip/enable-inspekto-sync-if-in-project))
 #+end_src
