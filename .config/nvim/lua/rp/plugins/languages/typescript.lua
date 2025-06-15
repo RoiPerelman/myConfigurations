@@ -20,14 +20,14 @@ _G.lsp_config_clients_callbacks.eslint = function(client, event)
   end
   vim.keymap.set("n", "co", organize_imports, { buffer = event.buf, desc = "[C]ode [O]rganize imports eslint" })
   vim.keymap.set("n", "cf", function()
-    vim.cmd("EslintFixAll")
+    vim.cmd("LspEslintFixAll")
   end, { buffer = event.buf, desc = "[C]ode [F]ormat + fix eslint" })
   vim.keymap.set("n", "g=", function()
     organize_imports()
-    vim.cmd("EslintFixAll")
+    vim.cmd("LspEslintFixAll")
   end, { buffer = event.buf, desc = "[G]et [=]format + organize + fix eslint" })
   vim.api.nvim_create_autocmd("BufWritePre", {
     buffer = event.buf,
-    command = "EslintFixAll",
+    command = "LspEslintFixAll",
   })
 end

@@ -23,8 +23,6 @@
   - [[#dired][dired]]
   - [[#isearch][Isearch]]
   - [[#ediff][Ediff]]
-  - [[#elec-pair-tangle-no][Elec Pair (:tangle no)]]
-  - [[#smartparens-tangle-no][smartparens (:tangle no)]]
   - [[#save-place][save-place]]
 - [[#general-functions][General Functions]]
 - [[#general-keybinding][General Keybinding]]
@@ -43,7 +41,7 @@
   - [[#prerequisites][Prerequisites]]
   - [[#reformatter-check-apheleia-as-an-alternative][Reformatter (check apheleia as an alternative)]]
   - [[#eglot][Eglot]]
-  - [[#lsp-mode][LSP-Mode]]
+  - [[#lsp-mode-tangle-no][LSP-Mode (:tangle no)]]
   - [[#jtsx---better-typescript][jtsx - better typescript]]
   - [[#markdown][Markdown]]
   - [[#org-mode][org mode]]
@@ -62,13 +60,14 @@
   - [[#corfu][Corfu]]
   - [[#cape-todo-make-sure-understand-this][cape (TODO: make sure understand this)]]
 - [[#wgrep][Wgrep]]
-- [[#vterm][Vterm]]
+- [[#vterm-todo-make-consult-shortcuts-work-in-vterm][Vterm (TODO: make consult shortcuts work in vterm)]]
 - [[#org-mode-1][Org Mode]]
 - [[#sudo][Sudo]]
 - [[#undo-tree][Undo Tree]]
 - [[#rainbow-delimiters][Rainbow Delimiters]]
 - [[#rainbow-colors][Rainbow colors]]
 - [[#copilot][Copilot]]
+- [[#keycast][Keycast]]
 
 * General information
 
@@ -422,32 +421,6 @@ completions of my creation
 ;; (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 ;; (setq ediff-split-window-function 'split-window-vertically)
 #+end_src
-** Elec Pair (:tangle no)
-
-not tangled because i prefer smartparens
-
-#+begin_src emacs-lisp :tangle no
-  (use-package elec-pair
-    :ensure nil
-    :config
-    (electric-pair-mode 1))
-#+end_src
-
-** smartparens (:tangle no)
-
-#+begin_src emacs-lisp :tangle no
-  ;; https://ebzzry.com/en/emacs-pairs/
-  ;; TODO: go over smartparens capabalities and choose keybinding
-  (use-package smartparens
-    :ensure t
-    :config
-    (require 'smartparens-config)
-    (smartparens-global-mode t)
-    (show-smartparens-global-mode t)
-    (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
-    (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode))
-#+end_src
-
 ** save-place
 
 #+begin_src emacs-lisp
@@ -492,9 +465,13 @@ not tangled because i prefer smartparens
 
     ;; config management
     (global-set-key (kbd "M-s M-r")
-      (lambda () (interactive) (load-file "~/.config/emacs/init.el")))
+  		  (lambda () (interactive) (load-file "~/.config/emacs/init.el")))
+    (defun rp/search-config ()
+      "Open Emacs configuration file."
+      (interactive)
+      (find-file "~/.config/emacs/config.org"))
     (global-set-key (kbd "M-s M-c")
-      (lambda () (interactive) (find-file "~/.config/emacs/config.org")))
+  		  (lambda () (interactive) (find-file "~/.config/emacs/config.org")))
     )
 #+end_src
 
@@ -621,11 +598,19 @@ which includes downloading and setting as default filetypes
 #+end_src
 
 ** Combobulate (:tangle no)
+<<<<<<< variant A
 #+begin_src emacs-lisp :tangle no
     (use-package combobulate
+>>>>>>> variant B
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle no
+:END:
+
+#+begin_src emacs-lisp
+  (use-package combobulate
+======= end
       :ensure nil
       :vc (:url "https://github.com/mickeynp/combobulate")
-  ;;    :load-path "~/.config/emacs/combobulate"
       :custom
       ;; You can customize Combobulate's key prefix here.
       ;; Note that you may have to restart Emacs for this to take effect!
@@ -657,6 +642,7 @@ sudo ln -s ~/Library/Python/3.9/bin/ruff /usr/local/bin/ruff
 #+begin_src bash :tangle no
 npm install -g typescript typscript-language-server
 npm install -g vscode-langservers-extracted
+npm install -g eslint eslint_d
 #+end_src
 
 *** rust prerequisites
@@ -787,7 +773,7 @@ so each language can use reformatter to add formatting commands
     :mode (("\\.rs\\'" . rust-ts-mode))
     :hook ((rust-ts-mode . eglot-ensure)))
 #+end_src
-** LSP-Mode
+** LSP-Mode (:tangle no)
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle no
 :END:
@@ -1271,7 +1257,8 @@ Adds helpful metadata in minibuffer free space
             ("C-c C-c" . wgrep-finish-edit)))
 #+end_src
 
-* Vterm
+
+* Vterm (TODO: make consult shortcuts work in vterm)
 
 #+begin_src emacs-lisp
   (use-package vterm
@@ -1283,19 +1270,20 @@ Adds helpful metadata in minibuffer free space
 * Org Mode
 
 #+begin_src emacs-lisp
-    (use-package toc-org
-      :ensure t
-      :commands toc-org-enable
-      :init (add-hook 'org-mode-hook 'toc-org-enable))
-    (electric-indent-mode -1)
-    (require 'org-tempo)
+  (use-package toc-org
+    :ensure t
+    :commands toc-org-enable
+    :init (add-hook 'org-mode-hook 'toc-org-enable))
 
-     (add-hook 'org-mode-hook 'org-indent-mode)
-     (use-package org-bullets
-       :ensure t
-       :config
-       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-       )
+  (electric-indent-mode -1)
+  (require 'org-tempo)
+
+   (add-hook 'org-mode-hook 'org-indent-mode)
+   (use-package org-bullets
+     :ensure t
+     :config
+     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+     )
 #+end_src
 
 * Sudo
@@ -1334,7 +1322,6 @@ Adds helpful metadata in minibuffer free space
 * Rainbow colors
 
 #+begin_src emacs-lisp
-
   ;; adds colors to color indications e.g #fff000
   (use-package rainbow-mode :ensure t)
 #+end_src
@@ -1348,20 +1335,34 @@ Adds helpful metadata in minibuffer free space
     :ensure nil
     :vc (:url "https://github.com/copilot-emacs/copilot.el" :branch "main")
     :init
-    (use-package dash :ensure t)
-    (use-package s :ensure t)
     (use-package editorconfig :ensure t)
     (use-package f :ensure t)
-    :bind (:map copilot-completion-map
-                ("<tab>" . copilot-accept-completion)
-                ("TAB" . copilot-accept-completion))
     :hook (prog-mode . copilot-mode)
+    :bind (:map copilot-completion-map
+                ("M-<right>" . copilot-accept-completion)
+                ("C-<right>" . copilot-accept-completion-by-word)
+                ("M-n" . copilot-next-completion)
+                ("M-p" . copilot-previous-completion))
     :config
     (setq copilot-max-char -1)
-    (add-to-list 'copilot-indentation-alist '(prog-mode 2))
-    (add-to-list 'copilot-indentation-alist '(org-mode 2))
-    (add-to-list 'copilot-indentation-alist '(text-mode 2))
-    (add-to-list 'copilot-indentation-alist '(closure-mode 2))
-    (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
     )
+#+end_src
+
+* Keycast
+
+#+begin_src emacs-lisp
+  (use-package keycast
+    :ensure t
+    :config
+    ;; Show keys in the mode line
+    (setq keycast-mode-line-remove-tail-elements nil)
+    (keycast-mode-line-mode t)
+
+    ;; Optional: customize appearance
+
+    ;; (setq keycast-mode-line-insert-after 'mode-line-misc-info)
+    ;; (setq keycast-mode-line-window-predicate 'mode-line-window-selected-p)
+
+    ;; Enable it globally
+    (keycast-mode))
 #+end_src

@@ -2,6 +2,12 @@ local wezterm = require("wezterm")
 
 Config = wezterm.config_builder()
 
+if wezterm.target_triple == "x86_64-pc-windows-msvc" then
+  -- Windows-specific configuration
+  Config.default_prog = { 'wsl.exe' }
+  Config.default_cwd = "\\\\wsl$\\Debian\\home\\roip" -- Adjust distribution and username
+end
+
 Config.automatically_reload_config = true
 -- Config.enable_tab_bar = false
 Config.window_close_confirmation = "NeverPrompt"

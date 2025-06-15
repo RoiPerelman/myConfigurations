@@ -85,8 +85,25 @@ fi
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
 [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+# rust
+if [ -f "$HOME/.cargo/env" ]; then
+  source "$HOME/.cargo/env"
+fi
+
+if grep -qi microsoft /proc/version; then
+    export DISPLAY=:0
+    export LIBGL_ALWAYS_INDIRECT=1
+    # These can help with UI rendering
+    export GDK_SCALE=1
+    export GDK_DPI_SCALE=1
+    # For better font rendering
+    export GDK_SYNCHRONIZE=1
+fi
 
 # tinyrc
 if [ -f ~/.tinyrc ]; then
@@ -98,6 +115,3 @@ if [ -f ~/.inspektoconfig ]; then
     source ~/.inspektoconfig
 fi
 
-if [ -f "$HOME/.cargo/env" ]; then
-  source "$HOME/.cargo/env"
-fi

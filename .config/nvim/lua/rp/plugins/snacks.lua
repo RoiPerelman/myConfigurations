@@ -32,6 +32,9 @@ _G.bt = function()
 end
 vim.print = _G.dd
 
+-- notifier
+vim.keymap.set('n', '<leader>n', function() Snacks.notifier.show_history() end, { desc = '[N]otifications' })
+
 -- bufdelete
 vim.keymap.set('n', '<leader>bc', function() Snacks.bufdelete() end, { desc = '[B]uffer [C]lose' })
 vim.keymap.set('n', '<leader>bC', function() Snacks.bufdelete.all() end, { desc = '[B]uffer [C]lose' })

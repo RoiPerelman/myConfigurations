@@ -272,9 +272,13 @@ The DWIM behaviour of this command is as follows:
 
   ;; config management
   (global-set-key (kbd "M-s M-r")
-    (lambda () (interactive) (load-file "~/.config/emacs/init.el")))
+		  (lambda () (interactive) (load-file "~/.config/emacs/init.el")))
+  (defun rp/search-config ()
+    "Open Emacs configuration file."
+    (interactive)
+    (find-file "~/.config/emacs/config.org"))
   (global-set-key (kbd "M-s M-c")
-    (lambda () (interactive) (find-file "~/.config/emacs/config.org")))
+		  (lambda () (interactive) (find-file "~/.config/emacs/config.org")))
   )
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace) ; Delete whitespace just when a file is saved.
@@ -742,6 +746,7 @@ The DWIM behaviour of this command is as follows:
   :ensure t
   :commands toc-org-enable
   :init (add-hook 'org-mode-hook 'toc-org-enable))
+
 (electric-indent-mode -1)
 (require 'org-tempo)
 
@@ -782,19 +787,29 @@ The DWIM behaviour of this command is as follows:
   :ensure nil
   :vc (:url "https://github.com/copilot-emacs/copilot.el" :branch "main")
   :init
-  (use-package dash :ensure t)
-  (use-package s :ensure t)
   (use-package editorconfig :ensure t)
   (use-package f :ensure t)
-  :bind (:map copilot-completion-map
-              ("<tab>" . copilot-accept-completion)
-              ("TAB" . copilot-accept-completion))
   :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("M-<right>" . copilot-accept-completion)
+              ("C-<right>" . copilot-accept-completion-by-word)
+              ("M-n" . copilot-next-completion)
+              ("M-p" . copilot-previous-completion))
   :config
   (setq copilot-max-char -1)
-  (add-to-list 'copilot-indentation-alist '(prog-mode 2))
-  (add-to-list 'copilot-indentation-alist '(org-mode 2))
-  (add-to-list 'copilot-indentation-alist '(text-mode 2))
-  (add-to-list 'copilot-indentation-alist '(closure-mode 2))
-  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
   )
+
+(use-package keycast
+  :ensure t
+  :config
+  ;; Show keys in the mode line
+  (setq keycast-mode-line-remove-tail-elements nil)
+  (keycast-mode-line-mode t)
+
+  ;; Optional: customize appearance
+
+  ;; (setq keycast-mode-line-insert-after 'mode-line-misc-info)
+  ;; (setq keycast-mode-line-window-predicate 'mode-line-window-selected-p)
+
+  ;; Enable it globally
+  (keycast-mode))

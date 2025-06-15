@@ -116,3 +116,9 @@ vim.api.nvim_set_keymap(
   ":ToggleLoclist<CR>",
   { noremap = true, silent = true, desc = "[L]ocalist Toggle" }
 )
+
+-- map <leader>p to select the last paste and remove ^M characters
+vim.keymap.set('n', '<leader>p', '`[v`]:s/\\r//g<CR>', {
+  silent = true,
+  desc = 'Select last paste and remove ^M'
+})
