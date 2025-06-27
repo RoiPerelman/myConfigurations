@@ -32,7 +32,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
   callback = function()
     -- Environment variables
     local project_path = os.getenv("INSPEKTO_PROJECT")
-    local remote_path = os.getenv("INSPEKTO_REMOTE_PATH") or "rp@rp-il.net.plm.eds.com:/home/rp/sinspekto/winspekto"
+    local remote_path = os.getenv("INSPEKTO_REMOTE_PATH") or "roip@192.168.0.151:/home/roip/sinspekto/winspekto"
 
     -- Return early if env variable is not set
     if not project_path then
@@ -45,7 +45,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     -- Check if the file is in the project directory
     if string.match(current_file, project_path) then
       vim.notify(string.format("Rsync started to %s", remote_path), vim.log.levels.INFO)
-      local cmd = string.format('rsync -avz --delete --progress --exclude="*/__pycache__" --exclude="*.pyc" %s/ %s/', project_path, remote_path)
+      local cmd = string.format('rsync -avz --delete --progress --exclude="*/__pycache__" --exclude="*.pyc" --exclude="build/" %s/ %s/', project_path, remote_path)
 
       -- Buffer to collect output
       local output_buffer = {}

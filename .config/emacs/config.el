@@ -283,6 +283,15 @@ The DWIM behaviour of this command is as follows:
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace) ; Delete whitespace just when a file is saved.
 
+(use-package roip-lib
+  :load-path "~/.config/emacs/roip/"
+  :init
+  (defvar roip/inspekto-sync-project-root "/home/roip/sinspekto/inspekto/")
+  (defvar roip/inspekto-sync-target-root "roip@192.168.0.151:/home/roip/sinspekto/winspekto/")
+  ;; (defvar roip/inspekto-sync-target-root "rp@rp-il.net.plm.eds.com:/home/rp/sinspekto/winspekto/")
+  ;; enable inspekto-sync-mode only if in inspekto project
+  :hook (find-file . roip/enable-inspekto-sync-if-in-project))
+
 ;; require manual installation nerd-icons-install-fonts
  (use-package nerd-icons :ensure t)
  (use-package nerd-icons-completion
@@ -329,20 +338,76 @@ The DWIM behaviour of this command is as follows:
         ))
   :config (load-theme 'modus-vivendi :no-confirm-loading))
 
-(use-package treesit-auto
-  :ensure t
-  :custom
-  (treesit-auto-install 'prompt) ;; or 'always to auto-install grammars silently
+(use-package treesit
+  :ensure nil
+  ;; basically does for example
+  ;; (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
   :config
-  (global-treesit-auto-mode))
+  (setq treesit-font-lock-level 4)
+  ;; add lsp sources to be downloaded
+  (add-to-list 'treesit-language-source-alist '(python "https://github.com/tree-sitter/tree-sitter-python"))
+  (add-to-list 'treesit-language-source-alist '(javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+  (add-to-list 'treesit-language-source-alist '(typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+  (add-to-list 'treesit-language-source-alist '(tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+  (add-to-list 'treesit-language-source-alist '(html "https://github.com/tree-sitter/tree-sitter-html"))
+  (add-to-list 'treesit-language-source-alist '(css "https://github.com/tree-sitter/tree-sitter-css"))
+  (add-to-list 'treesit-language-source-alist '(elisp "https://github.com/Wilfred/tree-sitter-elisp"))
+  (add-to-list 'treesit-language-source-alist '(bash "https://github.com/tree-sitter/tree-sitter-bash"))
+  (add-to-list 'treesit-language-source-alist '(make "https://github.com/alemuller/tree-sitter-make"))
+  (add-to-list 'treesit-language-source-alist '(dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile" "main" "src"))
+  (add-to-list 'treesit-language-source-alist '(json "https://github.com/tree-sitter/tree-sitter-json"))
+  (add-to-list 'treesit-language-source-alist '(toml "https://github.com/tree-sitter/tree-sitter-toml"))
+  (add-to-list 'treesit-language-source-alist '(yaml "https://github.com/ikatyang/tree-sitter-yaml"))
+  (add-to-list 'treesit-language-source-alist '(c "https://github.com/tree-sitter/tree-sitter-c"))
+  (add-to-list 'treesit-language-source-alist '(cpp "https://github.com/tree-sitter/tree-sitter-cpp"))
+  (add-to-list 'treesit-language-source-alist '(cmake "https://github.com/uyha/tree-sitter-cmake"))
+  (add-to-list 'treesit-language-source-alist '(lua "https://github.com/tree-sitter-grammars/tree-sitter-lua"))
+  ;; until treesit has markdown-ts-mode I can use this.
+  ;; It still doesn't highlight code blocks
+  (use-package markdown-ts-mode
+    :ensure t
+    :mode ("\\.md\\'" . markdown-ts-mode)
+    :defer 't
+    :config
+    (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown/src"))
+    (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown-inline/src"))
+    )
 
-(add-to-list 'auto-mode-alist '("\\.Dockerfile\\'" . dockerfile-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
-;; bitbake
-(add-to-list 'auto-mode-alist '("\\.bb\\'" . bash-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.bbappend\\'" . bash-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.bbclass\\'" . bash-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.inc\\'" . bash-ts-mode))
+  ;; download sources
+  (dolist (source treesit-language-source-alist)
+    (unless (treesit-ready-p (car source))
+      (treesit-install-language-grammar (car source))))
+
+  ;; add mode and file associations
+  (progn
+    ;; file associations
+    (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+    (add-to-list 'auto-mode-alist '("\\.js\\'" . typescript-ts-mode))
+    (add-to-list 'auto-mode-alist '("\\.mjs\\'" . typescript-ts-mode))
+    (add-to-list 'auto-mode-alist '("\\.mts\\'" . typescript-ts-mode))
+    (add-to-list 'auto-mode-alist '("\\.cjs\\'" . typescript-ts-mode))
+    (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+    (add-to-list 'auto-mode-alist '("\\.jsx\\'" . tsx-ts-mode))
+    (add-to-list 'auto-mode-alist '("\\.json\\'" . json-ts-mode))
+    (add-to-list 'auto-mode-alist '("\\.Dockerfile\\'" . dockerfile-ts-mode))
+    (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
+    (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-ts-mode))
+    (add-to-list 'auto-mode-alist '("\\.bb\\'" . bash-ts-mode))
+    (add-to-list 'auto-mode-alist '("\\.bbappend\\'" . bash-ts-mode))
+    (add-to-list 'auto-mode-alist '("\\.bbclass\\'" . bash-ts-mode))
+
+    ;; mode associations
+    ;; now make <lang>-mode use <lang>-ts-mode instead
+    ;; files that would normally open in python-mode should open in python-ts-mode
+    (add-to-list 'major-mode-remap-alist '(bash-mode . bash-ts-mode))
+    (add-to-list 'major-mode-remap-alist '(sh-mode . bash-ts-mode))
+    (add-to-list 'major-mode-remap-alist '(json-mode . json-ts-mode))
+    (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+    (add-to-list 'major-mode-remap-alist '(css-mode . css-ts-mode))
+    (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
+    (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
+    )
+  )
 
 (use-package reformatter :ensure t)
 
@@ -523,22 +588,23 @@ The DWIM behaviour of this command is as follows:
 ;; 3. stage, revert hunk (no unstage hunk)
 (use-package git-gutter
   :ensure t
-  :hook (prog-mode . git-gutter-mode)
+  ;; Replace the single hook with global mode and ensure
+  :init
+  (global-git-gutter-mode +1)
   :bind (
-	 ("M-] h" . git-gutter:next-hunk)
-	 ("M-[ h" . git-gutter:previous-hunk)
-	 ("C-c h s" . git-gutter:stage-hunk)
-	 ("C-c h r" . git-gutter:revert-hunk)
-	 ("C-c h p" . git-gutter:popup-hunk)
-	 )
+         ("M-] h" . git-gutter:next-hunk)
+         ("M-[ h" . git-gutter:previous-hunk)
+         ("C-c h s" . git-gutter:stage-hunk)
+         ("C-c h r" . git-gutter:revert-hunk)
+         ("C-c h p" . git-gutter:popup-hunk)
+         )
   :config
   (setq git-gutter:update-interval 0.05)
   (custom-set-variables
    '(git-gutter:window-width 1)
    '(git-gutter:modified-sign " ") ;; two space
    '(git-gutter:added-sign " ")    ;; multiple character is OK
-   '(git-gutter:deleted-sign " "))
-  )
+   '(git-gutter:deleted-sign " ")))
 
 (use-package git-gutter-fringe
   :ensure t
@@ -644,56 +710,65 @@ The DWIM behaviour of this command is as follows:
 
 (use-package corfu
   :ensure t
+  :init  ; Move initialization to :init instead of :config
+  (global-corfu-mode 1)  ; Changed from global-corfu-mode to explicitly use 1
+  (corfu-popupinfo-mode 1)
   :bind (:map corfu-map ("C-y" . corfu-complete))
   :custom
   (corfu-cycle t)                       ; Allows cycling through candidates
   (corfu-auto t)                        ; Enable auto completion
   (corfu-auto-prefix 2)                 ; Minimum length of prefix for completion
-  (corfu-auto-delay 0.1)                ; delay for completion
-  (corfu-popupinfo-delay '(0.5 . 0.2))  ; Automatically update info popup after that numver of seconds
+  (corfu-auto-delay 0.1)               ; delay for completion
+  (corfu-popupinfo-delay '(0.5 . 0.2)) ; Automatically update info popup
   (corfu-preview-current nil)           ; insert previewed candidate
   (corfu-preselect 'prompt)
-  (corfu-on-exact-match nil)            ; Don't auto expand tempel snippets
+  (corfu-on-exact-match nil)           ; Don't auto expand tempel snippets
   (corfu-min-width 20)
   :config
-  (global-corfu-mode)
-  (corfu-popupinfo-mode 1) ; shows documentation after `corfu-popupinfo-delay'
   ;; add minibuffer support but not while vertico is running
   (setq global-corfu-minibuffer
-  	(lambda ()
-  	  (not (or (bound-and-true-p mct--active)
-  		   (bound-and-true-p vertico--input)
-  		   (eq (current-local-map) read-passwd-map)))))
+        (lambda ()
+          (not (or (bound-and-true-p mct--active)
+                   (bound-and-true-p vertico--input)
+                   (eq (current-local-map) read-passwd-map)))))
+
   ;; eshell and shell support
-  (add-hook 'eshell-mode-hook (lambda ()
-  				(setq-local corfu-auto nil)
-  				(corfu-mode)))
-  ;; Sort by input history (no need to modify `corfu-sort-function').
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (setq-local corfu-auto nil)
+              (corfu-mode 1)))  ; Added explicit 1
+
+  ;; Sort by input history
   (with-eval-after-load 'savehist
     (corfu-history-mode 1)
     (add-to-list 'savehist-additional-variables 'corfu-history))
-  ;; TODO: what is that - do i want it?
+
+  ;; eshell specific settings
   (add-hook 'eshell-mode-hook
-            (lambda () (setq-local corfu-quit-at-boundary t
-                                   corfu-quit-no-match t
-                                   corfu-auto nil)
-              (corfu-mode))
+            (lambda ()
+              (setq-local corfu-quit-at-boundary t
+                         corfu-quit-no-match t
+                         corfu-auto nil)
+              (corfu-mode 1))  ; Added explicit 1
             nil
             t)
-  ;; add M-m to move selection options to minibuffer
+
+  ;; Move to minibuffer function
   (defun corfu-move-to-minibuffer ()
     (interactive)
     (pcase completion-in-region--data
       (`(,beg ,end ,table ,pred ,extras)
        (let ((completion-extra-properties extras)
              completion-cycle-threshold completion-cycling)
-	 (consult-completion-in-region beg end table pred)))))
+         (consult-completion-in-region beg end table pred)))))
+
   (keymap-set corfu-map "M-m" #'corfu-move-to-minibuffer)
   (add-to-list 'corfu-continue-commands #'corfu-move-to-minibuffer)
-  ;; if we use auto in order not to slow down the system. use more basic matching style
+
+  ;; Orderless optimization
   (defun orderless-fast-dispatch (word index total)
     (and (= index 0) (= total 1) (length< word 4)
-  	 (cons 'orderless-literal-prefix word)))
+         (cons 'orderless-literal-prefix word)))
 
   (orderless-define-completion-style orderless-fast
     (orderless-style-dispatchers '(orderless-fast-dispatch))

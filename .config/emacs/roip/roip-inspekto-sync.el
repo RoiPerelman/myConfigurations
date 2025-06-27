@@ -1,10 +1,10 @@
-g;; respects full and relative folder paths but must end with /
+;; respects full and relative folder paths but must end with /
 (defvar roip/inspekto-sync-project-root
   (let ((env (getenv "INSPEKTO_SYNC_PROJECT_ROOT")))
     (when env (expand-file-name env)))
   "Root directory of the Inspekto project, or nil if not set in the INSPEKTO_SYNC_PROJECT_ROOT environment variable.")
 
-;; respects ssh and relative folder paths but must end with /
+;; respects full and ssh and but must end with /
 (defvar roip/inspekto-sync-target-root
   (let ((env (getenv "INSPEKTO_SYNC_TARGET_ROOT")))
     (when env (expand-file-name env)))
@@ -28,12 +28,14 @@ Also prints shell output and completion message to *Messages*."
     (message "[roip/inspekto-rsync] Save hook triggered")
     (let* ((project (project-current))
            (project-root (when project (expand-file-name (project-root project))))
-           (sync-project-root (expand-file-name roip/inspekto-sync-project-root))
-	   (sync-target-root (expand-file-name roip/inspekto-sync-target-root)))
+           (sync-project-root roip/inspekto-sync-project-root)
+	   (sync-target-root roip/inspekto-sync-target-root))
+      (message "[roip/inspekto-rsync] Project root: %s" project-root)
+      (message "[roip/inspekto-rsync] Sync project root: %s" sync-project-root)
       (when (and project-root (string= project-root sync-project-root))
-	(let* ((command (format "rsync -avz --delete %s %s"
-				(shell-quote-argument sync-project-root)
-				(shell-quote-argument sync-target-root)))
+	(let* ((command (format "rsync -avz --delete %s --exclude=\"*/__pycache__\" --exclude=\"*.pyc\" --exclude=\"build/\" %s"
+				sync-project-root
+				sync-target-root))
                (proc (start-process-shell-command
                       "inspekto-proc" nil command)))
 	  (message "[roip/inspekto-rsync] Starting async command: %s" command)
