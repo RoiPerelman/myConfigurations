@@ -1,3 +1,4 @@
+vim.keymap.set("n", "<leader>gg", ":Git", { desc = "[G]it" })
 vim.keymap.set("n", "<leader>gb", ":Git blame<CR>", { desc = "[G]it [B]lame" })
 
 local gitsigns = require("gitsigns")
@@ -5,8 +6,8 @@ gitsigns.setup()
 
 vim.keymap.set("n", "<Leader>gB", gitsigns.blame_line, { desc = "Git [B]lame" })
 
-vim.keymap.set("n", "]h", gitsigns.next_hunk, { desc = "Next [H]unk" })
-vim.keymap.set("n", "[h", gitsigns.prev_hunk, { desc = "Prev [H]unk" })
+vim.keymap.set("n", "]h", function() gitsigns.nav_hunk('next') end, { desc = "Next [H]unk" })
+vim.keymap.set("n", "[h", function() gitsigns.nav_hunk('prev') end, { desc = "Prev [H]unk" })
 
 vim.keymap.set("n", "<leader>hp", gitsigns.preview_hunk, { desc = "[H]unk [P]review" })
 vim.keymap.set("n", "<leader>hP", gitsigns.preview_hunk_inline, { desc = "[H]unk [P]review inline" })
@@ -18,7 +19,7 @@ vim.keymap.set("n", "<leader>hr", gitsigns.reset_hunk, { desc = "[H]unk [R]eset"
 vim.keymap.set("v", "<leader>hr", function()
   gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
 end, { desc = "[H]unk [R]eset" })
-vim.keymap.set("n", "<leader>hu", gitsigns.undo_stage_hunk, { desc = "[H]unk [U]nstage" })
+vim.keymap.set("n", "<leader>hu", gitsigns.stage_hunk, { desc = "[H]unk [U]nstage" })
 vim.keymap.set("n", "<leader>hS", gitsigns.stage_buffer, { desc = "[H]unks [S]tage in buffer" })
 vim.keymap.set("n", "<leader>hR", gitsigns.reset_buffer, { desc = "[H]unks [R]eset in buffer" })
 vim.keymap.set("n", "<leader>hd", gitsigns.diffthis, { desc = "[H]unk diff" })
@@ -26,3 +27,6 @@ vim.keymap.set("n", "<leader>hd", gitsigns.diffthis, { desc = "[H]unk diff" })
 -- Text object inside hunk
 vim.keymap.set({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "[i]nside [H]unk" })
 vim.keymap.set({ "o", "x" }, "ah", ":<C-U>Gitsigns select_hunk<CR>", { desc = "[A]rround [H]unk" })
+
+local neogit = require("neogit")
+vim.keymap.set("n", "<leader>gn", function() neogit.open({ kind = "split" }) end, { desc = "[G]it [N]eogit" })

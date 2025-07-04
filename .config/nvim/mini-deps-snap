@@ -11,6 +11,7 @@ return {
   ["mason-tool-installer.nvim"] = "1255518cb067e038a4755f5cb3e980f79b6ab89c",
   ["mason.nvim"] = "fc98833b6da5de5a9c5b1446ac541577059555be",
   ["mini.nvim"] = "e744b5dbb3158242af77124bd6763a8647ea82ed",
+  neogit = "59725524d25f9a8a9474f113d60db52bad8504d0",
   ["nui.nvim"] = "8d3bce9764e627b62b07424e0df77f680d47ffdb",
   ["nvim-lint"] = "e7b4ffa6ab763af012e38b21af2c9159f10d2d33",
   ["nvim-lspconfig"] = "d3ad666b7895f958d088cceb6f6c199672c404fe",
@@ -21,9 +22,6 @@ return {
   ["oil.nvim"] = "302bbaceeafc690e6419e0c8296e804d60cb9446",
   ["plenary.nvim"] = "857c5ac632080dba10aae49dba902ce3abf91b35",
   ["snacks.nvim"] = "bc0630e43be5699bb94dadc302c0d21615421d93",
-  ["telescope-fzf-native.nvim"] = "1f08ed60cafc8f6168b72b80be2b2ea149813e55",
-  ["telescope-ui-select.nvim"] = "6e51d7da30bd139a6950adf2a47fda6df9fa06d2",
-  ["telescope.nvim"] = "a4ed82509cecc56df1c7138920a1aeaf246c0ac5",
   ["tokyonight.nvim"] = "057ef5d260c1931f1dffd0f052c685dcd14100a3",
   ["ts-comments.nvim"] = "1bd9d0ba1d8b336c3db50692ffd0955fe1bb9f0c",
   ["vim-fugitive"] = "4a745ea72fa93bb15dd077109afbb3d1809383f2"
