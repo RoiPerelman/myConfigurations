@@ -1,7 +1,12 @@
 require('snacks').setup({
   picker = {
     layouts = {
-      select = require("snacks.picker.config.layouts").default
+      select = require("snacks.picker.config.layouts").default,
+      vertico = {
+        preset = "ivy",
+        preview = "main",
+        layout = { height = 12 },
+      },
     }
   },
   notifier = { enabled = true },
@@ -43,31 +48,43 @@ vim.keymap.set('n', '<leader>bC', function() Snacks.bufdelete.all() end, { desc 
 vim.keymap.set('n', '<leader>z', function() Snacks.zen() end, { desc = '[Z]en mode toggle' })
 
 -- picker
-function get_project_root()
+local function get_project_root()
   -- my old implementation of buf_root made before Snacks
   -- return require("rp.utils.find_buf_root")
   return Snacks.git.get_root()
 end
 
+local function with_opts(opts)
+  return vim.tbl_extend("force", {
+    layout = { preset = 'vertico' },
+    hidden = true,
+  }, opts or {})
+end
+
+local map = vim.keymap.set
+local picker = require("snacks").picker
+
 -- files
-vim.keymap.set('n', '<leader><leader>', function()
-  Snacks.picker.smart({
-    layout = {
-      preview = "main",
-      preset = "ivy",
-      layout = { height = 15 }
-    }
-  })
-end, { desc = '[F]ind [F]iles cwd' })
-vim.keymap.set('n', '<leader>ff', function() Snacks.picker.files() end, { desc = '[F]ind [F]iles cwd' })
-vim.keymap.set('n', '<leader>fF', function() Snacks.picker.files({ cwd = get_project_root() }) end, { desc = '[F]ind [F]iles buf root' })
-vim.keymap.set('n', '<leader>fc', function() Snacks.picker.files({ cwd = vim.fn.stdpath('config') }) end, { desc = '[F]ind [C]onfig files' })
-vim.keymap.set('n', '<leader>fC', function() Snacks.picker.files({ cwd = MiniDeps.config.path.package }) end, { desc = "[F]ind [C]onfig's plugin files" })
-vim.keymap.set('n', '<leader>fr', function() Snacks.picker.recent() end, { desc = '[F]ind [R]ecent files' })
-vim.keymap.set('n', '<leader>fb', function() Snacks.picker.buffers() end, { desc = '[F]ind [B]uffers' })
+map('n', '<leader>ff', function() picker.files(with_opts()) end, { desc = '[F]ind [F]iles cwd' })
+map('n', '<leader>fF', function() picker.files(with_opts({ cwd = get_project_root() })) end, { desc = '[F]ind [F]iles buf root' })
+map('n', '<leader>fc', function() picker.files(with_opts({ cwd = vim.fn.stdpath('config') })) end, { desc = '[F]ind [C]onfig files' })
+map('n', '<leader>fC', function() picker.files(with_opts({ cwd = MiniDeps.config.path.package })) end, { desc = "[F]ind [C]onfig's plugin files" })
+map('n', '<leader>fr', function() picker.recent(with_opts()) end, { desc = '[F]ind [R]ecent files' })
+map('n', '<leader>fb', function() picker.buffers(with_opts()) end, { desc = '[F]ind [B]uffers' })
+
+-- vim.keymap.set('n', '<leader><leader>', function()
+--   Snacks.picker.smart({
+--     prompt = 'Find file: ',
+--     layout = {
+--       preview = "main",
+--       preset = "ivy",
+--       layout = { height = 15 }
+--     }
+--   })
+-- end, { desc = '[F]ind [F]iles cwd' })
 
 -- grep
-vim.keymap.set('n', '<leader>sg', function() Snacks.picker.grep() end, { desc = '[S]earch [G]rep' })
+map('n', '<leader>sg', function() picker.grep(with_opts()) end, { desc = '[S]earch [G]rep' })
 vim.keymap.set('n', '<leader>sG', function() Snacks.picker.grep({ cwd = get_project_root() }) end, { desc = '[S]earch [G]rep buf root' })
 vim.keymap.set('n', '<leader>sw', function() Snacks.picker.grep_word() end, { desc = '[S]earch [W]ord under cursor' })
 vim.keymap.set('n', '<leader>sW', function() Snacks.picker.grep_word({ cwd = get_project_root() }) end, { desc = '[S]earch [W]ord under cursor buf root' })

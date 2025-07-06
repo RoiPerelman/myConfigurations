@@ -42,17 +42,22 @@ add({ source = "folke/ts-comments.nvim" })
 add({ source = "folke/snacks.nvim" })
 -- git
 add({ source = "tpope/vim-fugitive" })
-add({ source = "sindrets/diffview.nvim" })
 add({ source = "lewis6991/gitsigns.nvim" })
+add({ source = "sindrets/diffview.nvim" })
 add({ source = "NeogitOrg/neogit" })
--- blink
+-- snippets
 add({
-  source = "saghen/blink.cmp",
-  depends = {
-    "rafamadriz/friendly-snippets",
+  source = "L3MON4D3/LuaSnip",
+  checkout = "v2.4.0",
+  hooks = {
+    post_checkout = function()
+      vim.fn.system('make install_jsregexp')
+    end,
   },
-  checkout = "v1.1.1",
 })
+add({ source = "rafamadriz/friendly-snippets" })
+-- blink
+add({ source = "saghen/blink.cmp", checkout = "v1.1.1" })
 -- copilot start with :Copilot setup
 add({ source = "github/copilot.vim" })
 -- language server tools
