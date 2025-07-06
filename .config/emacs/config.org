@@ -24,6 +24,8 @@
   - [[#isearch][Isearch]]
   - [[#ediff][Ediff]]
   - [[#save-place][save-place]]
+  - [[#flymake][flymake]]
+  - [[#eglot][eglot]]
 - [[#general-functions][General Functions]]
 - [[#general-keybinding][General Keybinding]]
 - [[#general-hooks][General Hooks]]
@@ -37,7 +39,7 @@
 - [[#lsp--diagnostics--formatting][Lsp + Diagnostics + Formatting]]
   - [[#prerequisites][Prerequisites]]
   - [[#reformatter-check-apheleia-as-an-alternative][Reformatter (check apheleia as an alternative)]]
-  - [[#eglot][Eglot]]
+  - [[#eglot-1][Eglot]]
   - [[#lsp-mode-tangle-no][LSP-Mode (:tangle no)]]
   - [[#jtsx---better-typescript][jtsx - better typescript]]
   - [[#markdown][Markdown]]
@@ -431,15 +433,40 @@ completions of my creation
     (save-place-mode 1))
 #+end_src
 
+** flymake
+
+#+begin_src emacs-lisp
+  (use-package flymake
+    :bind (:map flymake-mode-map
+                ("M-] d" . flymake-goto-next-error)
+                ("M-[ d" . flymake-goto-prev-error)
+  	      ("C-c d D" . flymake-show-buffer-diagnostics)
+  	      ("C-c d d" . consult-flymake)
+  	      ))
+#+end_src
+
+** eglot
+
+#+begin_src emacs-lisp
+  (use-package eglot
+    :bind (:map eglot-mode-map
+                ("C-c l r" . eglot-rename)
+                ("C-c l f" . eglot-format)
+                ("C-c l a" . eglot-code-actions)
+                ("C-c l x" . eglot-reconnect)
+  	      ))
+#+end_src
+
 * General Functions
 
 #+begin_src emacs-lisp
-(defun toggle-comment-on-line-or-region ()
-  "Toggle comment on the current line or active region."
-  (interactive)
-  (if (use-region-p)
-      (comment-or-uncomment-region (region-beginning) (region-end))
-    (comment-or-uncomment-region (line-beginning-position) (line-end-position))))
+  (defun toggle-comment-on-line-or-region ()
+    "Toggle comment on the current line or active region."
+    (interactive)
+    (if
+        (use-region-p)
+        (comment-or-uncomment-region (region-beginning) (region-end))
+      (comment-or-uncomment-region (line-beginning-position) (line-end-position))))
 #+end_src
 
 * General Keybinding
@@ -449,7 +476,7 @@ completions of my creation
     :ensure nil
     :init
     ;; Set up keybindings for config workflow
-    (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ; Make esc work like C-g
+    (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ; Make `esc' work like `C-g'
     (global-set-key (kbd "M-o") 'other-window)              ; `C-x o' is a 2 step key binding. `M-o' is much easier.
     (global-set-key (kbd "C-;") 'toggle-comment-on-line)
     (global-set-key (kbd "M-k") 'kill-current-buffer)
@@ -467,8 +494,7 @@ completions of my creation
       "Open Emacs configuration file."
       (interactive)
       (find-file "~/.config/emacs/config.org"))
-    (global-set-key (kbd "M-s M-c")
-  		  (lambda () (interactive) (find-file "~/.config/emacs/config.org")))
+    (global-set-key (kbd "M-s M-c") #'rp/search-config)
     )
 #+end_src
 
@@ -1012,11 +1038,10 @@ so each language can use reformatter to add formatting commands
 #+begin_src emacs-lisp
   (use-package magit
     :ensure t
-    :bind (
-  	 ("C-x g" . magit-status)
-  	 ("C-c g g" . magit-status)
-  	 ("C-c g B" . magit-blame-addition)
-  	 )
+    ;; :bind (
+    ;; 	 ("C-c g g" . magit-status)
+    ;; 	 ("C-c g B" . magit-blame-addition)
+    ;; 	 )
     )
 #+end_src
 
@@ -1167,10 +1192,10 @@ Adds helpful metadata in minibuffer free space
                      #'completion--in-region)
                    args))))
 
-  (use-package consult-project-extra
-    :ensure t
-    :after consult
-    :bind (("C-c p f" . consult-project-extra-find)))
+    (use-package consult-project-extra
+      :ensure t
+      :after consult
+      :bind (("C-c p f" . consult-project-extra-find)))
 #+end_src
 
 ** Embark

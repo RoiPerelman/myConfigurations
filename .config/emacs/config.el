@@ -248,10 +248,27 @@ The DWIM behaviour of this command is as follows:
   :init
   (save-place-mode 1))
 
+(use-package flymake
+  :bind (:map flymake-mode-map
+              ("M-] d" . flymake-goto-next-error)
+              ("M-[ d" . flymake-goto-prev-error)
+	      ("C-c d D" . flymake-show-buffer-diagnostics)
+	      ("C-c d d" . consult-flymake)
+	      ))
+
+(use-package eglot
+  :bind (:map eglot-mode-map
+              ("C-c l r" . eglot-rename)
+              ("C-c l f" . eglot-format)
+              ("C-c l a" . eglot-code-actions)
+              ("C-c l x" . eglot-reconnect)
+	      ))
+
 (defun toggle-comment-on-line-or-region ()
   "Toggle comment on the current line or active region."
   (interactive)
-  (if (use-region-p)
+  (if
+      (use-region-p)
       (comment-or-uncomment-region (region-beginning) (region-end))
     (comment-or-uncomment-region (line-beginning-position) (line-end-position))))
 
@@ -259,7 +276,7 @@ The DWIM behaviour of this command is as follows:
   :ensure nil
   :init
   ;; Set up keybindings for config workflow
-  (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ; Make esc work like C-g
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ; Make `esc' work like `C-g'
   (global-set-key (kbd "M-o") 'other-window)              ; `C-x o' is a 2 step key binding. `M-o' is much easier.
   (global-set-key (kbd "C-;") 'toggle-comment-on-line)
   (global-set-key (kbd "M-k") 'kill-current-buffer)
@@ -277,8 +294,7 @@ The DWIM behaviour of this command is as follows:
     "Open Emacs configuration file."
     (interactive)
     (find-file "~/.config/emacs/config.org"))
-  (global-set-key (kbd "M-s M-c")
-		  (lambda () (interactive) (find-file "~/.config/emacs/config.org")))
+  (global-set-key (kbd "M-s M-c") #'rp/search-config)
   )
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace) ; Delete whitespace just when a file is saved.
@@ -574,11 +590,10 @@ The DWIM behaviour of this command is as follows:
 
 (use-package magit
   :ensure t
-  :bind (
-	 ("C-x g" . magit-status)
-	 ("C-c g g" . magit-status)
-	 ("C-c g B" . magit-blame-addition)
-	 )
+  ;; :bind (
+  ;; 	 ("C-c g g" . magit-status)
+  ;; 	 ("C-c g B" . magit-blame-addition)
+  ;; 	 )
   )
 
 ;; adds gutter add, change, revert indication
@@ -690,10 +705,10 @@ The DWIM behaviour of this command is as follows:
                    #'completion--in-region)
                  args))))
 
-(use-package consult-project-extra
-  :ensure t
-  :after consult
-  :bind (("C-c p f" . consult-project-extra-find)))
+  (use-package consult-project-extra
+    :ensure t
+    :after consult
+    :bind (("C-c p f" . consult-project-extra-find)))
 
 ;; adds actions for current item
 (use-package embark
