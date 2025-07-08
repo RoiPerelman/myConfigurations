@@ -2,5 +2,9 @@
 require("mason").setup()
 
 require("mason-tool-installer").setup({
-  ensure_installed = _G.mason_ensure_installed
+  ensure_installed = {
+    "lua-language-server",
+    "pyright",
+    "ruff",
+  }
 })

@@ -1,19 +1,34 @@
 -- LSP servers and clients are able to communicate to each other what features they support.
 --  By default, Neovim doesn't support everything that is in the LSP specification.
-local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- local capabilities = vim.lsp.protocol.make_client_capabilities()
 
-local servers = _G.lsp_config_servers
+-- local servers = _G.lsp_config_servers
 
-require("mason-lspconfig").setup({
-  handlers = {
-    function(server_name)
-      local server = servers[server_name] or {}
-      server.capabilities = vim.tbl_deep_extend("force", {}, capabilities,
-        -- add blink capabilities
-        require('blink.cmp').get_lsp_capabilities(server.capabilities) or {})
-      require("lspconfig")[server_name].setup(server)
-    end,
+-- require("mason-lspconfig").setup({
+--   handlers = {
+--     function(server_name)
+--       local server = servers[server_name] or {}
+--       server.capabilities = vim.tbl_deep_extend("force", {}, capabilities,
+--         -- add blink capabilities
+--         require('blink.cmp').get_lsp_capabilities(server.capabilities) or {})
+--       require("lspconfig")[server_name].setup(server)
+--     end,
+--   },
+-- })
+
+-- help lsp stuff for lua
+require("lazydev").setup({
+  library = {
+    -- See the configuration section for more details
+    -- Load luvit types when the `vim.uv` word is found
+    { path = "luvit-meta/library", words = { "vim%.uv" } },
   },
+})
+
+vim.lsp.enable({
+  "lua_ls",
+  "pyright",
+  "ruff",
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {
