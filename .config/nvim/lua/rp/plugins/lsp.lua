@@ -29,6 +29,8 @@ vim.lsp.enable({
   "lua_ls",
   "pyright",
   "ruff",
+  "ts_ls",
+  "eslint",
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {

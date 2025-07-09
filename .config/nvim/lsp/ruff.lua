@@ -25,6 +25,16 @@
 --- ```
 ---
 --- Refer to the [documentation](https://docs.astral.sh/ruff/editors/) for more details.
+
+local function get_ruff_client_id(bufnr)
+  for _, client in pairs(vim.lsp.get_active_clients({ bufnr = bufnr })) do
+    if client.name == "ruff" then
+      return client.id
+    end
+  end
+  return nil
+end
+
 return {
   cmd = { 'ruff', 'server' },
   filetypes = { 'python' },
@@ -36,34 +46,41 @@ return {
     -- allow formatting from Ruff
     client.server_capabilities.documentFormattingProvider = true
 
-    vim.api.nvim_buf_create_user_command(bufnr, 'LspRuffAutofix', function()
+    local ruff_auto_fix = function()
+      local ruff_client_id = get_ruff_client_id(bufnr)
       vim.lsp.buf.code_action({
         context = { only = { "source.fixAll" } },
         apply = true,
+        client_id = ruff_client_id,
       })
+    end
+    vim.api.nvim_buf_create_user_command(bufnr, 'LspRuffAutofix', function()
+      ruff_auto_fix()
     end, { desc = "Ruff: Fix all auto-fixable problems" })
 
-    vim.api.nvim_buf_create_user_command(bufnr, 'LspRuffOrganizeImports', function()
+    local ruff_organize_imports = function()
+      local ruff_client_id = get_ruff_client_id(bufnr)
       vim.lsp.buf.code_action({
         context = { only = { "source.organizeImports" } },
         apply = true,
+        client_id = ruff_client_id,
       })
+    end
+    vim.api.nvim_buf_create_user_command(bufnr, 'LspRuffOrganizeImports', function()
+      ruff_organize_imports()
     end, { desc = "Ruff: Organize imports" })
 
-
     local organize_imports_and_fix_all = function()
-      vim.lsp.buf.code_action({
-        context = { only = { "source.organizeImports" } },
-        apply = true,
-      })
+      ruff_organize_imports()
       -- unfortunately, code_action is async, so we need to wait for it to finish
       vim.wait(100)
-      vim.lsp.buf.code_action({
-        context = { only = { "source.fixAll" } },
-        apply = true,
-      })
+      ruff_auto_fix()
       vim.wait(100)
-      vim.lsp.buf.format()
+      vim.lsp.buf.format({
+        filter = function(cli)
+          return cli.name == "ruff"
+        end,
+      })
     end
     vim.keymap.set(
       "n",

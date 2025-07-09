@@ -41,9 +41,6 @@ _G.lsp_config_clients_callbacks = {}
 _G.conform_formatters = {}
 _G.conform_formatters_by_ft = {}
 _G.lint_linters_by_ft = {}
-now(function() require("rp/plugins/languages/lua") end)
-now(function() require("rp/plugins/languages/python") end)
-now(function() require("rp/plugins/languages/typescript") end)
 now(function() require("rp/plugins/languages/markdown") end)
 now(function() require("rp/plugins/languages/bash") end)
 now(function() require("rp/plugins/languages/docker") end)
