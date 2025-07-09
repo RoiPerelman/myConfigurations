@@ -37,7 +37,7 @@ return {
         autoSearchPaths = true,
         useLibraryCodeForTypes = true,
         diagnosticMode = 'openFilesOnly',
-        typeCheckingMode = "off", -- Disable type checking by default
+        -- typeCheckingMode = "off", -- Disable type checking by default
       },
     },
     pyright = {

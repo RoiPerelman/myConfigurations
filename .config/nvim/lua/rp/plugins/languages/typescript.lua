@@ -1,5 +1,3 @@
-vim.list_extend(_G.mason_ensure_installed, { "typescript-language-server", "eslint-lsp" })
-
 _G.lsp_config_servers.ts_ls = {}
 _G.lsp_config_servers.eslint = {}
 
