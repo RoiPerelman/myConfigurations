@@ -43,7 +43,6 @@ _G.conform_formatters_by_ft = {}
 _G.lint_linters_by_ft = {}
 now(function() require("rp/plugins/languages/markdown") end)
 now(function() require("rp/plugins/languages/docker") end)
-now(function() require("rp/plugins/languages/json") end)
 now(function() require("rp/plugins/languages/yaml") end)
 now(function() require("rp/plugins/languages/toml") end)
 now(function() require("rp/plugins/mason") end)
