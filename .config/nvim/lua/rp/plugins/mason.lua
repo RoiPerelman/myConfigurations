@@ -11,5 +11,6 @@ require("mason-tool-installer").setup({
     "bash-language-server",       -- bashls.lua
     "shellcheck",
     "shfmt",
+    "json-lsp", -- jsonls.lua
   }
 })

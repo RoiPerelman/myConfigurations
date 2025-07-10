@@ -32,6 +32,7 @@ vim.lsp.enable({
   "ts_ls",
   "eslint",
   "bashls",
+  "jsonls",
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {

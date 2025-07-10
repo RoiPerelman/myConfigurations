@@ -58,6 +58,7 @@ add({
 add({ source = "rafamadriz/friendly-snippets" })
 -- blink
 add({ source = "saghen/blink.cmp", checkout = "v1.1.1" })
+add({ source = "alexandre-abrioux/blink-cmp-npm.nvim" })
 -- copilot start with :Copilot setup
 add({ source = "github/copilot.vim" })
 -- language server tools
