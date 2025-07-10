@@ -31,6 +31,7 @@ vim.lsp.enable({
   "ruff",
   "ts_ls",
   "eslint",
+  "bashls",
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {

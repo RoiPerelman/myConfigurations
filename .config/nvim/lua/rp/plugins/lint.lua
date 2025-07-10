@@ -1,7 +1,7 @@
 local M = {}
 
 local lint = require("lint")
-lint.linters_by_ft = _G.lint_linters_by_ft
+lint.linters_by_ft = { sh = { "shellcheck" } }
 if not lint.linters_by_ft then
   vim.print("nvim-lint doesnt have linters. Not working")
   return
@@ -53,7 +53,7 @@ function M.lint()
   end
 end
 
-vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
+vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave", "cursorHold" }, {
   group = vim.api.nvim_create_augroup("nvim-lint", { clear = true }),
   callback = M.debounce(100, M.lint),
 })
