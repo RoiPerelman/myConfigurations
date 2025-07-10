@@ -7,6 +7,9 @@ require("mason-tool-installer").setup({
     "pyright",                    -- pyright.lua
     "ruff",                       -- ruff.lua
     "typescript-language-server", -- ts_ls.lua
-    "eslint-lsp"                  -- eslint.lua
+    "eslint-lsp",                 -- eslint.lua
+    "bash-language-server",       -- bashls.lua
+    "shellcheck",
+    "shfmt",
   }
 })

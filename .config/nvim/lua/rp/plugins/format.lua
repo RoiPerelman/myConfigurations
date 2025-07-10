@@ -5,7 +5,9 @@ local format_on_save_opts = {
 }
 
 local formatters = _G.conform_formatters
-local formatters_by_ft = _G.conform_formatters_by_ft
+local formatters_by_ft = {
+  sh = { "shfmt" }
+}
 
 require("conform").setup({
   formatters = formatters,
