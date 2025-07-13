@@ -70,6 +70,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
       _G.lsp_config_clients_callbacks[client.name](client, event)
     end
 
+    -- -- add a command to run source actions
+    -- vim.api.nvim_buf_create_user_command(event.buf, 'LspSourceAction', function()
+    --   local source_actions = vim.tbl_filter(function(action)
+    --     return vim.startswith(action, 'source.')
+    --   end, client.server_capabilities.codeActionProvider.codeActionKinds)
+    --   vim.lsp.buf.code_action({
+    --     context = {
+    --       only = source_actions,
+    --     },
+    --   })
+    -- end, {})
+    --
+    -- vim.keymap.set("n", "cA", function()
+    --   vim.cmd("LspSourceAction")
+    -- end, { buffer = event.buf, desc = "[C]ode source [A]ctions" })
+    --
     -- The following two autocommands are used to highlight references of the
     -- word under your cursor when your cursor rests there for a little while.
     -- When you move your cursor, the highlights will be cleared (the second autocommand).

@@ -124,10 +124,6 @@ return {
     end,
   },
   on_attach = function(client, bufnr)
-    -- DISABLE FORMATTING so eslint (or another) can do it
-    client.server_capabilities.documentFormattingProvider = false
-    client.server_capabilities.documentRangeFormattingProvider = false
-
     -- ts_ls provides `source.*` code actions that apply to the whole file. These only appear in
     -- `vim.lsp.buf.code_action()` if specified in `context.only`.
     vim.api.nvim_buf_create_user_command(bufnr, 'LspTypescriptSourceAction', function()
@@ -141,5 +137,16 @@ return {
         },
       })
     end, {})
+
+    vim.keymap.set("n", "cA", function()
+      vim.cmd("LspTypescriptSourceAction")
+    end, { buffer = bufnr, desc = "[C]ode source [A]ctions [ts_ls]" })
+
+    vim.api.nvim_buf_create_user_command(bufnr, 'LspTypescriptOrganizeImports', function()
+      vim.lsp.buf.code_action({ context = { only = { "source.removeUnusedImports.ts" } }, apply = true })
+      vim.wait(100)
+      vim.lsp.buf.code_action({ context = { only = { "source.organizeImports.ts" } }, apply = true })
+    end, {})
+    vim.keymap.set("n", "co", function() vim.cmd("LspTypescriptOrganizeImports") end, { buffer = bufnr, desc = "[C]ode [O]rganize imports eslint" })
   end,
 }

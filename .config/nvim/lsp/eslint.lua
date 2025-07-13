@@ -61,6 +61,18 @@ return {
         },
       }, nil, bufnr)
     end, {})
+
+    -- add eslint format on save
+    vim.keymap.set("n", "cf", function()
+      vim.cmd("LspEslintFixAll")
+    end, { buffer = bufnr, desc = "[C]ode [F]ormat [eslint]" })
+    vim.keymap.set("n", "g=", function()
+      vim.cmd("LspEslintFixAll")
+    end, { buffer = bufnr, desc = "[G]et [=]format [eslint]" })
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      buffer = bufnr,
+      command = "LspEslintFixAll",
+    })
   end,
   -- https://eslint.org/docs/user-guide/configuring/configuration-files#configuration-file-formats
   root_dir = function(bufnr, on_dir)
