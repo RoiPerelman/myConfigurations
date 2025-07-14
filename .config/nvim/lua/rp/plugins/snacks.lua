@@ -71,6 +71,7 @@ map('n', '<leader>fc', function() picker.files(with_opts({ cwd = vim.fn.stdpath(
 map('n', '<leader>fC', function() picker.files(with_opts({ cwd = MiniDeps.config.path.package })) end, { desc = "[F]ind [C]onfig's plugin files" })
 map('n', '<leader>fr', function() picker.recent(with_opts()) end, { desc = '[F]ind [R]ecent files' })
 map('n', '<leader>fb', function() picker.buffers(with_opts()) end, { desc = '[F]ind [B]uffers' })
+map('n', '<leader>fp', function() picker.projects(with_opts()) end, { desc = '[F]ind [P]roject' })
 
 -- vim.keymap.set('n', '<leader><leader>', function()
 --   Snacks.picker.smart({

@@ -66,9 +66,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     -- To know server capabilities, use (for example):
     -- :lua =vim.lsp.get_active_clients()[1].server_capabilities
-    if _G.lsp_config_clients_callbacks[client.name] then
-      _G.lsp_config_clients_callbacks[client.name](client, event)
-    end
 
     -- -- add a command to run source actions
     -- vim.api.nvim_buf_create_user_command(event.buf, 'LspSourceAction', function()
