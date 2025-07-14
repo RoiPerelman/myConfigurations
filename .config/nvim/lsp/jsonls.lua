@@ -23,7 +23,6 @@
 ---
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-
 capabilities = vim.tbl_deep_extend("force", capabilities,
   require("blink.cmp").get_lsp_capabilities() or {}
 )
@@ -46,7 +45,15 @@ return {
         {
           fileMatch = { "tsconfig.json" },
           url = "https://json.schemastore.org/tsconfig.json"
-        }
+        },
+        {
+          fileMatch = { ".prettierrc", ".prettierrc.json", "prettier.config.json" },
+          url = "https://json.schemastore.org/prettierrc.json"
+        },
+        {
+          fileMatch = { ".eslintrc", ".eslintrc.json" },
+          url = "https://json.schemastore.org/eslintrc.json"
+        },
       },
       validate = {
         enable = true

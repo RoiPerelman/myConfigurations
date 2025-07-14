@@ -11,7 +11,20 @@
 --- client capabilities are set in `lsp/` directory as part of config
 ---
 --- Helpful commands:
---- To know server capabilities `:= vim.lsp.get_active_clients()[1].server_capabilities`
+--- ctrl-]          -> go to definition
+--- gq              -> format selected text or text object
+--- K               -> display documentation of the symbol under the cursor
+--- ctrl-x + ctrl-o -> in insert mode, trigger code completion
+--- grn        -> renames all references of the symbol under the cursor
+--- gra        -> list code actions available in the line under the cursor
+--- grr        -> lists all the references of the symbol under the cursor
+--- gri        -> lists all the implementations for the symbol under the cursor
+--- gO         -> lists all symbols in the current buffer
+--- ctrl-s     -> in insert mode, display function signature under the cursor
+--- [d         -> jump to previous diagnostic in the current buffer
+--- ]d         -> jump to next diagnostic in the current buffer
+--- ctrl-w + d -> show error/warning message in the line under the cursor
+--- := vim.lsp.get_active_clients()[1].server_capabilities -> To know server capabilities
 
 vim.lsp.enable({
   "lua_ls",
@@ -21,24 +34,18 @@ vim.lsp.enable({
   "eslint",
   "bashls",
   "jsonls",
+  "taplo",
+  "yamlls",
+  "docker",
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {
   desc = "this function gets run when an lsp attaches to a particular buffer",
   group = vim.api.nvim_create_augroup("rp-lsp-attach", { clear = true }),
   callback = function(event)
-    local map = function(keys, func, desc)
-      vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
-    end
-    map("K", vim.lsp.buf.hover, "Hover Do[K]umentation")
-
-    map("g=", vim.lsp.buf.format, "[G]et [=]format lsp")
-    map("<leader>cf", vim.lsp.buf.format, "[C]ode [F]ormat")
-
     -- Diagnostics
     vim.diagnostic.config({ virtual_text = false }) -- remove virtual text
     vim.keymap.set("n", "E", vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror messages" })
-    -- vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
     local client = vim.lsp.get_client_by_id(event.data.client_id)
 
@@ -46,8 +53,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
       return
     end
 
-    -- nvim v0.11 supports autocompletion - C-s to show signature
-    -- not using as I am using blink.cmp which takes the lsp and shows it itself
+    -- NOTE: not being used as blink.nvim is used for autocompletion
+    -- nvim v0.11 supports autocompletion
     -- if client:supports_method('textDocument/completion') then
     --   vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
     -- end

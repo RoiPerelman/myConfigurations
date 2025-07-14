@@ -5,7 +5,6 @@
 --- `pyright`, a static type checker and language server for python
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-
 capabilities = vim.tbl_deep_extend("force", capabilities,
   require("blink.cmp").get_lsp_capabilities() or {}
 )

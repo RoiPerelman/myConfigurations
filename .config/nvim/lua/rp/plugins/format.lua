@@ -4,13 +4,13 @@ local format_on_save_opts = {
   timeout_ms = 1000,
 }
 
-local formatters = _G.conform_formatters
 local formatters_by_ft = {
-  sh = { "shfmt" }
+  sh = { "shfmt" },
+  yml = { "prettier" },
+  yaml = { "prettier" },
 }
 
 require("conform").setup({
-  formatters = formatters,
   formatters_by_ft = formatters_by_ft,
   notify_on_error = true,
   -- format_on_save = format_on_save_opts,

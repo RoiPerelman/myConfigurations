@@ -34,17 +34,6 @@ later(function() require("rp/plugins/mini/hipatterns") end)
 -- later(function() require("rp/plugins/mini/files") end)
 
 -- language support tools
--- initialize global variable for automatic language tools install
-_G.mason_ensure_installed = {}
-_G.lsp_config_servers = {}
-_G.lsp_config_clients_callbacks = {}
-_G.conform_formatters = {}
-_G.conform_formatters_by_ft = {}
-_G.lint_linters_by_ft = {}
-now(function() require("rp/plugins/languages/markdown") end)
-now(function() require("rp/plugins/languages/docker") end)
-now(function() require("rp/plugins/languages/yaml") end)
-now(function() require("rp/plugins/languages/toml") end)
 now(function() require("rp/plugins/mason") end)
 now(function() require("rp/plugins/lsp") end)
 later(function() require("rp/plugins/format") end)

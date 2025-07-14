@@ -42,6 +42,13 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.cmd("resize 15")
   end,
 })
+-- update gitcommit window size
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "gitcommit",
+  callback = function()
+    vim.cmd("wincmd K")
+  end
+})
 
 -- neogit
 local neogit = require("neogit")
