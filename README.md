@@ -26,7 +26,7 @@ ln -snf ~/myConfigurations/.config/wezterm/wezterm.lua ~/.config/wezterm/wezterm
 
 ## nvim
 
-``` bash
+```bash
 # prereq linux for nvim
 sudo apt update && sudo apt install cmake gettext
 sudo apt update && sudo apt install ripgrep fd-find xclip imagemagick gs tectonic mmdc
@@ -67,7 +67,7 @@ ln -snf ~/myConfigurations/.config/nvim ~/.config/nvim
 
 ## zsh
 
-``` bash
+```bash
 # install zsh, omz and change shell to it
 sudo apt update && sudo apt install zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -98,9 +98,10 @@ sudo apt install gnome-tweaks
 
 ## git
 
-``` bash
+```bash
 ln -snf ~/myConfigurations/git/config ~/.gitconfig
 ```
+
 ## git ssh command
 
 ```bash
@@ -114,7 +115,7 @@ GIT_SSH_COMMAND='ssh -i ~/.ssh/id_ed25519_personal_github' git push
 
 ### tmux
 
-``` bash
+```bash
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ln -snf ~/myConfigurations/tmux.conf ~/.tmux.conf
 ```
@@ -176,6 +177,6 @@ sudo make install-info
 
 ### alacritty
 
-``` bash
+```bash
 ln -snf ~/myConfigurations/alacritty ~/.config/alacritty
 ```

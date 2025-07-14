@@ -37,6 +37,7 @@ vim.lsp.enable({
   "taplo",
   "yamlls",
   "docker",
+  "marksman",
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {

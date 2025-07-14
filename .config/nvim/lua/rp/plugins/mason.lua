@@ -14,10 +14,12 @@ require("mason-tool-installer").setup({
     "taplo",                      -- toml.lua
     "yaml-language-server",       -- yamlls.lua
     "dockerfile-language-server", -- docker.lua
+    "marksman",                   -- markdown.lua
     -- linters
-    "shellcheck",                 -- bash linter (conform)
+    "shellcheck",                 -- bash linter (lint)
+    "markdownlint-cli2",          -- markdown linter (lint)
     -- formatters
-    "shfmt",                      -- bash formatter (lint)
-    "prettier",                   -- js,jsx,ts,tsx,json,yaml formatter (lint)
+    "shfmt",                      -- bash formatter (conform)
+    "prettier",                   -- js,jsx,ts,tsx,json,yaml formatter (conform)
   }
 })

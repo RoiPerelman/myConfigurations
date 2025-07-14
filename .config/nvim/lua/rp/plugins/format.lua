@@ -8,6 +8,7 @@ local formatters_by_ft = {
   sh = { "shfmt" },
   yml = { "prettier" },
   yaml = { "prettier" },
+  markdown = { "prettier" },
 }
 
 require("conform").setup({

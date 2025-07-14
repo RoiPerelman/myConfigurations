@@ -1,7 +1,11 @@
 local M = {}
 
 local lint = require("lint")
-lint.linters_by_ft = { sh = { "shellcheck" } }
+lint.linters_by_ft = {
+  sh = { "shellcheck" },
+  markdown = { "markdownlint-cli2" },
+  ["markdown.mdx"] = { "markdownlint-cli2" },
+}
 if not lint.linters_by_ft then
   vim.print("nvim-lint doesnt have linters. Not working")
   return
