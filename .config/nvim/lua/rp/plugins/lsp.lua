@@ -1,29 +1,17 @@
--- LSP servers and clients are able to communicate to each other what features they support.
---  By default, Neovim doesn't support everything that is in the LSP specification.
--- local capabilities = vim.lsp.protocol.make_client_capabilities()
-
--- local servers = _G.lsp_config_servers
-
--- require("mason-lspconfig").setup({
---   handlers = {
---     function(server_name)
---       local server = servers[server_name] or {}
---       server.capabilities = vim.tbl_deep_extend("force", {}, capabilities,
---         -- add blink capabilities
---         require('blink.cmp').get_lsp_capabilities(server.capabilities) or {})
---       require("lspconfig")[server_name].setup(server)
---     end,
---   },
--- })
-
--- help lsp stuff for lua
-require("lazydev").setup({
-  library = {
-    -- See the configuration section for more details
-    -- Load luvit types when the `vim.uv` word is found
-    { path = "luvit-meta/library", words = { "vim%.uv" } },
-  },
-})
+---@brief
+--- to have lsp we have a couple of moving components:
+---
+--- 1. lsp server (e.g. lua_ls, pyright, etc.) - install by mason.lua
+---    mason installs the lsp servers and loads them into path so nvim can find and use them
+--- 2. lsp configuration - per language server add a file in `lsp/` directory with vim.lsp.config
+---    base configs can be copies from lsp-config `https://github.com/neovim/nvim-lspconfig` `lsp/` directory
+--- 3. enable lsp server - this allows us to start lsp servers with the config we put in the `lsp/` directory
+---
+--- It is our job to make sure the config is right. We add whatever keymaps/ commands and capabilities we want
+--- client capabilities are set in `lsp/` directory as part of config
+---
+--- Helpful commands:
+--- To know server capabilities `:= vim.lsp.get_active_clients()[1].server_capabilities`
 
 vim.lsp.enable({
   "lua_ls",
@@ -64,25 +52,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
     --   vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
     -- end
 
-    -- To know server capabilities, use (for example):
-    -- :lua =vim.lsp.get_active_clients()[1].server_capabilities
-
-    -- -- add a command to run source actions
-    -- vim.api.nvim_buf_create_user_command(event.buf, 'LspSourceAction', function()
-    --   local source_actions = vim.tbl_filter(function(action)
-    --     return vim.startswith(action, 'source.')
-    --   end, client.server_capabilities.codeActionProvider.codeActionKinds)
-    --   vim.lsp.buf.code_action({
-    --     context = {
-    --       only = source_actions,
-    --     },
-    --   })
-    -- end, {})
-    --
-    -- vim.keymap.set("n", "cA", function()
-    --   vim.cmd("LspSourceAction")
-    -- end, { buffer = event.buf, desc = "[C]ode source [A]ctions" })
-    --
     -- The following two autocommands are used to highlight references of the
     -- word under your cursor when your cursor rests there for a little while.
     -- When you move your cursor, the highlights will be cleared (the second autocommand).

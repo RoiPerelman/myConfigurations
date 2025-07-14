@@ -32,43 +32,43 @@
 --- Use the `:LspTypescriptSourceAction` command to see "whole file" ("source") code-actions such as:
 --- - organize imports
 --- - remove unused code
----
---- ### Vue support
----
---- As of 2.0.0, the Vue language server no longer supports TypeScript itself. Instead, a plugin
---- adds Vue support to this language server.
----
---- *IMPORTANT*: It is crucial to ensure that `@vue/typescript-plugin` and `@vue/language-server `are of identical versions.
----
---- ```lua
---- vim.lsp.config('ts_ls', {
----   init_options = {
----     plugins = {
----       {
----         name = "@vue/typescript-plugin",
----         location = "/usr/local/lib/node_modules/@vue/typescript-plugin",
----         languages = {"javascript", "typescript", "vue"},
----       },
----     },
----   },
----   filetypes = {
----     "javascript",
----     "typescript",
----     "vue",
----   },
---- })
----
---- -- You must make sure the Vue language server is setup
---- -- e.g. vim.lsp.config('vue_ls')
---- -- See vue_ls's section for more information
---- ```
----
---- `location` MUST be defined. If the plugin is installed in `node_modules`,
---- `location` can have any value.
----
---- `languages` must include `vue` even if it is listed in `filetypes`.
----
---- `filetypes` is extended here to include Vue SFC.
+
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+
+capabilities = vim.tbl_deep_extend("force", capabilities,
+  require("blink.cmp").get_lsp_capabilities() or {}
+)
+
+-- NOTE: on attach in return function doesn't work but this one does. Not sure why
+vim.lsp.config('ts_ls', {
+  on_attach = function(client, bufnr)
+    -- ts_ls provides `source.*` code actions that apply to the whole file. These only appear in
+    -- `vim.lsp.buf.code_action()` if specified in `context.only`.
+    vim.api.nvim_buf_create_user_command(bufnr, 'LspTypescriptSourceAction', function()
+      local source_actions = vim.tbl_filter(function(action)
+        return vim.startswith(action, 'source.')
+      end, client.server_capabilities.codeActionProvider.codeActionKinds)
+
+      vim.lsp.buf.code_action({
+        context = {
+          only = source_actions,
+        },
+      })
+    end, {})
+
+    vim.keymap.set("n", "cA", function()
+      vim.cmd("LspTypescriptSourceAction")
+    end, { buffer = bufnr, desc = "[C]ode source [A]ctions [ts_ls]" })
+
+    vim.api.nvim_buf_create_user_command(bufnr, 'LspTypescriptOrganizeImports', function()
+      vim.lsp.buf.code_action({ context = { only = { "source.removeUnusedImports.ts" } }, apply = true })
+      vim.wait(100)
+      vim.lsp.buf.code_action({ context = { only = { "source.organizeImports.ts" } }, apply = true })
+    end, {})
+    vim.keymap.set("n", "co", function() vim.cmd("LspTypescriptOrganizeImports") end, { buffer = bufnr, desc = "[C]ode [O]rganize imports eslint" })
+  end,
+})
 
 return {
   init_options = { hostInfo = 'neovim' },
@@ -82,6 +82,7 @@ return {
     'typescript.tsx',
   },
   root_markers = { 'tsconfig.json', 'jsconfig.json', 'package.json', '.git' },
+  capabilities = capabilities,
   handlers = {
     -- handle rename request for certain code actions like extracting functions / types
     ['_typescript.rename'] = function(_, result, ctx)
@@ -123,30 +124,4 @@ return {
       vim.cmd('botright copen')
     end,
   },
-  on_attach = function(client, bufnr)
-    -- ts_ls provides `source.*` code actions that apply to the whole file. These only appear in
-    -- `vim.lsp.buf.code_action()` if specified in `context.only`.
-    vim.api.nvim_buf_create_user_command(bufnr, 'LspTypescriptSourceAction', function()
-      local source_actions = vim.tbl_filter(function(action)
-        return vim.startswith(action, 'source.')
-      end, client.server_capabilities.codeActionProvider.codeActionKinds)
-
-      vim.lsp.buf.code_action({
-        context = {
-          only = source_actions,
-        },
-      })
-    end, {})
-
-    vim.keymap.set("n", "cA", function()
-      vim.cmd("LspTypescriptSourceAction")
-    end, { buffer = bufnr, desc = "[C]ode source [A]ctions [ts_ls]" })
-
-    vim.api.nvim_buf_create_user_command(bufnr, 'LspTypescriptOrganizeImports', function()
-      vim.lsp.buf.code_action({ context = { only = { "source.removeUnusedImports.ts" } }, apply = true })
-      vim.wait(100)
-      vim.lsp.buf.code_action({ context = { only = { "source.organizeImports.ts" } }, apply = true })
-    end, {})
-    vim.keymap.set("n", "co", function() vim.cmd("LspTypescriptOrganizeImports") end, { buffer = bufnr, desc = "[C]ode [O]rganize imports eslint" })
-  end,
 }

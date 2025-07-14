@@ -4,6 +4,15 @@ capabilities = vim.tbl_deep_extend("force", capabilities,
   require("blink.cmp").get_lsp_capabilities() or {}
 )
 
+-- help lsp stuff for lua
+require("lazydev").setup({
+  library = {
+    -- See the configuration section for more details
+    -- Load luvit types when the `vim.uv` word is found
+    { path = "luvit-meta/library", words = { "vim%.uv" } },
+  },
+})
+
 return {
   cmd = { 'lua-language-server' },
   filetypes = { 'lua' },

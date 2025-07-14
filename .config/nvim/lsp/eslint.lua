@@ -30,25 +30,19 @@
 --- Messages handled in lspconfig: `eslint/openDoc`, `eslint/confirmESLintExecution`, `eslint/probeFailed`, `eslint/noLibrary`
 ---
 --- Additional messages you can handle: `eslint/noConfig`
+---
 
 local util = require 'lspconfig.util'
 local lsp = vim.lsp
 
-return {
-  cmd = { 'vscode-eslint-language-server', '--stdio' },
-  filetypes = {
-    'javascript',
-    'javascriptreact',
-    'javascript.jsx',
-    'typescript',
-    'typescriptreact',
-    'typescript.tsx',
-    'vue',
-    'svelte',
-    'astro',
-    'htmlangular',
-  },
-  workspace_required = true,
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+
+capabilities = vim.tbl_deep_extend("force", capabilities,
+  require("blink.cmp").get_lsp_capabilities() or {}
+)
+
+-- NOTE: on attach in return function doesn't work but this one does. Not sure why
+vim.lsp.config('ts_ls', {
   on_attach = function(client, bufnr)
     vim.api.nvim_buf_create_user_command(0, 'LspEslintFixAll', function()
       client:request_sync('workspace/executeCommand', {
@@ -74,6 +68,24 @@ return {
       command = "LspEslintFixAll",
     })
   end,
+})
+
+return {
+  cmd = { 'vscode-eslint-language-server', '--stdio' },
+  filetypes = {
+    'javascript',
+    'javascriptreact',
+    'javascript.jsx',
+    'typescript',
+    'typescriptreact',
+    'typescript.tsx',
+    'vue',
+    'svelte',
+    'astro',
+    'htmlangular',
+  },
+  capabilities = capabilities,
+  workspace_required = true,
   -- https://eslint.org/docs/user-guide/configuring/configuration-files#configuration-file-formats
   root_dir = function(bufnr, on_dir)
     local root_file_patterns = {

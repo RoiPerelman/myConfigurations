@@ -8,23 +8,14 @@
 --- pip install ruff
 --- ```
 ---
---- **Available in Ruff `v0.4.5` in beta and stabilized in Ruff `v0.5.3`.**
----
---- This is the new built-in language server written in Rust. It supports the same feature set as `ruff-lsp`, but with superior performance and no installation required. Note that the `ruff-lsp` server will continue to be maintained until further notice.
----
---- Server settings can be provided via:
----
---- ```lua
---- vim.lsp.config('ruff', {
----   init_options = {
----     settings = {
----       -- Server settings should go here
----     }
----   }
---- })
---- ```
----
 --- Refer to the [documentation](https://docs.astral.sh/ruff/editors/) for more details.
+---
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+
+capabilities = vim.tbl_deep_extend("force", capabilities,
+  require("blink.cmp").get_lsp_capabilities() or {}
+)
 
 local function get_ruff_client_id(bufnr)
   for _, client in pairs(vim.lsp.get_active_clients({ bufnr = bufnr })) do
@@ -39,6 +30,7 @@ return {
   cmd = { 'ruff', 'server' },
   filetypes = { 'python' },
   root_markers = { 'pyproject.toml', 'ruff.toml', '.ruff.toml', '.git' },
+  capabilities = capabilities,
   settings = {},
   on_attach = function(client, bufnr)
     -- Disable hover in favor of Pyright
