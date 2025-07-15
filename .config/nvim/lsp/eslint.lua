@@ -41,7 +41,7 @@ capabilities = vim.tbl_deep_extend("force", capabilities,
 )
 
 -- NOTE: on attach in return function doesn't work but this one does. Not sure why
-vim.lsp.config('ts_ls', {
+vim.lsp.config('eslint', {
   on_attach = function(client, bufnr)
     vim.api.nvim_buf_create_user_command(0, 'LspEslintFixAll', function()
       client:request_sync('workspace/executeCommand', {
