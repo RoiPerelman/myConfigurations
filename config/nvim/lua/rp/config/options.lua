@@ -25,10 +25,9 @@ vim.opt.swapfile = false -- no swap file!
 vim.opt.termguicolors = true -- add term gui colors
 vim.opt.autowriteall = true -- autowrite so we can move buffers without errors
 vim.opt.updatetime = 250 -- Decrease update time
--- vim.opt.timeoutlen = 300 -- Decrease mapped sequence wait time (displays which-key popup sooner)
-vim.opt.listchars = { trail = "·", tab = "→ ", nbsp = "␣", extends = "›", precedes = "‹" } -- how to show special chars space? →›‹»↲␣·•⟩⟨
 -- window options
-vim.opt.list = true -- show listchars
+vim.opt.list = true -- show invisible listchars
+vim.opt.listchars = { trail = "·", tab = "→ ", nbsp = "␣", extends = "›", precedes = "‹" } -- how to show special chars space? →›‹»↲␣·•⟩⟨
 vim.opt.number = true -- add number
 vim.opt.relativenumber = false -- add relative number
 vim.opt.wrap = false -- do not wrap lines

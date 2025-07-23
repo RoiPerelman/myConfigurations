@@ -70,6 +70,9 @@ vim.keymap.set("v", "c", '"_c')
 vim.keymap.set("v", "C", '"_C')
 vim.keymap.set("x", "p", [["_dP"]])
 
+-- toggles
+vim.keymap.set("n", "<leader>ti", "<cmd>set list!<cr>", { desc = "[T]oggle [I]nvisible Characters" })
+
 -- Function to toggle the specified window (quickfix or location list)
 local function toggle_window(window_type)
   local window_exists = false

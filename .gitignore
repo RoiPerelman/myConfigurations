@@ -5,10 +5,10 @@ html
 .netrwhist
 
 # Ignore everything in the emacs directory
-.config/emacs/*
+config/emacs/*
 # But exclude these files from being ignored
-!.config/emacs/init.el
-!.config/emacs/rp-theme.el
-!.config/emacs/config.org
-!.config/emacs/config.el
-!.config/emacs/roip/
+!config/emacs/init.el
+!config/emacs/rp-theme.el
+!config/emacs/config.org
+!config/emacs/config.el
+!config/emacs/roip/
