@@ -27,7 +27,8 @@ vim.opt.autowriteall = true -- autowrite so we can move buffers without errors
 vim.opt.updatetime = 250 -- Decrease update time
 -- window options
 vim.opt.list = true -- show invisible listchars
-vim.opt.listchars = { trail = "·", tab = "→ ", nbsp = "␣", extends = "›", precedes = "‹" } -- how to show special chars space? →›‹»↲␣·•⟩⟨
+vim.opt.listchars = { trail = "·", tab = "→ ", nbsp = "␣", extends = "›", precedes = "‹" } -- how to show special chars →›‹»↲¬␣·•⟩⟨
+
 vim.opt.number = true -- add number
 vim.opt.relativenumber = false -- add relative number
 vim.opt.wrap = false -- do not wrap lines
