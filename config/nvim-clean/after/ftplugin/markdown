@@ -1,0 +1,6 @@
+vim.notify('ROIROI start')
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = 4
+vim.notify('ROIROI end')
+

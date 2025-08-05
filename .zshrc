@@ -114,3 +114,5 @@ fi
 if [ -f ~/.inspektoconfig ]; then
     source ~/.inspektoconfig
 fi
+
+export TERM=screen-256color
