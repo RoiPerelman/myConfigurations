@@ -7,6 +7,14 @@ vim.keymap.set({ "n", "x" }, "$", "v:count == 0 ? 'g$' : '$'", { desc = "Down", 
 vim.keymap.set({ "n", "x" }, "^", "v:count == 0 ? 'g^' : '^'", { desc = "Up", expr = true, silent = true })
 vim.keymap.set({ "n", "x" }, "0", "v:count == 0 ? 'g0' : '0'", { desc = "Up", expr = true, silent = true })
 
+-- move lines up and down
+vim.keymap.set("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move Down" })
+vim.keymap.set("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move Up" })
+vim.keymap.set("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move Down" })
+vim.keymap.set("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move Up" })
+vim.keymap.set("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move Down" })
+vim.keymap.set("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move Up" })
+
 -- indenting (do not lose visual mode)
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
@@ -29,19 +37,4 @@ vim.keymap.set("n", "<C-Right>", ":vertical resize +2<cr>", { desc = "inc window
 vim.keymap.set("n", "<leader>e", ":Explor<cr>", { desc = "[E]xplor" })
 
 --- Nice to have
-vim.keymap.set("n", "<leader>R", ":update<cr> :source<cr>", { desc = "[E]xplor" })
-
---- Toggles
-
--- Toggle whitespace trimming with leader+tw
-vim.keymap.set("n", "<leader>tW", function()
-  vim.b.rp_disable_trim_whitespace = not vim.b.rp_disable_trim_whitespace
-  vim.notify("rp_trim_whitespace " .. (vim.b.rp_disable_trim_whitespace and "disabled" or "enabled"))
-end, { desc = "[T]oggle trim [W]hitespace" })
-
-vim.keymap.set("n", "<leader>tw", function()
-  local new_value = not vim.opt.wrap:get()
-  vim.opt.wrap = new_value
-  vim.notify("wrap " .. (new_value and "enabled" or "disabled"))
-end, { desc = "[T]oggle [W]rap" })
-
+vim.keymap.set("n", "<leader>R", ":update<cr> :source<cr>", { desc = "[R]e source" })

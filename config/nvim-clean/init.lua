@@ -2,6 +2,7 @@
 require("roip/config/options")
 require("roip/config/keymaps")
 require("roip/config/autocommands")
+require("roip/config/toggles")
 
 --- plugins
 require("roip/plugins/tmux")
@@ -9,16 +10,24 @@ require("roip/plugins/git")
 require("roip/plugins/treesitter")
 require("roip/plugins/mason")
 
+-- mini
+require("roip/plugins/mini/mini-surround")
+require("roip/plugins/mini/mini-ai")
+require("roip/plugins/mini/mini-align")
+
 -- lsp
 require("roip/lsp")
+
+-- inspekto
+require("roip/config/inspekto")
 -------------------------------------------------------------------------------
 --- Neovim External Command Cheatsheet
 ---
 --- These are common ways to interact with external programs from Neovim:
 ---
 --- calling external tools
---- :!<program> - no stding, stdout shown in command line
---- :r !<program> - no stding, stdout after current line on buffer
+--- :!<program> - no stdin, stdout shown in command line
+--- :r !<program> - no stdin, stdout after current line on buffer
 --- :[<range>]!<program> - stdin, replaces the passed lines on buffer
 --- :[<range>]w !<program> - stdin, stdout shown in command line
 ---
@@ -32,20 +41,28 @@ require("roip/lsp")
 --- ctrl-w r - rotate
 --- ctrl-w _ | - maximize
 ---
+--- motions
+--- o in visual selection - to change to other side/corner
+--- gv - reselect last visual selection
+--- `[, `] - go to first, last char of previously changed or yanked text
+---
+--- commandline window
+--- q/, q: or ctrl-f from /, :
+---
 --- changelist
 --- g; g,
---- jumlist :help jump-motions (' ` G / ? n N % ( ) [ ] { } :s :tag L M H and new files)
+--- jumplist :help jump-motions (' ` G / ? n N % ( ) [ ] { } :s :tag L M H and new files)
 --- ctrl-o ctrl-i
 ---
 --- help
 --- C-] C-o - navigate forward and backwards on links
 ---
 --- completions (ctrl-x shows possible options in cmd line ^ means ctrl)
---- ctrl-x ctrl-o - omnicompletion (used for lsp)
+--- ctrl-x ctrl-o - omni completion (used for lsp)
 --- ctrl-x ctrl-f - file path completion
 --- ctrl-x ctrl-l - line completion
 --- Ctrl-x Ctrl-n - keyword completion from current buffers
 --- ctrl-x ctrl-p - keyword completion from other buffers
 --- ctrl-x ctrl-k - dictionary completion (empty by default)
---- ctrl-x ctrl-t - thesaurus completion (empty by defualt)
+--- ctrl-x ctrl-t - thesaurus completion (empty by default)
 --- ctrl-n or ctrl-p - general purpose

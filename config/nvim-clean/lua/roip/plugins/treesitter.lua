@@ -7,15 +7,40 @@ vim.pack.add({
 
 require("nvim-treesitter.configs").setup({
   ensure_installed = {
-    'lua'
+    "bash",
+    "c",
+    "dockerfile",
+    "diff",
+    "html",
+    "javascript",
+    "json",
+    "jsonc",
+    "lua",
+    "luadoc",
+    "luap",
+    "markdown",
+    "markdown_inline",
+    "python",
+    "regex",
+    "toml",
+    "tsx",
+    "typescript",
+    "vim",
+    "vimdoc",
+    "yaml",
   },
-  auto_install = false,
-  highlight = {
+  opts_extend = { "ensure_installed" },
+  auto_install = true,
+  highlight = { enable = true, additional_vim_regex_highlighting = false },
+  indent = { enable = true },
+  incremental_selection = {
     enable = true,
-    additional_vim_regex_highlighting = false,
-  },
-  indent = {
-    enable = true,
+    keymaps = {
+      init_selection = "<Enter>", -- set to `false` to disable one of the mappings
+      node_incremental = "<Enter>",
+      scope_incremental = false,
+      node_decremental = "<Backspace>",
+    },
   },
 })
 
