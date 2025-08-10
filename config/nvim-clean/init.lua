@@ -1,8 +1,12 @@
--- personal nvim config
+--- personal nvim config
 require("roip/config/options")
 require("roip/config/keymaps")
 require("roip/config/autocommands")
 require("roip/config/toggles")
+
+-- lsp
+require("roip/lsp")
+require("roip/colorscheme")
 
 --- plugins
 require("roip/plugins/tmux")
@@ -10,15 +14,17 @@ require("roip/plugins/git")
 require("roip/plugins/treesitter")
 require("roip/plugins/mason")
 
--- mini
-require("roip/plugins/mini/mini-surround")
-require("roip/plugins/mini/mini-ai")
-require("roip/plugins/mini/mini-align")
+--- mini snacks
+require("roip/plugins/mini")
+require("roip/plugins/snacks")
 
--- lsp
-require("roip/lsp")
+-- completions
+require("roip/plugins/completion")
 
--- inspekto
+-- ai
+require("roip/plugins/copilot")
+
+--- inspektdq
 require("roip/config/inspekto")
 -------------------------------------------------------------------------------
 --- Neovim External Command Cheatsheet
@@ -46,6 +52,8 @@ require("roip/config/inspekto")
 --- gv - reselect last visual selection
 --- `[, `] - go to first, last char of previously changed or yanked text
 ---
+--- folding
+---
 --- commandline window
 --- q/, q: or ctrl-f from /, :
 ---
@@ -66,3 +74,6 @@ require("roip/config/inspekto")
 --- ctrl-x ctrl-k - dictionary completion (empty by default)
 --- ctrl-x ctrl-t - thesaurus completion (empty by default)
 --- ctrl-n or ctrl-p - general purpose
+---
+--- plugins at :echo stdpath("data")
+

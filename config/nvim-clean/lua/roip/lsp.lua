@@ -46,7 +46,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(event)
     -- Diagnostics
     vim.diagnostic.config({ virtual_text = false }) -- remove virtual text
-    vim.keymap.set("n", "E", vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror messages" })
 
     local client = vim.lsp.get_client_by_id(event.data.client_id)
 
@@ -54,8 +53,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
       return
     end
 
-    -- NOTE: not being used as blink.nvim is used for autocompletion
     -- nvim v0.11 supports autocompletion
+    -- this autocompletion is incomplete
+    -- 1. does not support completion preview
+    -- 1. missing mulitple sources support
+    -- so we will use blink.nvim for completions
     if client:supports_method('textDocument/completion') then
       vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
     end

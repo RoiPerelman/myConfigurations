@@ -35,11 +35,6 @@
 local util = require 'lspconfig.util'
 local lsp = vim.lsp
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = vim.tbl_deep_extend("force", capabilities,
-  require("blink.cmp").get_lsp_capabilities() or {}
-)
-
 -- NOTE: on attach in return function doesn't work but this one does. Not sure why
 vim.lsp.config('eslint', {
   on_attach = function(client, bufnr)
@@ -83,7 +78,6 @@ return {
     'astro',
     'htmlangular',
   },
-  capabilities = capabilities,
   workspace_required = true,
   -- https://eslint.org/docs/user-guide/configuring/configuration-files#configuration-file-formats
   root_dir = function(bufnr, on_dir)

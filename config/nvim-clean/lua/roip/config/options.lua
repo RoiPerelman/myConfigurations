@@ -6,7 +6,7 @@ vim.g.have_nerd_font = true
 
 -- invisible chars
 vim.opt.list = true
-vim.opt.listchars = { trail = "·", tab = "→ ", nbsp = "␣", extends = "›", precedes = "‹", eol = "↲" } -- how to show special chars →›‹»↲¬␣·•⟩⟨
+vim.opt.listchars = { trail = "·", tab = "→ ", nbsp = "␣", extends = "›", precedes = "‹" } -- how to show special chars →›‹»↲¬␣·•⟩⟨
 
 -- tabs
 vim.opt.tabstop = 2 -- a tab is shown as x spaces
@@ -44,6 +44,7 @@ vim.opt.swapfile = false -- no swap file!
 vim.opt.spellfile = vim.fn.stdpath('config') .. '/spell/en.utf-8.add'
 vim.opt.undofile = true  -- Save undo history
 vim.opt.iskeyword:append("-") -- treat dash separated words as a word text object
+vim.opt.autowriteall = true -- autowrite so we can move buffers without errors
 
 -- add filetypes for files
 vim.filetype.add({

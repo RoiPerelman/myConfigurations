@@ -1,5 +1,11 @@
 --- Navigation
 
+-- i hate escape
+vim.keymap.set("i", "jj", "<ESC>")
+vim.keymap.set("i", "kk", "<ESC>")
+vim.keymap.set("i", "jk", "<ESC>")
+vim.keymap.set("i", "kj", "<ESC>")
+
 -- make navigation work with wrapped lines
 vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
 vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
@@ -37,4 +43,6 @@ vim.keymap.set("n", "<C-Right>", ":vertical resize +2<cr>", { desc = "inc window
 vim.keymap.set("n", "<leader>e", ":Explor<cr>", { desc = "[E]xplor" })
 
 --- Nice to have
+vim.keymap.set({ "i", "n" }, "<esc>", "<cmd>:noh<cr><esc>", { desc = "Escape and Clear hlsearch" })
 vim.keymap.set("n", "<leader>R", ":update<cr> :source<cr>", { desc = "[R]e source" })
+vim.keymap.set("n", "E", vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror messages" })
