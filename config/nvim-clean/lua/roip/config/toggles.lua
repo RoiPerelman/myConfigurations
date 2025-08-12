@@ -68,3 +68,6 @@ vim.api.nvim_set_keymap(
   ":ToggleLoclist<CR>",
   { noremap = true, silent = true, desc = "[L]ocalist Toggle" }
 )
+
+-- TODO: create a toggle to add auto format during writing
+-- vim.opt.formatoptions += 'ta' -- t for auto wrap text, a for auto format paragraphs

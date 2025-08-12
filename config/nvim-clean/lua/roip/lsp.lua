@@ -26,26 +26,50 @@
 --- ctrl-w + d -> show error/warning message in the line under the cursor
 --- := vim.lsp.get_active_clients()[1].server_capabilities -> To know server capabilities
 
-vim.lsp.enable({
+-- Setup blink capabilities for all LSP servers
+local lsp_servers = {
   "lua_ls",
-  -- "pyright",
-  -- "ruff",
-  -- "ts_ls",
-  -- "eslint",
-  -- "bashls",
-  -- "jsonls",
-  -- "taplo",
-  -- "yamlls",
-  -- "docker",
-  -- "marksman",
+  "pyright",
+  "ruff",
+  "ts_ls",
+  "eslint",
+  "bashls",
+  "jsonls",
+  "taplo",
+  "yamlls",
+  "docker",
+  "marksman",
+}
+
+-- Create capabilities with blink support
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = vim.tbl_deep_extend("force", capabilities,
+  require("blink.cmp").get_lsp_capabilities() or {}
+)
+
+-- Configure and enable LSP servers with blink capabilities
+for _, server in ipairs(lsp_servers) do
+  vim.lsp.config(server, {
+    capabilities = capabilities,
+  })
+  vim.lsp.enable(server)
+end
+
+-- Configure LSP UI with rounded borders globally
+vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
+  border = 'rounded',
+})
+
+vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+  border = 'rounded',
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {
   desc = "this function gets run when an lsp attaches to a particular buffer",
   group = vim.api.nvim_create_augroup("rp-lsp-attach", { clear = true }),
   callback = function(event)
-    -- Diagnostics
-    vim.diagnostic.config({ virtual_text = false }) -- remove virtual text
+    -- Diagnostics with rounded borders
+    vim.diagnostic.config({ virtual_text = false })
 
     local client = vim.lsp.get_client_by_id(event.data.client_id)
 
@@ -58,9 +82,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
     -- 1. does not support completion preview
     -- 1. missing mulitple sources support
     -- so we will use blink.nvim for completions
-    if client:supports_method('textDocument/completion') then
-      vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
-    end
+    -- if client:supports_method('textDocument/completion') then
+    --   vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
+    -- end
 
     -- The following two autocommands are used to highlight references of the
     -- word under your cursor when your cursor rests there for a little while.

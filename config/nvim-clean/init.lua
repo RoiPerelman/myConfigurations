@@ -3,9 +3,6 @@ require("roip/config/options")
 require("roip/config/keymaps")
 require("roip/config/autocommands")
 require("roip/config/toggles")
-
--- lsp
-require("roip/lsp")
 require("roip/colorscheme")
 
 --- plugins
@@ -13,18 +10,16 @@ require("roip/plugins/tmux")
 require("roip/plugins/git")
 require("roip/plugins/treesitter")
 require("roip/plugins/mason")
-
---- mini snacks
 require("roip/plugins/mini")
+require("roip/plugins/oil")
 require("roip/plugins/snacks")
-
--- completions
 require("roip/plugins/completion")
-
--- ai
+require("roip/lsp") -- after completion as it needs blink to add capablilities
+require("roip/plugins/format")
+require("roip/plugins/lint")
 require("roip/plugins/copilot")
 
---- inspektdq
+--- inspekto
 require("roip/config/inspekto")
 -------------------------------------------------------------------------------
 --- Neovim External Command Cheatsheet
@@ -76,4 +71,3 @@ require("roip/config/inspekto")
 --- ctrl-n or ctrl-p - general purpose
 ---
 --- plugins at :echo stdpath("data")
-

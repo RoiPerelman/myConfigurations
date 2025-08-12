@@ -28,7 +28,7 @@ require('snacks').setup({
   },
   bigfile = { enabled = true },
   quickfile = { enabled = true },
-  scroll = { enabled = true },
+  -- scroll = { enabled = true },
 })
 
 -- use snacks debug functions for easier debugging
@@ -69,18 +69,23 @@ local picker = require("snacks").picker
 
 -- files
 map('n', '<leader>ff', function() picker.files(with_opts()) end, { desc = '[F]ind [F]iles cwd' })
-map('n', '<leader>fF', function() picker.files(with_opts({ cwd = get_project_root() })) end, { desc = '[F]ind [F]iles buf root' })
-map('n', '<leader>fc', function() picker.files(with_opts({ cwd = vim.fn.stdpath('config') })) end, { desc = '[F]ind [C]onfig files' })
-map('n', '<leader>fC', function() picker.files(with_opts({ cwd = MiniDeps.config.path.package })) end, { desc = "[F]ind [C]onfig's plugin files" })
+map('n', '<leader>fF', function() picker.files(with_opts({ cwd = get_project_root() })) end,
+  { desc = '[F]ind [F]iles buf root' })
+map('n', '<leader>fc', function() picker.files(with_opts({ cwd = vim.fn.stdpath('config') })) end,
+  { desc = '[F]ind [C]onfig files' })
+map('n', '<leader>fC', function() picker.files(with_opts({ cwd = vim.fn.stdpath('data') })) end,
+  { desc = "[F]ind [C]onfig's plugin files" })
 map('n', '<leader>fr', function() picker.recent(with_opts()) end, { desc = '[F]ind [R]ecent files' })
 map('n', '<leader>fb', function() picker.buffers(with_opts()) end, { desc = '[F]ind [B]uffers' })
 map('n', '<leader>fp', function() picker.projects(with_opts()) end, { desc = '[F]ind [P]roject' })
 
 -- grep
 map('n', '<leader>sg', function() picker.grep(with_opts()) end, { desc = '[S]earch [G]rep' })
-map('n', '<leader>sG', function() picker.grep(with_opts({ cwd = get_project_root() })) end, { desc = '[S]earch [G]rep buf root' })
+map('n', '<leader>sG', function() picker.grep(with_opts({ cwd = get_project_root() })) end,
+  { desc = '[S]earch [G]rep buf root' })
 map('n', '<leader>sw', function() picker.grep_word(with_opts()) end, { desc = '[S]earch [W]ord under cursor' })
-map('n', '<leader>sW', function() picker.grep_word(with_opts({ cwd = get_project_root() })) end, { desc = '[S]earch [W]ord under cursor buf root' })
+map('n', '<leader>sW', function() picker.grep_word(with_opts({ cwd = get_project_root() })) end,
+  { desc = '[S]earch [W]ord under cursor buf root' })
 map('n', '<leader>sb', function() picker.lines(with_opts()) end, { desc = '[S]earch [B]uffer lines' })
 
 -- utilities
@@ -96,7 +101,8 @@ map('n', '<leader>sk', function() picker.keymaps(with_opts()) end, { desc = '[S]
 map('n', '<leader>sj', function() picker.jumps(with_opts()) end, { desc = '[S]earch [J]umplist' })
 map('n', '<leader>sm', function() picker.man(with_opts()) end, { desc = '[S]earch [M]an' })
 map('n', '<leader>sd', function() picker.diagnostics(with_opts()) end, { desc = '[S]earch [D]iagnostics' })
-map('n', '<leader>sD', function() picker.diagnostics_buffer(with_opts()) end, { desc = '[S]earch [D]iagnostics in buffer' })
+map('n', '<leader>sD', function() picker.diagnostics_buffer(with_opts()) end,
+  { desc = '[S]earch [D]iagnostics in buffer' })
 map('n', '<leader>su', function() picker.undo(with_opts()) end, { desc = '[S]earch [U]ndo' })
 map('n', '<leader>sq', function() picker.qflist(with_opts()) end, { desc = '[S]earch [Q]uickfix' })
 map('n', '<leader>sl', function() picker.loclist(with_opts()) end, { desc = '[S]earch [L]oclist' })
@@ -116,5 +122,5 @@ map("n", "grr", function() picker.lsp_references(with_opts()) end, { desc = "[G]
 map("n", "gri", function() picker.lsp_implementations(with_opts()) end, { desc = "[G]oto [R]elated [I]mplementations" })
 map("n", "gt", function() picker.lsp_type_definitions(with_opts()) end, { desc = "[G]oto [T]ype Definition" })
 map("n", "gO", function() picker.lsp_symbols(with_opts()) end, { desc = "[G]oto Document Symbols" })
-map("n", "grs", function() picker.lsp_workspace_symbols(with_opts()) end, { desc = "[G]oto [R]elated Workspace [S]ymbols" })
-
+map("n", "grs", function() picker.lsp_workspace_symbols(with_opts()) end,
+  { desc = "[G]oto [R]elated Workspace [S]ymbols" })
