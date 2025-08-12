@@ -10,14 +10,8 @@
 --- Language server for bash, written using tree sitter in typescript.
 ---
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = vim.tbl_deep_extend("force", capabilities,
-  require("blink.cmp").get_lsp_capabilities() or {}
-)
-
 return {
   cmd = { 'bash-language-server', 'start' },
-  capabilities = capabilities,
   settings = {
     bashIde = {
       -- Glob pattern for finding and parsing shell script files in the workspace.

@@ -4,11 +4,6 @@
 ---
 --- `pyright`, a static type checker and language server for python
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = vim.tbl_deep_extend("force", capabilities,
-  require("blink.cmp").get_lsp_capabilities() or {}
-)
-
 local function set_python_path(path)
   local clients = vim.lsp.get_clients {
     bufnr = vim.api.nvim_get_current_buf(),
@@ -36,7 +31,6 @@ return {
     'pyrightconfig.json',
     '.git',
   },
-  capabilities = capabilities,
   settings = {
     python = {
       analysis = {

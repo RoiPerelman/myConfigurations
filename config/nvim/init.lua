@@ -1,48 +1,73 @@
--- personal nvim config
-require("rp/config/options")
-require("rp/config/keymappings")
-require("rp/config/autocommands")
--- Add plugins (download git repos)
-require("rp/plugin-manager")
+--- personal nvim config
+require("roip/config/options")
+require("roip/config/keymaps")
+require("roip/config/autocommands")
+require("roip/config/toggles")
+require("roip/colorscheme")
 
--- Configure plugins
-local now, later = MiniDeps.now, MiniDeps.later
+--- plugins
+require("roip/plugins/tmux")
+require("roip/plugins/git")
+require("roip/plugins/treesitter")
+require("roip/plugins/mason")
+require("roip/plugins/mini")
+require("roip/plugins/oil")
+require("roip/plugins/snacks")
+require("roip/plugins/completion")
+require("roip/lsp") -- after completion as it needs blink to add capablilities
+require("roip/plugins/format")
+require("roip/plugins/lint")
+require("roip/plugins/copilot")
 
--- mini plugins!
-later(function() require("rp/plugins/mini/icons") end)
-later(function() require("rp/plugins/mini/pairs") end)
-later(function() require("rp/plugins/mini/statusline") end)
-later(function() require("rp/plugins/mini/hipatterns") end)
--- later(function() require("rp/plugins/mini/notify") end)
--- later(function() require("rp/plugins/mini/completion") end)
--- later(function() require("rp/plugins/mini/jump") end)
--- later(function() require("rp/plugins/mini/pick") end)
--- later(function() require("rp/plugins/mini/files") end)
-
--- Add to neovim basic motion functionality
-later(function() require("rp/plugins/mini/ai") end)
-later(function() require("rp/plugins/mini/splitjoin") end)
-later(function() require("rp/plugins/mini/surround") end)
-
--- TODO: add mini move (selections up and down)
--- TODO: add mini align (formatexp/formatprg alternative)
--- TODO: check http://vimcasts.org/episodes/formatting-text-with-par/
--- TODO: check http://vimcasts.org/episodes/hard-wrapping-text/
-
-now(function() require("rp/colorscheme") end)
-now(function() require("rp/plugins/tmux") end)
-now(function() require("rp/plugins/snacks") end)
-later(function() require("rp/plugins/treesitter") end)
-later(function() require("ts-comments").setup() end)
-later(function() require("rp/plugins/git") end)
-later(function() require("rp/plugins/oil") end)
-later(function() require("rp/plugins/completion") end)
-
--- language support tools
-now(function() require("rp/plugins/mason") end)
-now(function() require("rp/plugins/lsp") end)
-later(function() require("rp/plugins/format") end)
-later(function() require("rp/plugins/lint") end)
-
--- at the end. uses other plugins to enhance them
-later(function() require("rp/plugins/treesitter-repeat") end)
+--- inspekto
+require("roip/config/inspekto")
+-------------------------------------------------------------------------------
+--- Neovim External Command Cheatsheet
+---
+--- These are common ways to interact with external programs from Neovim:
+---
+--- calling external tools
+--- :!<program> - no stdin, stdout shown in command line
+--- :r !<program> - no stdin, stdout after current line on buffer
+--- :[<range>]!<program> - stdin, replaces the passed lines on buffer
+--- :[<range>]w !<program> - stdin, stdout shown in command line
+---
+--- buffers
+--- :ls - show buffers (% current window, # alternate, a active, h hidden)
+--- ctrl-6 - switch to alternate buffer
+--- ]b,]b to move between buffers
+--- :e! - reload buffer from disk
+---
+--- windows
+--- ctrl-w r - rotate
+--- ctrl-w _ | - maximize
+---
+--- motions
+--- o in visual selection - to change to other side/corner
+--- gv - reselect last visual selection
+--- `[, `] - go to first, last char of previously changed or yanked text
+---
+--- folding
+---
+--- commandline window
+--- q/, q: or ctrl-f from /, :
+---
+--- changelist
+--- g; g,
+--- jumplist :help jump-motions (' ` G / ? n N % ( ) [ ] { } :s :tag L M H and new files)
+--- ctrl-o ctrl-i
+---
+--- help
+--- C-] C-o - navigate forward and backwards on links
+---
+--- completions (ctrl-x shows possible options in cmd line ^ means ctrl)
+--- ctrl-x ctrl-o - omni completion (used for lsp)
+--- ctrl-x ctrl-f - file path completion
+--- ctrl-x ctrl-l - line completion
+--- Ctrl-x Ctrl-n - keyword completion from current buffers
+--- ctrl-x ctrl-p - keyword completion from other buffers
+--- ctrl-x ctrl-k - dictionary completion (empty by default)
+--- ctrl-x ctrl-t - thesaurus completion (empty by default)
+--- ctrl-n or ctrl-p - general purpose
+---
+--- plugins at :echo stdpath("data")

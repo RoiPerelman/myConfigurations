@@ -1,17 +1,3 @@
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = vim.tbl_deep_extend("force", capabilities,
-  require("blink.cmp").get_lsp_capabilities() or {}
-)
-
--- help lsp stuff for lua
-require("lazydev").setup({
-  library = {
-    -- See the configuration section for more details
-    -- Load luvit types when the `vim.uv` word is found
-    { path = "luvit-meta/library", words = { "vim%.uv" } },
-  },
-})
-
 return {
   cmd = { 'lua-language-server' },
   filetypes = { 'lua' },
@@ -25,7 +11,6 @@ return {
     'selene.yml',
     '.git',
   },
-  capabilities = capabilities,
   on_init = function(client)
     local path = client.workspace_folders and client.workspace_folders[1].name or nil
     if path
@@ -90,7 +75,6 @@ return {
         enable = false,
       },
       diagnostics = {
-        globals = { "_G", "mason_ensure_installed", "MiniDeps" },
         disable = { "missing-fields" },
       },
     },

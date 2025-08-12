@@ -9,16 +9,10 @@
 --- cargo install --features lsp --locked taplo-cli
 --- ```
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = vim.tbl_deep_extend("force", capabilities,
-  require("blink.cmp").get_lsp_capabilities() or {}
-)
-
 return {
   cmd = { 'taplo', 'lsp', 'stdio' },
   filetypes = { 'toml' },
   root_markers = { '.taplo.toml', 'taplo.toml', '.git' },
-  capabilities = capabilities,
   init_options = {
     configuration = {
       schema = {

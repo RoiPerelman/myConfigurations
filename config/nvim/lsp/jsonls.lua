@@ -22,11 +22,6 @@
 --- ```
 ---
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = vim.tbl_deep_extend("force", capabilities,
-  require("blink.cmp").get_lsp_capabilities() or {}
-)
-
 return {
   cmd = { 'vscode-json-language-server', '--stdio' },
   filetypes = { 'json', 'jsonc' },
@@ -34,7 +29,6 @@ return {
     provideFormatter = true,
   },
   root_markers = { '.git' },
-  capabilities = capabilities,
   settings = {
     json = {
       schemas = {

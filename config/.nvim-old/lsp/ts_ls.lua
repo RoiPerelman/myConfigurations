@@ -33,6 +33,12 @@
 --- - organize imports
 --- - remove unused code
 
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = vim.tbl_deep_extend("force", capabilities,
+  require("blink.cmp").get_lsp_capabilities() or {}
+)
+
 -- NOTE: on attach in return function doesn't work but this one does. Not sure why
 vim.lsp.config('ts_ls', {
   on_attach = function(client, bufnr)
@@ -75,6 +81,7 @@ return {
     'typescript.tsx',
   },
   root_markers = { 'tsconfig.json', 'jsconfig.json', 'package.json', '.git' },
+  capabilities = capabilities,
   handlers = {
     -- handle rename request for certain code actions like extracting functions / types
     ['_typescript.rename'] = function(_, result, ctx)
