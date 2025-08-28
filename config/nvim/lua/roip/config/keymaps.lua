@@ -13,6 +13,16 @@ vim.keymap.set({ "n", "x" }, "$", "v:count == 0 ? 'g$' : '$'", { desc = "Down", 
 vim.keymap.set({ "n", "x" }, "^", "v:count == 0 ? 'g^' : '^'", { desc = "Up", expr = true, silent = true })
 vim.keymap.set({ "n", "x" }, "0", "v:count == 0 ? 'g0' : '0'", { desc = "Up", expr = true, silent = true })
 
+-- better J behavior
+vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position" })
+
+-- center screen when jumping
+
+vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
+vim.keymap.set("n", "N", "Nzzzv", { desc = "Prev search result (centered)" })
+vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "half page down (centered)" })
+vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "half page up (centered)" })
+
 -- move lines up and down
 vim.keymap.set("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move Down" })
 vim.keymap.set("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move Up" })
