@@ -2,7 +2,13 @@
 
 Hi, I am Roi Perelman - software engineering manager at siemens inspekto team.
 
-*add what i did before with examples
+I have a degree in Electrical Engineering and an MBA with a focus on finance.
+My prior experience before inspekto includes
+- Dynamic Yield where I Developed server-side solutions using Node.js, Scala, and PHP, along with client-side scripting.
+  dynamic content delivery platform for personalized user experience - sold to mcdonalds and mastercard
+
+- Celeno: Optimized proprietary WiFi chips and embedded systems to improve wireless networking performance and throughput.
+  wifi solutions - sold to japanese company renesance
 
 I lead the full stack team that's responsible for
 

@@ -116,3 +116,6 @@ if [ -f ~/.inspektoconfig ]; then
 fi
 
 export TERM=screen-256color
+
+# opencode
+export PATH=/home/roip/.opencode/bin:$PATH

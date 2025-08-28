@@ -25,18 +25,30 @@ vim.opt.ignorecase = true -- ignore case in search
 vim.opt.smartcase = true  -- ignore case in search only if no capital letter
 
 -- view
-vim.opt.splitbelow = true      -- auto horizontal split to below
-vim.opt.splitright = true      -- auto vertical split to the right
-vim.opt.scrolloff = 3          -- scroll before getting to the last line
-vim.opt.number = true          -- add number
-vim.opt.relativenumber = false -- add relative number
-vim.opt.cursorline = true      -- highlight cursor line
-vim.opt.signcolumn = "yes"     -- add extra space to the left column for signs
-vim.opt.winborder = "rounded"  -- use rounded border for floating windows
-vim.opt.pumheight = 10         -- popup menu height
+vim.opt.splitbelow = true     -- auto horizontal split to below
+vim.opt.splitright = true     -- auto vertical split to the right
+vim.opt.scrolloff = 3         -- scroll before getting to the last line
+vim.opt.sidescrolloff = 10    -- scroll before getting to the last column
+vim.opt.number = true         -- add number
+vim.opt.relativenumber = true -- add relative number
+vim.opt.cursorline = true     -- highlight cursor line
+vim.opt.colorcolumn = "100"   -- add vertical line at 80 chars
+vim.opt.signcolumn = "yes"    -- add extra space to the left column for signs
+vim.opt.winborder = "rounded" -- use rounded border for floating windows
+vim.opt.pumheight = 10        -- popup menu height
 
---completions
+-- completions
 vim.opt.completeopt = "menu,menuone,noselect"
+
+-- diff
+vim.opt.diffopt:append("vertical")           -- vertical diff
+vim.opt.diffopt:append("algorithm:patience") -- better diff algorithm
+vim.opt.diffopt:append("linematch:60")       -- better diff highlighting
+
+-- folding
+vim.opt.foldmethod = "expr"                          -- use expression for folding
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()" -- use treesitter for folding
+vim.opt.foldlevel = 99                               -- open all folds by default
 
 -- misc
 vim.opt.clipboard = "unnamedplus" -- always use the system clipboard
