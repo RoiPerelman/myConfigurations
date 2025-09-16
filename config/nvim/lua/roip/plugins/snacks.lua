@@ -97,6 +97,7 @@ map('n', '<leader>sc', function() picker.command_history(with_opts()) end, { des
 map('n', '<leader>sC', function() picker.commands(with_opts()) end, { desc = '[S]earch [C]ommand' })
 map('n', '<leader>sa', function() picker.autocmds(with_opts()) end, { desc = '[S]earch [A]utocmds' })
 map('n', '<leader>sh', function() picker.help(with_opts()) end, { desc = '[S]earch [H]elp' })
+map('n', '<leader>sH', function() picker.highlights(with_opts()) end, { desc = '[S]earch [H]ightlights' })
 map('n', '<leader>sk', function() picker.keymaps(with_opts()) end, { desc = '[S]earch [K]eymaps' })
 map('n', '<leader>sj', function() picker.jumps(with_opts()) end, { desc = '[S]earch [J]umplist' })
 map('n', '<leader>sm', function() picker.man(with_opts()) end, { desc = '[S]earch [M]an' })
