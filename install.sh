@@ -68,6 +68,17 @@ fi
 if ! [[ -d "$ZSH/custom/plugins/zsh-vi-mode" ]]; then
   git clone https://github.com/jeffreytse/zsh-vi-mode.git "$ZSH/custom/plugins/zsh-vi-mode"
 fi
+
+# fzf
+if ! command -v fzf &> /dev/null; then
+  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
+fi
+
+# zoxide
+if ! command -v zoxide &> /dev/null; then
+  curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+fi
+
 # link zshrc and theme
 ln -snf ~/myConfigurations/zsh/roip.zsh-theme ~/.oh-my-zsh/themes/roip.zsh-theme
 ln -snf ~/myConfigurations/zsh/zshrc ~/.zshrc
