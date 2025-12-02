@@ -5,7 +5,7 @@ PROMPT+="%{$fg_bold[cyan]%}@%{$reset_color%}" # '@' symbol
 PROMPT+="%{$fg_bold[blue]%}%m%{$reset_color%}" # hostname
 PROMPT+="%{$fg_bold[cyan]%}::%{$reset_color%}" # '::' separator
 PROMPT+="%{$fg_bold[cyan]%}%~%{$reset_color%}" # directory
-PROMPT+=" $(git_prompt_info)" # git info
+PROMPT+=' $(git_prompt_info)' # git info
 # Newline and prompt symbol
 PROMPT+="
 %(?:%{$fg_bold[green]%}%1{➜%} :%{$fg_bold[red]%}%1{➜%} ) %{$reset_color%}"
