@@ -1,4 +1,5 @@
 export ZSH="$HOME/.oh-my-zsh"
+# ZSH_THEME="robbyrussell"
 
 # brew
 if [[ -f "/opt/homebrew/bin/brew" ]] then
@@ -29,7 +30,6 @@ plugins=(
   zsh-autosuggestions
   zsh-vi-mode
   git
-  aws
   command-not-found
 )
 

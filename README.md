@@ -41,10 +41,10 @@ npm install -g n
 
 # prereq linux for nvim
 sudo apt update && sudo apt install cmake gettext
-sudo apt update && sudo apt install ripgrep fd-find xclip imagemagick gs tectonic mmdc
+sudo apt update && sudo apt install ripgrep fd-find xclip
 sudo apt update && sudo apt install python3-venv # ruff language server wants
 # other language servers need node
-sudo chown $USER:$USER /usr/local
+sudo chown -R $USER:$USER /usr/local
 curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n | bash -s lts
 npm install -g n
 
@@ -97,4 +97,16 @@ sudo apt install gnome-tweaks
 ```bash
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ln -snf ~/myConfigurations/tmux.conf ~/.tmux.conf
+```
+
+## fonts
+
+```bash
+# for Dank Mono (and other fonts) installation
+cd ~/Downloads
+git clone https://github.com/cancng/fonts.git
+cd fonts
+./install.sh
+cd ../
+rm -rf fonts
 ```

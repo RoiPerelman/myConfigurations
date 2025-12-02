@@ -11,12 +11,39 @@ local formatters_by_ft = {
   yml = { "prettier" },
   yaml = { "prettier" },
   markdown = { "prettier" },
+  javascript = { "prettier" },
+  javascriptreact = { "prettier" },
+  typescript = { "prettier" },
+  typescriptreact = { "prettier" },
+  json = { "prettier" },
+  css = { "prettier" },
+  html = { "prettier" },
 }
 
 require("conform").setup({
   formatters_by_ft = formatters_by_ft,
   notify_on_error = true,
   -- format_on_save = format_on_save_opts,
+})
+
+vim.api.nvim_create_user_command('PrettierFormat', function()
+  require("conform").format(format_on_save_opts)
+end, { desc = "Format with Prettier" })
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = {
+    "*.js",
+    "*.jsx",
+    "*.ts",
+    "*.tsx",
+    "*.json",
+    "*.css",
+    "*.html",
+    "*.md",
+    "*.yaml",
+    "*.yml",
+  },
+  command = "PrettierFormat",
 })
 
 vim.keymap.set({ "n", "v" }, "g=", function()

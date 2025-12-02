@@ -1,3 +1,11 @@
+-- vscode only code
+if vim.g.vscode then
+  require("roip/config/vscode")
+  -- require("roip/plugins/mini/mini-surround")
+  -- require("roip/plugins/mini/mini-ai")
+  return
+end
+
 --- personal nvim config
 require("roip/config/options")
 require("roip/config/keymaps")

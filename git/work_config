@@ -3,8 +3,8 @@
 	email = roi-perelman@siemens.com
 
 [core]
-  editor = nvim
-	excludesFile = ~/.gitignore
+  editor = vim
+  excludesFile = ~/.gitignore
 
 [pull]
   rebase = true

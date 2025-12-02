@@ -1,0 +1,38 @@
+{
+  "plugins": {
+    "LuaSnip": [],
+    "blink.cmp": {
+      "version": "'v1.1.1'"
+    },
+    "diffview.nvim": [],
+    "friendly-snippets": [],
+    "gitsigns.nvim": [],
+    "mason-tool-installer.nvim": [],
+    "mason.nvim": {
+      "version": "'stable'"
+    },
+    "mini.ai": {
+      "version": "'stable'"
+    },
+    "mini.align": {
+      "version": "'stable'"
+    },
+    "mini.icons": {
+      "version": "'stable'"
+    },
+    "mini.surround": {
+      "version": "'stable'"
+    },
+    "nvim-tmux-navigation": [],
+    "nvim-treesitter": {
+      "version": "'master'"
+    },
+    "nvim-treesitter-textobjects": [],
+    "nvim-ts-autotag": [],
+    "oil.nvim": [],
+    "snacks.nvim": [],
+    "tokyonight.nvim": [],
+    "ts-comments.nvim": [],
+    "vim-fugitive": []
+  }
+}
