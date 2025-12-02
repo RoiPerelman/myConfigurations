@@ -66,6 +66,6 @@ if ! [[ -d "$ZSH/custom/plugins/zsh-vi-mode" ]]; then
   git clone https://github.com/jeffreytse/zsh-vi-mode.git "$ZSH/custom/plugins/zsh-vi-mode"
 fi
 # link zshrc and theme
-ln -snf ~/myConfigurations/zsh/zshrc ~/.oh-my-zsh/themes/roip.zsh-theme
-ln -snf ~/myConfigurations/zshrc ~/.zshrc
+ln -snf ~/myConfigurations/zsh/roip.zsh-theme ~/.oh-my-zsh/themes/roip.zsh-theme
+ln -snf ~/myConfigurations/zsh/zshrc ~/.zshrc
 
