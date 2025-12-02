@@ -115,3 +115,6 @@ if [ -f ~/.inspektoconfig ]; then
     source ~/.inspektoconfig
 fi
 
+if command -v "$HOME/.opencode/bin/opencode" &> /dev/null; then
+  export PATH=/home/roip/.opencode/bin:$PATH
+fi
