@@ -9,9 +9,12 @@ fi
 
 # if i don't have sudo - install sudo
 su -c "command -v sudo &> /dev/null || (apt-get update && apt-get install -y sudo)"
-sudo apt update && sudo apt install -yqqq cmake gettext
-sudo apt update && sudo apt install -yqqq ripgrep fd-find xclip # tools we use
-sudo apt update && sudo apt install python3-venv # ruff language server wants
+su -c "command -v cmake &> /dev/null || (sudo apt update && sudo apt install -yqqq cmake)"
+su -c "command -v gettext &> /dev/null || (sudo apt update && sudo apt install -yqqq gettext)"
+su -c "command -v rg &> /dev/null || (sudo apt update && sudo apt install -yqqq ripgrep)"
+su -c "command -v fdfind &> /dev/null || (sudo apt update && sudo apt install -yqqq fd-find)"
+su -c "command -v xclip &> /dev/null || (sudo apt update && sudo apt install -yqqq xclip)"
+su -c "dpkg -s python3-venv &> /dev/null || (sudo apt update && sudo apt install -yqqq python3-venv)"
 
 # tsserver language server wants
 if ! [[ -d "/usr/local/n" ]]; then
