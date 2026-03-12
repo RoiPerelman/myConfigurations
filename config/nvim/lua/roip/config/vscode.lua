@@ -12,6 +12,14 @@ vim.opt.smartcase = true  -- ignore case in search only if no capital letter
 vim.opt.cmdheight = 4
 vim.opt.clipboard = "unnamedplus" -- always use the system clipboard
 
+vim.api.nvim_create_autocmd("TextYankPost", {
+  desc = "highlight when yanking text",
+  group = vim.api.nvim_create_augroup("rp_highlight_yank", { clear = true }),
+  callback = function()
+    vim.highlight.on_yank()
+  end,
+})
+
 -- indenting (do not lose visual mode)
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
@@ -66,6 +74,7 @@ local vscode_mappings = {
   { "n", "<C-w>C",     "workbench.action.closeEditorsAndGroup" },
   -- vscode specific
   { "n", "<Leader>R",  "vscode-neovim.restart" },
+  { "n", "gf",         "git.openFile" },
   -- { "n", "<Leader>tt", "workbench.action.terminal.toggleTerminal" },
 }
 

@@ -41,13 +41,6 @@ if ! command -v tmux &> /dev/null; then
 fi
 ln -snf ~/myConfigurations/tmux.conf ~/.tmux.conf
 
-# opencode
-# scp the credentials example
-# scp ~/.local/share/opencode/auth.json bx59a-isr-devC:/root/.local/share/opencode/auth.json
-if ! command -v "$HOME/.opencode/bin/opencode" &> /dev/null; then
-  curl -fsSL https://opencode.ai/install | bash
-fi
-
 # zshrc
 if ! command -v zsh &> /dev/null; then
   sudo apt update && sudo apt install zsh
