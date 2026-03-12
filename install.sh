@@ -28,7 +28,7 @@ if ! command -v nvim &> /dev/null; then
   cd ~/Applications || exit 1
   git clone https://github.com/neovim/neovim.git
   cd neovim || exit 1
-  git checkout nightly
+  git checkout 17bcf86cab
   make CMAKE_BUILD_TYPE=RelWithDebInfo
   sudo make install
 fi
@@ -74,5 +74,5 @@ fi
 
 # link zshrc and theme
 ln -snf ~/myConfigurations/zsh/roip.zsh-theme ~/.oh-my-zsh/themes/roip.zsh-theme
-ln -snf ~/myConfigurations/zsh/zshrc ~/.zshrc
+# ln -snf ~/myConfigurations/zsh/zshrc ~/.zshrc
 
