@@ -24,7 +24,7 @@
 --- [d         -> jump to previous diagnostic in the current buffer
 --- ]d         -> jump to next diagnostic in the current buffer
 --- ctrl-w + d -> show error/warning message in the line under the cursor
---- := vim.lsp.get_active_clients()[1].server_capabilities -> To know server capabilities
+--- := vim.lsp.get_clients()[1].server_capabilities -> To know server capabilities
 
 -- Setup blink capabilities for all LSP servers
 local lsp_servers = {
@@ -55,15 +55,6 @@ for _, server in ipairs(lsp_servers) do
   vim.lsp.enable(server)
 end
 
--- Configure LSP UI with rounded borders globally
-vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
-  border = 'rounded',
-})
-
-vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-  border = 'rounded',
-})
-
 vim.api.nvim_create_autocmd("LspAttach", {
   desc = "this function gets run when an lsp attaches to a particular buffer",
   group = vim.api.nvim_create_augroup("rp-lsp-attach", { clear = true }),
@@ -89,7 +80,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     -- The following two autocommands are used to highlight references of the
     -- word under your cursor when your cursor rests there for a little while.
     -- When you move your cursor, the highlights will be cleared (the second autocommand).
-    if client and client.server_capabilities.documentHighlightProvider then
+    if client and client:supports_method('textDocument/documentHighlight') then
       vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
         buffer = event.buf,
         callback = vim.lsp.buf.document_highlight,

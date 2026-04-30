@@ -3,7 +3,6 @@ vim.pack.add({ "https://github.com/folke/snacks.nvim" })
 require('snacks').setup({
   picker = {
     layouts = {
-      select = require("snacks.picker.config.layouts").default,
       vertico = {
         preset = "ivy",
         preview = "main",

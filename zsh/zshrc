@@ -110,3 +110,6 @@ if [ -f ~/.inspektoconfig ]; then
     source ~/.inspektoconfig
 fi
 
+
+# managed-claude-code: load code.siemens.com token for code scanning
+[ -f "/home/roip/.claude/.env" ] && . "/home/roip/.claude/.env"

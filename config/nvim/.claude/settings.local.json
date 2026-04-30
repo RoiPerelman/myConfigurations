@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/usr/local/bin/nvim --headless -c \"TSUpdate\" -c \"qa\")"
+    ]
+  }
+}

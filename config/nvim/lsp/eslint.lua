@@ -62,7 +62,7 @@ vim.lsp.config('eslint', {
         arguments = {
           {
             uri = vim.uri_from_bufnr(bufnr),
-            version = lsp.util.buf_versions[bufnr],
+            version = lsp.util.buf_versions and lsp.util.buf_versions[bufnr] or 0,
           },
         },
       }, nil, bufnr)

@@ -37,3 +37,6 @@
 	verbose = true
 [init]
 	defaultBranch = develop
+
+[safe]
+	directory = /workspaces/inspekto

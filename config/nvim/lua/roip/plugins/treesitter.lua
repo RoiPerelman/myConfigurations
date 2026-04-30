@@ -20,6 +20,7 @@ vim.api.nvim_create_autocmd('PackChanged', {
     end
   end,
 })
+
 vim.pack.add({ "https://github.com/nvim-treesitter/nvim-treesitter-textobjects" })
 vim.pack.add({ "https://github.com/windwp/nvim-ts-autotag" })
 vim.pack.add({ "https://github.com/folke/ts-comments.nvim" })
@@ -48,7 +49,6 @@ require("nvim-treesitter.configs").setup({
     "vimdoc",
     "yaml",
   },
-  opts_extend = { "ensure_installed" },
   auto_install = true,
   highlight = { enable = true },
   indent = { enable = true },

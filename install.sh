@@ -28,7 +28,7 @@ if ! command -v nvim &> /dev/null; then
   cd ~/Applications || exit 1
   git clone https://github.com/neovim/neovim.git
   cd neovim || exit 1
-  git checkout 17bcf86cab
+  git checkout v0.12.2
   make CMAKE_BUILD_TYPE=RelWithDebInfo
   sudo make install
 fi
