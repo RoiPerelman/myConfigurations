@@ -66,6 +66,49 @@ require("nvim-treesitter.configs").setup({
 require('nvim-ts-autotag').setup({})
 require("ts-comments").setup()
 
+-- nvim 0.12 changed match[id] from TSNode to TSNode[]; fix nvim-treesitter master's
+-- injection directives (repo is archived, no upstream fix coming - see issue #8636)
+do
+  local q = vim.treesitter.query
+  require("nvim-treesitter.query_predicates") -- force plugin to register first, so our overrides win
+  local non_ft_aliases = { ex = "elixir", pl = "perl", sh = "bash", uxn = "uxntal", ts = "typescript" }
+  local html_langs = {
+    importmap = "json",
+    module = "javascript",
+    ["application/ecmascript"] = "javascript",
+    ["text/ecmascript"] = "javascript",
+  }
+  local function unwrap(match, id)
+    local v = match[id]
+    return v and (type(v) == "table" and v[1] or v) or nil
+  end
+
+  q.add_directive("set-lang-from-info-string!", function(match, _, bufnr, pred, metadata)
+    local node = unwrap(match, pred[2])
+    if not node then return end
+    local alias = vim.treesitter.get_node_text(node, bufnr):lower()
+    metadata["injection.language"] = vim.filetype.match({ filename = "a." .. alias })
+        or non_ft_aliases[alias] or alias
+  end, { force = true })
+
+  q.add_directive("set-lang-from-mimetype!", function(match, _, bufnr, pred, metadata)
+    local node = unwrap(match, pred[2])
+    if not node then return end
+    local val = vim.treesitter.get_node_text(node, bufnr)
+    local parts = vim.split(val, "/", {})
+    metadata["injection.language"] = html_langs[val] or parts[#parts]
+  end, { force = true })
+
+  q.add_directive("downcase!", function(match, _, bufnr, pred, metadata)
+    local id = pred[2]
+    local node = unwrap(match, id)
+    if not node then return end
+    local text = vim.treesitter.get_node_text(node, bufnr, { metadata = metadata[id] }) or ""
+    if not metadata[id] then metadata[id] = {} end
+    metadata[id].text = string.lower(text)
+  end, { force = true })
+end
+
 -- Repeatable movement with nvim-treesitter
 local ts_repeat_move = require "nvim-treesitter.textobjects.repeatable_move"
 -- local ts_repeat_move = require "nvim-treesitter-textobjects.repeatable_move"
